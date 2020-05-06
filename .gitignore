@@ -1,0 +1,12 @@
+/Src/DBPractice/bin
+/Src/WebPrac/bin
+/Src/PMS.Entities/bin
+/Src/PMS.DAL/bin
+/Src/PMS.BAL/bin
+/Src/DBPractice/obj
+/Src/WebPrac/obj
+/Src/PMS.Entities/obj
+/Src/PMS.DAL/obj
+/Src/PMS.BAL/obj
+/Src/packages
+/Src/.vs
