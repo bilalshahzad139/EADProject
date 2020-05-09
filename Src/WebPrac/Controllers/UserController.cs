@@ -1,4 +1,5 @@
-﻿using PMS.Entities;
+﻿using PMS.BAL;
+using PMS.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,15 +35,63 @@ namespace WebPrac.Controllers
 
             return View();
         }
-
-        
-
-        [HttpPost]
-        public ActionResult Save(UserDTO dto)
+        [HttpGet]
+        public ActionResult Signup()
         {
-            //User Save Logic
+            ViewBag.Title = "Sign up";
             return View();
         }
+        // I am goin to hit it by AJAX
+        [HttpPost]
+        [ActionName("Signup")]
+        public JsonResult Signup(UserDTO user)
+        {
+            Object result = null;
+            try
+            {
+                Boolean isUserAlreadyExist = UserBO.isUserAlreadyExist(user.Login);
+                if (!isUserAlreadyExist)
+                {
+                    var res = UserBO.Save(user);
+                    if (res == 1)
+                    {
+                        result = new
+                        {
+                            isUserExist = isUserAlreadyExist,
+                            urlToRedirect = Url.Content("~/User/Login")
+                        };
+                    }
+
+                }
+                else
+                {
+                    result = new
+                    {
+                        isUserExist = isUserAlreadyExist,
+                        urlToRedirect = ""
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new
+                {
+                    isUserExist = false,
+                    urlToRedirect = ""
+                };
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+
+
+        }
+
+
+        //[HttpPost]
+        //public ActionResult Save(UserDTO dto)
+        //{
+        //    //User Save Logic
+        //    return View();
+        //}
 
         [HttpGet]
         public ActionResult Logout()

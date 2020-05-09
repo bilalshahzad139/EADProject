@@ -172,6 +172,7 @@
     <Content Include="Views\Shared\_SampleLayout.cshtml" />
     <Content Include="Views\User\Login2.cshtml" />
     <Content Include="Views\Product2\New.cshtml" />
+    <Content Include="Views\User\signup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PMS.BAL\PMS.BAL.csproj">
