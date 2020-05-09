@@ -8,7 +8,9 @@
     [ModifiedOn]  DATETIME     NULL,
     [ModifiedBy]  INT          NULL,
     [IsActive]    BIT          NOT NULL,
-    [ProductCategory] VARCHAR(100) NOT NULL, 
-    CONSTRAINT [PK_Products] PRIMARY KEY CLUSTERED ([ProductID] ASC)
+    [ProductCategoryID] VARCHAR(100) NOT NULL, 
+    CONSTRAINT [PK_Products] PRIMARY KEY CLUSTERED ([ProductID] ASC),
+    FOREIGN KEY (ProductCategoryID) REFERENCES ProductCategory(ProductCategoryID)
 );
+
 
