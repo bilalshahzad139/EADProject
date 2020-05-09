@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[category]
 (
-	[categoryID] INT NOT NULL PRIMARY KEY, 
-    [parentCategoryID] INT NOT NULL, 
-    [categoryName] NCHAR(10) NOT NULL
+	[CategoryID] INT NOT NULL PRIMARY KEY, 
+    [ParentCategoryID] INT NOT NULL, 
+    [CategoryName] NCHAR(10) NOT NULL
 )
