@@ -1,4 +1,5 @@
 ﻿CREATE TABLE [dbo].[ProductCategory]
 (
-	[ProductCategoryID] VARCHAR(100) NOT NULL PRIMARY KEY 
+	[ProductCategoryID] INT NOT NULL PRIMARY KEY, 
+    [ProductCategoryName] VARCHAR(100) NOT NULL 
 )
