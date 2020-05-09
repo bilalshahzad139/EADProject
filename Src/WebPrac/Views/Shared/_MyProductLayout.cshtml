@@ -7,14 +7,17 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <!-- Font Awesome///////// -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <title>_MyProductLayout</title>
     <style>
-        .menu a {
-            padding: 5px;
-            background-color: lightgrey;
-            color: red;
-        }
-
         .prodbox {
             padding: 5px;
             margin: 5px;
@@ -26,20 +29,61 @@
             float: left;
         }
 
-            .comments .comment .picture img {
-                width: 30px;
-                height: 30px;
-            }
+        .comments .comment .picture img {
+            width: 30px;
+            height: 30px;
+        }
 
         .comments .comment .name {
             color: red;
         }
-
+        .comments{
+            max-height:90px;
+            overflow-y:scroll;
+            border:1px solid grey;
+            border-radius:5px;
+        }
         .comments .comment .comment-text {
             font-family: Helvetica, Arial, sans-serif;
             font-size: 12px;
         }
+
+        #topBar {
+            height: auto;
+            border-bottom: dashed 1px chocolate;
+            background: linear-gradient(45deg, rgba(61,29,1,1) 0%, rgba(51,26,79,1) 100%);
+            padding: 10px 0px 10px 0px;
+        }
+
+        #siteName {
+            font-size: 5vmin;
+        }
+
+        .topBarText {
+            text-decoration: none !important;
+            color: chocolate !important;
+        }
+
+        #myNav {
+            background: linear-gradient(45deg, rgba(61,29,1,1) 0%, rgba(51,26,79,1) 100%);
+            text-align:center;
+            height:auto;
+            position:sticky;
+            top:0px;
+            z-index:100;
+        }
+        #myNav > a{
+            color:chocolate;
+            margin:0px 10px 0px 10px;
+            text-decoration:none;
+            font-size:large;
+        }
+        #myNav > a:hover{
+            color:burlywood;
+        }
+
     </style>
+    
     <script>
         window.BasePath = '@Url.Content("~")';
     </script>
@@ -52,35 +96,40 @@
     <script src="~/Scripts/MyAppGlobal.js"></script>
 
     @RenderSection("scripts", false)
-
+    @RenderSection("styles", false);
 </head>
 <body>
-    <div id="overlay" class="overlay">
-
+    <div class="text-center" id="topBar">
+        @*logo and name*@
+        <div>
+            <a href="/Home/Admin" class="topBarText">
+                <!--Logo-->
+                <i class="fa fa-shopping-basket fa-2x mb-1"></i>
+            </a>
+        </div>
+        <div id="siteName"><a href="/Home/Admin" class="topBarText">Shopping Site</a></div> <!--Site Name-->
     </div>
 
+
+    <div id="myNav" class="py-4">
+
     <div class="menu">
+
 
 
         @if (WebPrac.Security.SessionManager.User.IsAdmin)
         {
             <a href="/Home/Admin">Home</a>
-            @*<a href="/Product/ShowAll">Show All</a>
-            <a href="/Product/New">New Product</a>*@
-            <a href="/Product2/New">Products-AJAX</a>
+            <a href="/Product2/New">Products</a>
         }
         else
         {
             <a href="/Home/NormalUser">Home</a>
-            <a href="/Product2/New">Products-AJAX</a>
-            @*<a href="/Product/ShowAll">Show All</a>*@
+            <a href="/Product2/New">Products</a>
         }
-
         <a href="/User/Logout">Logout</a>
-
     </div>
-
-    <h1> Welcome @WebPrac.Security.SessionManager.User.Name</h1>
+  </div>
     <span style="color:red">@TempData["Message"]</span>
     <div>
         @RenderBody()

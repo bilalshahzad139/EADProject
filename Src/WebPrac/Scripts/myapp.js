@@ -49,10 +49,10 @@ MyApp = (function () {
                 var html = template(obj);
 
                 if (id > 0) {
-                    $("#tblBody tr[pid=" + id + "]").replaceWith(html);
+                    $("#productsDiv tr[pid=" + id + "]").replaceWith(html);
                 }
                 else {
-                    $("#tblBody").prepend(html);
+                    $("#productsDiv").prepend(html);
                 }
 
                 BindEvents();
@@ -98,12 +98,12 @@ MyApp = (function () {
                 var template = Handlebars.compile(source);
 
                 var html = template(resp);
-                $("#tblBody").append(html);
+                $("#productsDiv").append(html);
 
 
-                $("#tblBody .addcomment").click(function () {
+                $("#productsDiv .addcomment").click(function () {
 
-                    var mainProdContainer = $(this).closest(".prodbox");
+                    var mainProdContainer = $(this).closest(".product");
                     var pid = mainProdContainer.attr("pid");
 
                     var comment = $(this).closest(".commentarea").find(".txtComment").val();
