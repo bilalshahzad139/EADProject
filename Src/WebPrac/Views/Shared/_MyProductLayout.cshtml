@@ -110,7 +110,13 @@
         <div id="siteName"><a href="/Home/Admin" class="topBarText">Shopping Site</a></div> <!--Site Name-->
     </div>
 
+
     <div id="myNav" class="py-4">
+
+    <div class="menu">
+
+
+
         @if (WebPrac.Security.SessionManager.User.IsAdmin)
         {
             <a href="/Home/Admin">Home</a>
@@ -123,6 +129,7 @@
         }
         <a href="/User/Logout">Logout</a>
     </div>
+  </div>
     <span style="color:red">@TempData["Message"]</span>
     <div>
         @RenderBody()
