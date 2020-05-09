@@ -84,6 +84,38 @@ namespace PMS.DAL
             }
         }
 
+        public static List<ProductDTO> GetPriceRangedProducts(int from, int to, Boolean pLoadComments = false)
+        {
+            var query = "Select * from dbo.Products Where IsActive = 1 AND (Price Between '"+from+"' AND '"+to+"');";
+            using (DBHelper helper = new DBHelper())
+            {
+                var reader = helper.ExecuteReader(query);
+                List<ProductDTO> list = new List<ProductDTO>();
+
+                while (reader.Read())
+                {
+                    var dto = FillDTO(reader);
+                    if (dto != null)
+                    {
+                        list.Add(dto);
+                    }
+                }
+                if (pLoadComments == true)
+                {
+                    //var commentsList = CommentDAO.GetAllComments();
+
+                    var commentsList = CommentDAO.GetTopComments(2);
+
+                    foreach (var prod in list)
+                    {
+                        List<CommentDTO> prodComments = commentsList.Where(c => c.ProductID == prod.ProductID).ToList();
+                        prod.Comments = prodComments;
+                    }
+                }
+                return list;
+            }
+        }
+
         public static int DeleteProduct(int pid)
         {
             String sqlQuery = String.Format("Update dbo.Products Set IsActive=0 Where ProductID={0}", pid);

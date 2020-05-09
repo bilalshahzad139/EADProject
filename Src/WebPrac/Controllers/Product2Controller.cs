@@ -26,6 +26,18 @@ namespace WebPrac.Controllers
             return Json(d, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public JsonResult GetPriceRangedProducts(int from, int to)
+        {
+            
+            var products = PMS.BAL.ProductBO.GetPriceRangedProducts(from, to, true);
+
+            var d = new
+            {
+                data = products
+            };
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
 
         public JsonResult GetProductById(int pid)
         {
