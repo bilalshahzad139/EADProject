@@ -8,8 +8,8 @@
     [ModifiedOn]  DATETIME     NULL,
     [ModifiedBy]  INT          NULL,
     [IsActive]    BIT          NOT NULL,
-    [categoryID] INT NOT NULL, 
+    [CategoryID] INT NOT NULL, 
     CONSTRAINT [PK_Products] PRIMARY KEY CLUSTERED ([ProductID] ASC), 
-    CONSTRAINT [FK_Products_ToTable] FOREIGN KEY ([categoryID]) REFERENCES [category]([categoryID]) 
+    CONSTRAINT [FK_Products_ToTable] FOREIGN KEY ([CategoryID]) REFERENCES [category]([CategoryID]) 
 );
 
