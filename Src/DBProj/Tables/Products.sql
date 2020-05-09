@@ -7,10 +7,6 @@
     [ModifiedOn]  DATETIME     NULL,
     [ModifiedBy]  INT          NULL,
     [IsActive]    BIT          NOT NULL,
-    [PictureName1] VARCHAR(50) NOT NULL, 
-    [PictureName2] VARCHAR(50) NULL, 
-    [PictureName3] VARCHAR(50) NULL, 
-    [PictureName4] VARCHAR(50) NULL, 
     CONSTRAINT [PK_Products] PRIMARY KEY CLUSTERED ([ProductID] ASC)
 );
 
