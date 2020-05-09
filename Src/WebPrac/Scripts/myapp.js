@@ -199,8 +199,72 @@ MyApp = (function () {
         });
     }
 
+ 
+    function SignupHelper() {
+        $("#btnSignUp").on("click", function () {
+            let name = $("#username").val().trim();
+            let login = $("#login").val().trim();
+            let password = $("#password").val().trim();
+            let cpassword = $("#cpassword").val().trim();
+            if (login !== "" && password !== "" && name !== "" && cpassword !== "") {
+                if (password !== cpassword) {
+                    $("#cpassword").val("");
+                    $("#password").val("");
+                    $("#p").text("Password not matched!");
+                    setTimeout(() => {
+                        const elem = $("#p").text("");
+                    }, 2000);
+                    return false;
+                }
+                var data = new FormData();
+                data.append("Name", name);
+                data.append("Login", login);
+                data.append("Password", password);
+                data.append("PictureName", "");
+                var settings = {
+                    type: "POST",
+                    url: "Signup",
+                        contentType: false,
+                            processData: false,
+                                data: data,
+                                    success: function (response) {
+
+                                        if (response.isUserExist) {
+                                            $("#password").val("");
+                                            $("#cpassword").val("");
+                                            $("#p").text("User already exists!");
+                                            setTimeout(() => {
+                                                const elem = $("#p").text("");
+                                            }, 2000);
+                                            return false;
+                                        }
+                                        else {
+                                            window.location.href = "Login";
+                                        }
+                                    },
+                error: function (error) {
+                    console.log(error);
+                }
+            };
+
+            $.ajax(settings);
+        }
+                else {
+                $("#p").text("Empty Fields!");
+                setTimeout(() => {
+            const elem = $("#p").text("");
+        }, 2000);
+        return false;
+    }
+
+});
+ }
 
     return {
+
+        Signup: function () {
+            SignupHelper();
+        },
         Main: function () {
 
             LoadProducts();

@@ -1,17 +1,61 @@
 ﻿
 @{
 	ViewBag.Title = "signup";
-	Layout = "~/Views/Shared/_MyPublicLayout.cshtml";
+	Layout = "~/Views/Shared/_MyLayout.cshtml";
+
 }
 
-<div>
-	Login: <input id="login" maxlength="32" value="" /><br />
-	Name: <input id="name" maxlength="32" value="" /><br />
-	Password: <input id="password" type="password" /><br />
-	Confirm Password: <input id="con-pass" type="password" /><br />
-	Profile Pic: <input type="file" name="profile-pic" id="myfile" /> <br />
+	<div class="main-div">
+		<img src=@Url.Content("~/Images/profile.png") class="avatar">
+		<h2>Welcome</h2>
+		<div class="input-div one">
+			<div class="i">
+				<i class="fa fa-venus"></i>
+			</div>
+			<div>
+				<h5>Username</h5>
+				<input class="input" type="text" required name="uname" id="username">
+			</div>
+		</div>
+		<div class="input-div one">
+			<div class="i">
+				<i class="fa fa-user"></i>
+			</div>
+			<div>
+				<h5>Login ID</h5>
+				<input class="input" type="text" required name="lid" id="login">
+			</div>
+		</div>
+		<div class="input-div two">
+			<div class="i">
+				<i class="fa fa-lock"></i>
+			</div>
+			<div>
+				<h5>Password</h5>
+				<input class="input" type="password" required name="pswd" id="password">
+			</div>
+		</div>
+		<div class="input-div two">
+			<div class="i">
+				<i class="fa fa-lock"></i>
+			</div>
+			<div>
+				<h5>Confirm Password</h5>
+				<input class="input" type="password" required name="cp" id="cpassword">
+			</div>
+		</div>
+		<input class="btn" value="Sign Up" type="button" id="btnSignUp">
+		<a href="@Url.Content("~/User/Login")">Already have an account?</a><br/><br/>
+		<div id="divv">
+			<p style="color:red;" id="p"></p>
+		</div>
+	</div>
 
-	<input type="submit" value="Save" id="btnSave" />
-	<input type="button" id="btnClear" value="Clear" /><br />
-	Already have an account. Go to <a href="@Url.Content("~/User/Login")" class="ml-2">Login</a>
-</div>
+
+@section scripts{
+	<script>
+        $(document).ready(function () {
+            MyApp.Signup();
+		});
+	</script>
+	}
