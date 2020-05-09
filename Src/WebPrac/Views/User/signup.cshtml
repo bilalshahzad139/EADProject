@@ -1,0 +1,17 @@
+﻿
+@{
+	ViewBag.Title = "signup";
+	Layout = "~/Views/Shared/_MyPublicLayout.cshtml";
+}
+
+<div>
+	Login: <input id="login" maxlength="32" value="" /><br />
+	Name: <input id="name" maxlength="32" value="" /><br />
+	Password: <input id="password" type="password" /><br />
+	Confirm Password: <input id="con-pass" type="password" /><br />
+	Profile Pic: <input type="file" name="profile-pic" id="myfile" /> <br />
+
+	<input type="submit" value="Save" id="btnSave" />
+	<input type="button" id="btnClear" value="Clear" /><br />
+	Already have an account. Go to <a href="@Url.Content("~/User/Login")" class="ml-2">Login</a>
+</div>
