@@ -18,36 +18,38 @@
 
     </script>
 }
-<style>
-    #productsDiv{
-        margin:auto;
-    }
-    .product{
-        margin:3% 2% 0 2%;
-        border:1px solid #ddd;
-    }
-    
-</style>
+@section styles{
+    <style>
+        #productsDiv {
+            margin: auto;
+            margin-bottom:30px;
+        }
+
+        .product {
+            margin: 3% 2% 0 2%;
+            border: 1px solid #ddd;
+        }
+    </style>
+}
+
 <div class="text-center"><h2>Products</h2></div>
 
-
-
 <div class="container-fluid">
-    <div  class="row p-2 justify-content-center border">
+    <div class="row p-2 justify-content-center border">
         <div class="col-12 text-center"><h4>Add New Product</h4></div>
         <div class="col-4 mt-n5">
             <img src="" style="width:100px;height:100px;display:none" id="prodimg" /> <br />
             <input type="hidden" name="ProductID" id="txtProductID" value="0" />
             <input type="hidden" name="PictureName" id="txtPictureName" />
             Name:<input type="text" name="Name" id="txtName" class="form-control" />
-            Price: <input type="text" name="Price" id="txtPrice" class="form-control"/>
+            Price: <input type="text" name="Price" id="txtPrice" class="form-control" />
             Image: <input type="file" name="Image" id="myfile" />
             <div class="text-center mt-1">
                 <input type="submit" value="Save" id="btnSave" class="btn btn-success mx-1" />
-            <input type="button" id="btnClear" value="Clear" class="btn btn-danger" />
+                <input type="button" id="btnClear" value="Clear" class="btn btn-danger" />
             </div>
         </div>
-        
+
     </div>
     <div class="row justify-content-center" id="productsDiv">
 
@@ -57,22 +59,22 @@
 
 
 @*<table>
-    <thead>
-        <tr>
-            <td>Name</td>
-            <td>Price</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </thead>
-    <tbody id="tblBody"></tbody>
-</table>*@
+        <thead>
+            <tr>
+                <td>Name</td>
+                <td>Price</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody id="tblBody"></tbody>
+    </table>*@
 
 
-<div id="emailpopup" class="modalpopup" >
+<div id="emailpopup" class="modalpopup">
     <span id="popupname"></span>
 
     <button id="btnSend">Email</button>
@@ -81,20 +83,20 @@
 
 
 @*<script id="listtemplate" type="text/x-handlebars-template">
-    {{#each data}}
-    <tr pid="{{ProductID}}">
-        <td>{{Name}}</td>
-        <td>{{Price}}</td>
-        <td><img src="/UploadedFiles/{{PictureName}}" style="width:100px;height:100px;" /></td>
-        @if (WebPrac.Security.SessionManager.User.IsAdmin)
-        {
-            <td><a href="#" class="editprod">Edit</a></td>
-            <td><a href="#" class="deleteprod">Delete</a></td>
-            <td><a href="#" class="emailprod">Email</a></td>
-        }
-    </tr>
-    {{/each}}
-</script>*@
+        {{#each data}}
+        <tr pid="{{ProductID}}">
+            <td>{{Name}}</td>
+            <td>{{Price}}</td>
+            <td><img src="/UploadedFiles/{{PictureName}}" style="width:100px;height:100px;" /></td>
+            @if (WebPrac.Security.SessionManager.User.IsAdmin)
+            {
+                <td><a href="#" class="editprod">Edit</a></td>
+                <td><a href="#" class="deleteprod">Delete</a></td>
+                <td><a href="#" class="emailprod">Email</a></td>
+            }
+        </tr>
+        {{/each}}
+    </script>*@
 
 <script id="listtemplate" type="text/x-handlebars-template">
     {{#each data}}
