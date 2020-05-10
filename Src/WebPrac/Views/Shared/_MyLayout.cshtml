@@ -7,17 +7,21 @@
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>_MyPublicLayout</title>
-    <script src="~/Scripts/myapp.js"></script>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @Styles.Render("~/Content/css")
+	<meta name="viewport" content="width=device-width"/>
+	<title>@ViewBag.Title</title>
+	<script>
+		window.BasePath = '@Url.Content("~")';
+	</script>
+	<script src="~/Scripts/MyAppGlobal.js"></script>
+	<script src="~/Scripts/myapp.js"></script>
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@Styles.Render("~/Content/css")
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
 
-    @RenderSection("scripts", false)
+	@RenderSection("scripts", false)
 </head>
 <body>
     <div class="container">
@@ -29,24 +33,24 @@
         </div>
     </div>
     <script>
-        const inputs = document.querySelectorAll('.input');
+	    const inputs = document.querySelectorAll('.input');
 
-        function focusfunc() {
-            let parent = this.parentNode.parentNode;
-            parent.classList.add('focus');
-        }
+	    function focusfunc() {
+		    let parent = this.parentNode.parentNode;
+		    parent.classList.add('focus');
+	    }
 
-        function blurfunc() {
-            let parent = this.parentNode.parentNode;
-            if (this.value == "") {
-                parent.classList.remove('focus');
-            }
-        }
-        inputs.forEach(input => {
-            input.addEventListener('focus', focusfunc);
-            input.addEventListener('blur', blurfunc);
+	    function blurfunc() {
+		    let parent = this.parentNode.parentNode;
+		    if (this.value == "") {
+			    parent.classList.remove('focus');
+		    }
+	    }
+	    inputs.forEach(input => {
+		    input.addEventListener('focus', focusfunc);
+		    input.addEventListener('blur', blurfunc);
 
-        })
+	    })
 
     </script>
 

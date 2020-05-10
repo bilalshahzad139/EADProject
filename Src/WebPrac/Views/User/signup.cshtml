@@ -1,12 +1,13 @@
 ﻿
 @{
-	ViewBag.Title = "signup";
+	ViewBag.Title = "Signup";
 	Layout = "~/Views/Shared/_MyLayout.cshtml";
 
 }
 
 	<div class="main-div">
 		<img src=@Url.Content("~/Images/profile.png") class="avatar">
+		@*<input type="file" name="myProfilePic" id="myProfilePic" /> <br />*@
 		<h2>Welcome</h2>
 		<div class="input-div one">
 			<div class="i">
@@ -45,17 +46,17 @@
 			</div>
 		</div>
 		<input class="btn" value="Sign Up" type="button" id="btnSignUp">
-		<a href="@Url.Content("~/User/Login")">Already have an account?</a><br/><br/>
+		<a href="@Url.Content("~/User/Login")">Already have an account?</a>
 		<div id="divv">
-			<p style="color:red;" id="p"></p>
+			<p style="color:red;" id="p">@ViewBag.ErrMsg</p>
 		</div>
 	</div>
 
 
 @section scripts{
 	<script>
-        $(document).ready(function () {
-            MyApp.Signup();
+		$(document).ready(function () {
+			MyApp.Signup();
 		});
 	</script>
 	}

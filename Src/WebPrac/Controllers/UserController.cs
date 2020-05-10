@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.WebPages;
 using WebPrac.Security;
 
 namespace WebPrac.Controllers
@@ -44,15 +45,46 @@ namespace WebPrac.Controllers
         // I am goin to hit it by AJAX
         [HttpPost]
         [ActionName("Signup")]
-        public JsonResult Signup(UserDTO user)
+        public ActionResult Signup(UserDTO userDto)
         {
             Object result = null;
+            if ( userDto.Login.IsEmpty() || userDto.Name.IsEmpty() || userDto.Password.IsEmpty())
+            {
+	            ViewBag.ErrMsg = "Empty Fields!";
+	            return View("Signup");
+            }
             try
             {
-                Boolean isUserAlreadyExist = UserBO.isUserAlreadyExist(user.Login);
+                Boolean isUserAlreadyExist = UserBO.isUserAlreadyExist(userDto.Login);
                 if (!isUserAlreadyExist)
                 {
-                    var res = UserBO.Save(user);
+                    // Picture handling
+                    //var uniqueName = "";
+
+                    //if (Request.Files["myProfilePic"] != null)
+                    //{
+	                   // var file = Request.Files["ProfilePic"];
+	                   // if (file.FileName != "")
+	                   // {
+		                  //  var ext = System.IO.Path.GetExtension(file.FileName);
+
+		                  //  //Generate a unique name using Guid
+		                  //  uniqueName = Guid.NewGuid().ToString() + ext;
+
+		                  //  //Get physical path of our folder where we want to save images
+		                  //  var rootPath = Server.MapPath("~/UploadedFiles");
+
+		                  //  var fileSavePath = System.IO.Path.Combine(rootPath, uniqueName);
+
+		                  //  // Save the uploaded file to "UploadedFiles" folder
+		                  //  file.SaveAs(fileSavePath);
+
+		                  //  userDto.PictureName = uniqueName;
+	                   // }
+                    //}
+
+
+                    var res = UserBO.Save(userDto);
                     if (res == 1)
                     {
                         result = new
@@ -84,14 +116,6 @@ namespace WebPrac.Controllers
 
 
         }
-
-
-        //[HttpPost]
-        //public ActionResult Save(UserDTO dto)
-        //{
-        //    //User Save Logic
-        //    return View();
-        //}
 
         [HttpGet]
         public ActionResult Logout()
