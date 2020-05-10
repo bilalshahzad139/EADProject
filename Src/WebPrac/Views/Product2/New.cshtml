@@ -38,21 +38,19 @@
             margin:auto;
         }
         #pFilter{
-
+            height:auto;
+            padding:5px 0 5px 0;
+            background-color: darkslategray;
+        }
+        #priceDropDown{
+            width:200px;
+            height:30px; 
+            border-radius:5px;
         }
     </style>
 }
 
-<select id="priceDropDown">
-    <option data-price="0:@Int32.MaxValue" value="all"> All Products </option>
-    <option data-price="0:5000" value="1"> Rs0 - Rs5,000 </option>
-    <option data-price="5001:10000" value="2"> Rs5,001 - Rs10,000 </option>
-    <option data-price="10001:15000" value="3"> Rs10,001 - Rs15,000 </option>
-    <option data-price="15001:20000" value="4"> Rs15,001 - Rs20,000 </option>
-    <option data-price="20001:25000" value="5"> Rs20,001 - Rs25,000 </option>
-    <option data-price="25001:30000" value="6"> Rs25,001 - Rs30,000 </option>
-    <option data-price="30001:@Int32.MaxValue" value="7"> Rs30,000 - Max </option>
-</select>
+
 
 
 <div class="text-center"><h2>Product Management</h2></div>
@@ -79,8 +77,19 @@
 
 <div class="container-fluid">
     <div class="text-center"><h2>Products</h2></div>
-    <div id="pFilter">
-
+    <div id="pFilter" class="rounded-lg ">
+        <span class="text-white ml-3">Price Filter:</span>
+        <select id="priceDropDown">
+            <option data-price="0:@Int32.MaxValue" value="all"> All Products </option>
+            <option data-price="0:5000" value="1"> Rs0 - Rs5,000 </option>
+            <option data-price="5001:10000" value="2"> Rs5,001 - Rs10,000 </option>
+            <option data-price="10001:15000" value="3"> Rs10,001 - Rs15,000 </option>
+            <option data-price="15001:20000" value="4"> Rs15,001 - Rs20,000 </option>
+            <option data-price="20001:25000" value="5"> Rs20,001 - Rs25,000 </option>
+            <option data-price="25001:30000" value="6"> Rs25,001 - Rs30,000 </option>
+            <option data-price="30001:@Int32.MaxValue" value="7"> Rs30,000 - Max </option>
+        </select>
+        <span class="text-warning ml-5">Other filters go there, remove this text when you add new filters</span>
     </div>
     <div class="row justify-content-center" id="productsDiv">
 
