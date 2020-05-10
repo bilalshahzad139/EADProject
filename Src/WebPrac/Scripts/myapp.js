@@ -201,14 +201,19 @@ MyApp = (function () {
 
  
     function SignupHelper() {
+        var fileName="";
+        $('input[type="file"]').change(function (e) {
+            fileName = e.target.files[0].name;
+            
+        });
         $("#btnSignUp").on("click",
-            function() {
+            function () {
+                
                 let name = $("#username").val().trim();
                 let login = $("#login").val().trim();
                 let password = $("#password").val().trim();
                 let cpassword = $("#cpassword").val().trim();
-
-                if (login !== "" && password !== "" && name !== "" && cpassword !== "") {
+                if (login !== "" && password !== "" && name !== "" && cpassword !== "" && fileName!="") {
                     if (password !== cpassword) {
                         $("#cpassword").val("");
                         $("#password").val("");
@@ -223,13 +228,8 @@ MyApp = (function () {
                     data.append("Name", name);
                     data.append("Login", login);
                     data.append("Password", password);
-                    //Picture Handling Code
-                    var files = $("#myProfilePic").get(0).files;
 
-                    if (files.length > 0) {
-                        data.append("myProfilePic", files[0]);
-                    }
-                    data.append("PictureName", "");
+                    data.append("PictureName", fileName);
 
                     var settings = {
                     type: "POST",
