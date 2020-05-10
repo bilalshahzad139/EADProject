@@ -69,8 +69,6 @@ MyApp = (function () {
         $.ajax(settings);
     }
     function LoadProducts(from, to) {
-
-        debugger;
         var action = null;
         if (to == null && from == null) // in case of all products, range will be null.
             action = 'Product2/GetAllProducts';
@@ -82,7 +80,6 @@ MyApp = (function () {
         MyAppGlobal.MakeAjaxCall("GET", action ,{}, function (resp) {
 
             if (resp.data) {
-                debugger;
                 for (var k in resp.data) {
                     var obj = resp.data[k];
                     obj.CreatedOn = moment(obj.CreatedOn).format('DD/MM/YYYY HH:mm:ss');
@@ -100,7 +97,22 @@ MyApp = (function () {
                 var html = template(resp);
                 $("#productsDiv").append(html);
 
+                $(".addToCart").click(function () {
+                    
+                    var mainProdContainer = $(this).closest(".product");
+                    var pid = mainProdContainer.attr("pid");
+                    var obj = {
+                        pid: pid
+                    }
+                    MyAppGlobal.MakeAjaxCall("POST", 'Product2/AddToCart', obj, function (resp) {
 
+                        if (resp>=1) {
+                            alert("added");
+                        }
+                    });
+
+                    return false;
+                });
                 $("#productsDiv .addcomment").click(function () {
 
                     var mainProdContainer = $(this).closest(".product");
@@ -118,7 +130,6 @@ MyApp = (function () {
 
                         if (resp.success) {
                             alert("added");
-                            debugger;
 
                             var obj1 = {
                                 PictureName: resp.PictureName,

@@ -109,7 +109,6 @@ namespace WebPrac.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-
         [HttpPost]
         public JsonResult SaveComment(CommentDTO dto)
         {
@@ -125,6 +124,12 @@ namespace WebPrac.Controllers
                 PictureName = SessionManager.User.PictureName
             };
             return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult AddToCart(int pid)
+        {
+            int uid= SessionManager.User.UserID;
+            var res = PMS.BAL.ProductBO.AddToCart(uid,pid);
+            return Json(res);
         }
     }
 }

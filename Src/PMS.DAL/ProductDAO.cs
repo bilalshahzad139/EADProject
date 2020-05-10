@@ -126,6 +126,35 @@ namespace PMS.DAL
             }
         }
 
+        public static int AddToCart(int pid,int uid)
+        {
+            var searchQuery = String.Format("select Quantity from dbo.Orders where UserID={0} and ProductID={1}", uid, pid);
+            using (DBHelper helper = new DBHelper())
+            {
+                int res;
+                var count =helper.ExecuteScalar(searchQuery);
+                if (count==null)
+                {
+                     res = 0;
+                }
+                else
+                {
+                     res = (int)count;
+                }
+                if (res >0)
+                {
+                    String updateQuery = String.Format("update dbo.Orders set Quantity=Quantity + 1");
+                    var changed = helper.ExecuteQuery(updateQuery);
+                    return changed;
+                }
+                else
+                {
+                    String insertQuery = String.Format("insert into dbo.Orders values({0},{1},{2})", uid, pid,1);
+                    var changed= helper.ExecuteQuery(insertQuery);
+                    return changed;
+                }
+            }
+        }
         private static ProductDTO FillDTO(SqlDataReader reader)
         {
             var dto = new ProductDTO();

@@ -68,6 +68,7 @@
     <Build Include="Tables\Products.sql" />
     <Build Include="Tables\Users.sql" />
     <Build Include="Procedures\dbo_SaveUser.sql" />
+    <Build Include="Tables\Orders.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Users.sql" />

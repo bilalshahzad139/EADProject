@@ -138,6 +138,11 @@
 
         </div>
         <div style="clear:both">
+
+            @if (!(WebPrac.Security.SessionManager.User.IsAdmin))
+            {
+            <button class="btn btn-info addToCart" >Add to Cart</button>
+            }
             @if (WebPrac.Security.SessionManager.User.IsAdmin)
             {
                 <a href="/Product/Edit/{{ProductID}}" class="btn btn-primary">Edit</a>

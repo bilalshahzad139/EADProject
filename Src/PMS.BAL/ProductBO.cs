@@ -31,6 +31,10 @@ namespace PMS.BAL
         {
             return PMS.DAL.ProductDAO.DeleteProduct(pid);
         }
+        public static int AddToCart(int uid,int pid)
+        {
+            return PMS.DAL.ProductDAO.AddToCart(pid, uid);
+        }
 
     }
 }
