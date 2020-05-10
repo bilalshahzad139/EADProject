@@ -315,6 +315,40 @@ MyApp = (function () {
 
 
     return {
+        addCategory: function () {
+            $("#btn_submit_Addcategory").click(function () {
+                var categoryName = $("#categoryName").val();
+                var data = new FormData();
+                data.append("Cat_name", categoryName);
+                var d= { "Cat_name": categoryName };
+              
+                if (categoryName == "") {
+                    alert("empty");
+
+                }
+                else {
+                    
+                    var settings = {
+                        type: "GET",
+                                dataType: "json",
+                        url: window.BasePath +'Product2/AddCategoryinDatabase',
+                                data: d,
+                                success: function (resp) {
+                                    //response.data contains whatever is sent from server
+
+                                    alert("suceess")
+
+                                },
+                                error: function (err, type, httpStatus) {
+                                    alert('error has occured222');
+                                }
+                    }
+
+                    $.ajax(settings);
+                }
+               
+            });
+        },
         Main: function () {
 
             LoadProducts();

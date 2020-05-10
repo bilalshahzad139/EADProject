@@ -10,8 +10,10 @@
     <meta name="viewport" content="width=device-width" />
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <title>_MyPublicLayout</title>
-
-    @RenderSection("scripts",false)
+    <script>
+        window.BasePath = '@Url.Content("~")';
+    </script>
+    @RenderSection("scripts", false)
 </head>
 <body>
     <span style="color:red">@TempData["Message"]</span>

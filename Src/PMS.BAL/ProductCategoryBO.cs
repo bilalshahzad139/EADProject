@@ -13,5 +13,9 @@ namespace PMS.BAL
         {
             return PMS.DAL.ProductCategoryDAO.GetAllCategories();
         }
+        public static int Save(String categoryName)
+        {
+            return PMS.DAL.ProductCategoryDAO.Save(categoryName);
         }
+    }
 }

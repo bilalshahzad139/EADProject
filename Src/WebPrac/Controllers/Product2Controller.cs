@@ -25,6 +25,19 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult AddCategory()
+        {
+            return View();
+        }
+        public JsonResult AddCategoryinDatabase(String Cat_name)
+        {
+            var result = PMS.BAL.ProductCategoryBO.Save(Cat_name);
+            var d = new
+            {
+                valid ="true"
+            };
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult GetProductsByCategory(int id)
         {
             var products = PMS.BAL.ProductBO.GetProductsByCategory(id,true);

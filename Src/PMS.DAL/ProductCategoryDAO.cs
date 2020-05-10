@@ -10,6 +10,20 @@ namespace PMS.DAL
 {
     public static class ProductCategoryDAO
     {
+        public static int Save(String categoryName)
+        {
+            using (DBHelper helper = new DBHelper())
+            {
+                String sqlQuery = "";
+               
+                    sqlQuery = String.Format("INSERT INTO dbo.category(CategoryName) VALUES('{0}'); Select @@IDENTITY",
+                        categoryName);
+
+                    var obj = helper.ExecuteScalar(sqlQuery);
+                    return Convert.ToInt32(obj);
+                
+            }
+        }
         public static List<ProductCategoryDTO> GetAllCategories()
         {
             var query = String.Format("Select * from dbo.category");

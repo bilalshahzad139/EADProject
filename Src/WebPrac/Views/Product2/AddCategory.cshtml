@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewBag.Title = "Addcategory";
+    Layout = "~/Views/Shared/_MyPublicLayout.cshtml";
+}
+
+<h2>Add_Category</h2>
+<input type="text" id="categoryName" />
+<input type="submit" id="btn_submit_Addcategory" />
+@section scripts
+{
+    <script src="~/Scripts/handlebars.js"></script>
+    <script src="~/Scripts/myapp.js"></script>
+    <script>
+        $(function () {
+            MyApp.addCategory();
+        });
+    </script>
+}
+
