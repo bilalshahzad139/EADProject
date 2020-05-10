@@ -24,7 +24,7 @@ MyApp = (function () {
         data.append("Price", price);
         data.append("PictureName", oldPicName);
 
-
+        
         var files = $("#myfile").get(0).files;
         if (files.length > 0) {
             data.append("Image", files[0]);
@@ -223,7 +223,14 @@ MyApp = (function () {
                     data.append("Name", name);
                     data.append("Login", login);
                     data.append("Password", password);
+                    //Picture Handling Code
+                    var files = $("#myProfilePic").get(0).files;
+
+                    if (files.length > 0) {
+                        data.append("myProfilePic", files[0]);
+                    }
                     data.append("PictureName", "");
+
                     var settings = {
                     type: "POST",
                     url: window.BasePath + "User/Signup",

@@ -58,30 +58,30 @@ namespace WebPrac.Controllers
                 Boolean isUserAlreadyExist = UserBO.isUserAlreadyExist(userDto.Login);
                 if (!isUserAlreadyExist)
                 {
-                    // Picture handling
-                    //var uniqueName = "";
+                    //Picture handling
+                    var uniqueName = "";
 
-                    //if (Request.Files["myProfilePic"] != null)
-                    //{
-	                   // var file = Request.Files["ProfilePic"];
-	                   // if (file.FileName != "")
-	                   // {
-		                  //  var ext = System.IO.Path.GetExtension(file.FileName);
+                    if (Request.Files["myProfilePic"] != null)
+                    {
+                        var file = Request.Files["myProfilePic"];
+                        if (file.FileName != "")
+                        {
+                            var ext = System.IO.Path.GetExtension(file.FileName);
 
-		                  //  //Generate a unique name using Guid
-		                  //  uniqueName = Guid.NewGuid().ToString() + ext;
+                            //Generate a unique name using Guid
+                            uniqueName = Guid.NewGuid().ToString() + ext;
 
-		                  //  //Get physical path of our folder where we want to save images
-		                  //  var rootPath = Server.MapPath("~/UploadedFiles");
+                            //Get physical path of our folder where we want to save images
+                            var rootPath = Server.MapPath("~/UploadedFiles");
 
-		                  //  var fileSavePath = System.IO.Path.Combine(rootPath, uniqueName);
+                            var fileSavePath = System.IO.Path.Combine(rootPath, uniqueName);
 
-		                  //  // Save the uploaded file to "UploadedFiles" folder
-		                  //  file.SaveAs(fileSavePath);
+                            // Save the uploaded file to "UploadedFiles" folder
+                            file.SaveAs(fileSavePath);
 
-		                  //  userDto.PictureName = uniqueName;
-	                   // }
-                    //}
+                            userDto.PictureName = uniqueName;
+                        }
+                    }
 
 
                     var res = UserBO.Save(userDto);
