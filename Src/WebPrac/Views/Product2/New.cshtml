@@ -7,13 +7,15 @@
 
     <script src="~/Scripts/handlebars.js"></script>
     <script src="~/Scripts/myapp.js"></script>
-
+    
     <script>
 
         $(function () {
+           
             MyApp.Main();
         });
-
+       
+        
 
     </script>
 }
@@ -28,8 +30,15 @@
     <option data-price="25001:30000" value="6"> Rs25,001 - Rs30,000 </option>
     <option data-price="30001:@Int32.MaxValue" value="7"> Rs30,000 - Max </option>
 </select>
-
-
+<br />
+<div>
+    <select name="main" id="maindropdown">
+        <option value="0">ALL
+            
+        </option>
+        
+    </select>
+</div>
 <h2>Product Management</h2>
 
 <div>
@@ -91,6 +100,14 @@
         </tr>
         {{/each}}
     </script>*@
+
+    <script id="dropdowntemplate" type="text/x-handlebars-template">
+
+        {{#each data}}
+        <option value='{{CategoryID}}' >{{CategoryName}}</option>
+        {{/each}}
+
+</script>
 
 <script id="listtemplate" type="text/x-handlebars-template">
     {{#each data}}

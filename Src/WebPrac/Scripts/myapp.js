@@ -68,9 +68,115 @@ MyApp = (function () {
 
         $.ajax(settings);
     }
+    function loadProductCategories() {
+        
+        var action = "Product2/GetAllCategories"
+        MyAppGlobal.MakeAjaxCall("GET", action, {}, function (resp) {
+
+            var source = $("#dropdowntemplate").html();
+            var template = Handlebars.compile(source);
+
+            var html = template(resp);
+            $("#maindropdown").append(html);
+        });
+    }
+    //function ProductCategoriesAJAXcall(id) {
+    //    var data = { "id": id };
+
+    //    //object pass to $.ajax function to make an AJAX call.
+
+    //    var settings = {
+    //        type: "GET",
+    //        dataType: "json",
+    //        url: window.BasePath + "Product2/GetAllCategories",
+    //        data: data,
+    //        success: function (resp) {
+    //            //response.data contains whatever is sent from server
+
+               
+
+    //        },
+    //        error: function (err, type, httpStatus) {
+    //            alert('error has occured222');
+    //        }
+    //    };
+
+    //    $.ajax(settings);
+
+    //}
+    function LoadProductsByCategory(categoryid) {
+        var action = "Product2/GetProductsByCategory";
+        $('#tblBody').empty();
+        MyAppGlobal.MakeAjaxCall("GET", action, {"id":categoryid}, function (resp) {
+
+            if (resp.data) {
+
+                for (var k in resp.data) {
+                    var obj = resp.data[k];
+                    obj.CreatedOn = moment(obj.CreatedOn).format('DD/MM/YYYY HH:mm:ss');
+
+                    for (var k2 in obj.Comments) {
+                        var comm = obj.Comments[k2];
+                        comm.CommentOn = moment(comm.CommentOn).format('DD/MM/YYYY HH:mm:ss');
+                    }
+                }
+
+
+                var source = $("#listtemplate").html();
+                var template = Handlebars.compile(source);
+
+                var html = template(resp);
+                $("#tblBody").append(html);
+
+
+                $("#tblBody .addcomment").click(function () {
+
+                    var mainProdContainer = $(this).closest(".prodbox");
+                    var pid = mainProdContainer.attr("pid");
+
+                    var comment = $(this).closest(".commentarea").find(".txtComment").val();
+
+                    var obj = {
+                        ProductID: pid,
+                        CommentText: comment
+                    }
+
+
+                    MyAppGlobal.MakeAjaxCall("POST", 'Product2/SaveComment', obj, function (resp) {
+
+                        if (resp.success) {
+                            alert("added");
+
+
+                            var obj1 = {
+                                PictureName: resp.PictureName,
+                                UserName: resp.UserName,
+                                CommentText: obj.CommentText,
+                                CommentOn: moment(resp.CommentOn).format('DD/MM/YYYY HH:mm:ss')
+                            };
+
+                            var source = $("#commenttemplate").html();
+                            var template = Handlebars.compile(source);
+
+                            var html = template(obj1);
+                            mainProdContainer.find(".comments").append(html);
+
+                        }
+
+                    });
+
+                    return false;
+                });
+
+                BindEvents();
+
+            }
+                });
+
+    }
     function LoadProducts(from, to) {
 
-        debugger;
+        loadProductCategories(0);
         var action = null;
         if (to == null && from == null) // in case of all products, range will be null.
             action = 'Product2/GetAllProducts';
@@ -82,7 +188,7 @@ MyApp = (function () {
         MyAppGlobal.MakeAjaxCall("GET", action ,{}, function (resp) {
 
             if (resp.data) {
-                debugger;
+               
                 for (var k in resp.data) {
                     var obj = resp.data[k];
                     obj.CreatedOn = moment(obj.CreatedOn).format('DD/MM/YYYY HH:mm:ss');
@@ -118,7 +224,7 @@ MyApp = (function () {
 
                         if (resp.success) {
                             alert("added");
-                            debugger;
+                           
 
                             var obj1 = {
                                 PictureName: resp.PictureName,
@@ -244,6 +350,16 @@ MyApp = (function () {
                 var u = parseFloat(a[1]);
                 // get lower and upper range and load products accordingly.
                 LoadProducts(l, u);
+            });
+            $("#maindropdown").change(function () {
+                var categoryid = $(this).val();
+                if (categoryid == 0) {
+                    LoadProducts(null, null);
+                }
+                else {
+                    LoadProductsByCategory(categoryid);
+                }
+
             });
         }
     };

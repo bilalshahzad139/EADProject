@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="CommentsDAO.cs" />
     <Compile Include="DBHelper.cs" />
+    <Compile Include="ProductCategoryDAO.cs" />
     <Compile Include="ProductDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserDAO.cs" />

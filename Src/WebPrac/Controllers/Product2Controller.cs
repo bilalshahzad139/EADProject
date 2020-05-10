@@ -25,7 +25,26 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetProductsByCategory(int id)
+        {
+            var products = PMS.BAL.ProductBO.GetProductsByCategory(id,true);
 
+            var d = new
+            {
+                data = products
+            };
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetAllCategories()
+        {
+            var productCategories = PMS.BAL.ProductCategoryBO.GetAllCategories();
+
+            var d = new
+            {
+                data = productCategories
+            };
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
         [HttpGet]
         public JsonResult GetPriceRangedProducts(int from, int to)
         {

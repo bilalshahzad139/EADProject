@@ -31,6 +31,10 @@ namespace PMS.BAL
         {
             return PMS.DAL.ProductDAO.DeleteProduct(pid);
         }
+        public static List<ProductDTO> GetProductsByCategory(int categoryId, Boolean pLoadComments = false)
+        {
+            return PMS.DAL.ProductDAO.GetProductsByCategory(categoryId, pLoadComments);
+        }
 
-    }
+        }
 }
