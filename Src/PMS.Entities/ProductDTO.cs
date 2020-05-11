@@ -19,6 +19,7 @@ namespace PMS.Entities
         public int ModifiedBy { get; set; }
         public Boolean IsActive { get; set; }
 
+        public int CategoryID { get; set; }
         public List<CommentDTO> Comments
         {
             get;
