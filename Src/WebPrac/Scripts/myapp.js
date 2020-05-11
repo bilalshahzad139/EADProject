@@ -76,7 +76,7 @@ MyApp = (function () {
             action = 'Product2/GetAllProducts';
         else {
             action = 'Product2/GetPriceRangedProducts?from=' + from + "&to=" + to;
-            $('#tblBody').empty();  // remove previous products before refreshing product list.
+            $('#productsDiv').empty();  // remove previous products before refreshing product list.
         }
            
         MyAppGlobal.MakeAjaxCall("GET", action ,{}, function (resp) {
@@ -244,6 +244,10 @@ MyApp = (function () {
                 var u = parseFloat(a[1]);
                 // get lower and upper range and load products accordingly.
                 LoadProducts(l, u);
+            });
+
+            $("#newProdBtn").click(function () {
+                $("#addNewProd").slideToggle(700);
             });
         }
     };
