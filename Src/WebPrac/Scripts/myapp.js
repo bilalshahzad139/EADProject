@@ -201,7 +201,7 @@ MyApp = (function () {
 
  
     function SignupHelper() {
-        var fileName = "";
+        var fileName="";
 
         $("#btnSignUp").on("click",
             function () {
@@ -216,7 +216,7 @@ MyApp = (function () {
                 let login = $("#login").val().trim();
                 let password = $("#password").val().trim();
                 let cpassword = $("#cpassword").val().trim();
-                if (login !== "" && password !== "" && name !== "" && cpassword !== "" && fileName !== "") {
+                if (login !== "" && password !== "" && name !== "" && cpassword !== "") {
                     if (password !== cpassword) {
                         $("#cpassword").val("");
                         $("#password").val("");
@@ -227,7 +227,15 @@ MyApp = (function () {
                             2000);
                         return false;
                     }
-                    
+
+                    if (fileName === "") {
+                        $("#p").text("Click on avatar to upload picture!");
+                        setTimeout(() => {
+                            const elem = $("#p").text("");
+                        },
+                            2000);
+                        return false;
+                    }
                     data.append("Name", name);
                     data.append("Login", login);
                     data.append("Password", password);
@@ -262,12 +270,8 @@ MyApp = (function () {
                     $.ajax(settings);
                 }
                 else {
-                    if (fileName === "" && login !== "" && password !== "" && name !== "" && cpassword !== "") {
-                        $("#p").text("Please upload Profile Picture By clicking on Avatar");
-                    } else {
-                        $("#p").text("Empty Fields!");
-                    }
-
+                   
+                    $("#p").text("Empty Fields!");
                     setTimeout(() => {
                         const elem = $("#p").text("");
                     }, 2000);

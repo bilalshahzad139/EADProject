@@ -2,6 +2,7 @@
 using PMS.Entities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -66,13 +67,14 @@ namespace WebPrac.Controllers
 						var file = Request.Files["myProfilePic"];
 						if (file.FileName != "")
 						{
+							Directory.CreateDirectory(Server.MapPath("~/ProfilePictures"));
 							var ext = System.IO.Path.GetExtension(file.FileName);
 
 							//Generate a unique name using Guid
 							uniqueName = Guid.NewGuid().ToString() + ext;
 
 							//Get physical path of our folder where we want to save images
-							var rootPath = Server.MapPath("~/UploadedFiles/ProfilePics");
+							var rootPath = Server.MapPath("~/ProfilePictures");
 
 							var fileSavePath = System.IO.Path.Combine(rootPath, uniqueName);
 
@@ -120,6 +122,7 @@ namespace WebPrac.Controllers
 			SessionManager.ClearSession();
 			return RedirectToAction("Login");
 		}
+
 
 
 		//[HttpGet]

@@ -33,9 +33,9 @@ body {
 
 
 .avatar {
-    height:120px;
-    width:120px;
-    border-radius:60px;
+    height:140px;
+    width:140px;
+    border-radius:80px;
 }
 
 .login-container {
