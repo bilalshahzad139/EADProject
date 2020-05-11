@@ -24,8 +24,8 @@ namespace PMS.DAL
                 }
                 else
                 {
-                    sqlQuery = String.Format("INSERT INTO dbo.Products(Name, Price, PictureName, CreatedOn, CreatedBy,IsActive) VALUES('{0}','{1}','{2}','{3}','{4}',{5}); Select @@IDENTITY",
-                        dto.Name, dto.Price, dto.PictureName, dto.CreatedOn, dto.CreatedBy, 1);
+                    sqlQuery = String.Format("INSERT INTO dbo.Products(Name, Price, PictureName, CreatedOn, CreatedBy,IsActive,dto.CategoryID) VALUES('{0}','{1}','{2}','{3}','{4}',{5},'{6}'); Select @@IDENTITY",
+                        dto.Name, dto.Price, dto.PictureName, dto.CreatedOn, dto.CreatedBy, 1,dto.CategoryID);
 
                     var obj = helper.ExecuteScalar(sqlQuery);
                     return Convert.ToInt32(obj);
