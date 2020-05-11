@@ -22,6 +22,11 @@ namespace PMS.BAL
             return PMS.DAL.ProductDAO.GetAllProducts(pLoadComments);
         }
 
+        public static List<ProductDTO> GetPriceRangedProducts(int from, int to, Boolean pLoadComments = false)
+        {
+            return PMS.DAL.ProductDAO.GetPriceRangedProducts(from, to, pLoadComments);
+        }
+
         public static int DeleteProduct(int pid)
         {
             return PMS.DAL.ProductDAO.DeleteProduct(pid);

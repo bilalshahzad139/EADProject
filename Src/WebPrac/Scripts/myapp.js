@@ -49,10 +49,10 @@ MyApp = (function () {
                 var html = template(obj);
 
                 if (id > 0) {
-                    $("#tblBody tr[pid=" + id + "]").replaceWith(html);
+                    $("#productsDiv tr[pid=" + id + "]").replaceWith(html);
                 }
                 else {
-                    $("#tblBody").prepend(html);
+                    $("#productsDiv").prepend(html);
                 }
 
                 BindEvents();
@@ -68,10 +68,18 @@ MyApp = (function () {
 
         $.ajax(settings);
     }
-    function LoadProducts() {
+    function LoadProducts(from, to) {
 
-
-        MyAppGlobal.MakeAjaxCall("GET", 'Product2/GetAllProducts',{}, function (resp) {
+        debugger;
+        var action = null;
+        if (to == null && from == null) // in case of all products, range will be null.
+            action = 'Product2/GetAllProducts';
+        else {
+            action = 'Product2/GetPriceRangedProducts?from=' + from + "&to=" + to;
+            $('#productsDiv').empty();  // remove previous products before refreshing product list.
+        }
+           
+        MyAppGlobal.MakeAjaxCall("GET", action ,{}, function (resp) {
 
             if (resp.data) {
                 debugger;
@@ -90,12 +98,12 @@ MyApp = (function () {
                 var template = Handlebars.compile(source);
 
                 var html = template(resp);
-                $("#tblBody").append(html);
+                $("#productsDiv").append(html);
 
 
-                $("#tblBody .addcomment").click(function () {
+                $("#productsDiv .addcomment").click(function () {
 
-                    var mainProdContainer = $(this).closest(".prodbox");
+                    var mainProdContainer = $(this).closest(".product");
                     var pid = mainProdContainer.attr("pid");
 
                     var comment = $(this).closest(".commentarea").find(".txtComment").val();
@@ -132,14 +140,14 @@ MyApp = (function () {
                     return false;
                 });
 
-
-
                 BindEvents();
 
             }
         });
                        
     }
+
+
     function BindEvents() {
 
         $(".editprod").unbind("click").bind("click", function () {
@@ -312,6 +320,19 @@ MyApp = (function () {
                 $("#emailpopup").hide();
                 $("#overlay").hide();
                 return false;
+            });
+
+            $("#priceDropDown").change(function () {
+                var t = $(this).find(':selected').data('price');
+                var a = t.split(':');
+                var l = parseFloat(a[0]);
+                var u = parseFloat(a[1]);
+                // get lower and upper range and load products accordingly.
+                LoadProducts(l, u);
+            });
+
+            $("#newProdBtn").click(function () {
+                $("#addNewProd").slideToggle(700);
             });
         }
     };
