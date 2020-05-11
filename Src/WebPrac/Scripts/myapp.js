@@ -201,73 +201,80 @@ MyApp = (function () {
 
  
     function SignupHelper() {
-        var fileName="";
-        $('input[type="file"]').change(function (e) {
-            fileName = e.target.files[0].name;
-            
-        });
+        var fileName = "";
+
         $("#btnSignUp").on("click",
             function () {
-                
+                var data = new FormData();
+                // getting picture name
+                var files = $("#uploadImage").get(0).files;
+                if (files.length > 0) {
+                    data.append("myProfilePic", files[0]);
+                    fileName = files[0].name;
+                }
                 let name = $("#username").val().trim();
                 let login = $("#login").val().trim();
                 let password = $("#password").val().trim();
                 let cpassword = $("#cpassword").val().trim();
-                if (login !== "" && password !== "" && name !== "" && cpassword !== "" && fileName!="") {
+                if (login !== "" && password !== "" && name !== "" && cpassword !== "" && fileName !== "") {
                     if (password !== cpassword) {
                         $("#cpassword").val("");
                         $("#password").val("");
                         $("#p").text("Password not matched!");
                         setTimeout(() => {
-                                const elem = $("#p").text("");
-                            },
+                            const elem = $("#p").text("");
+                        },
                             2000);
                         return false;
                     }
-                    var data = new FormData();
+                    
                     data.append("Name", name);
                     data.append("Login", login);
                     data.append("Password", password);
-
                     data.append("PictureName", fileName);
 
                     var settings = {
-                    type: "POST",
-                    url: window.BasePath + "User/Signup",
-                    contentType: false,
-                    processData: false,
-                    data: data,
-                    success: function (response) {
+                        type: "POST",
+                        url: window.BasePath + "User/Signup",
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        success: function (response) {
 
-                        if (response.isUserExist) {
-                            $("#password").val("");
-                            $("#cpassword").val("");
-                            $("#p").text("User already exists!");
-                            setTimeout(() => {
-                                const elem = $("#p").text("");
-                            }, 2000);
-                            return false;
+                            if (response.isUserExist) {
+                                $("#password").val("");
+                                $("#cpassword").val("");
+                                $("#p").text("User already exists!");
+                                setTimeout(() => {
+                                    const elem = $("#p").text("");
+                                }, 2000);
+                                return false;
+                            }
+                            else {
+                                window.location.href = window.BasePath + "User/Login";
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error);
                         }
-                        else {
-                            window.location.href = window.BasePath + "User/Login";
-                        }
-                    },
-                    error: function (error) {
-                        console.log(error);
+                    };
+
+                    $.ajax(settings);
+                }
+                else {
+                    if (fileName === "" && login !== "" && password !== "" && name !== "" && cpassword !== "") {
+                        $("#p").text("Please upload Profile Picture By clicking on Avatar");
+                    } else {
+                        $("#p").text("Empty Fields!");
                     }
-                };
 
-                $.ajax(settings);
-            }
-            else {
-                $("#p").text("Empty Fields!");
-                setTimeout(() => {
-                    const elem = $("#p").text("");
-                }, 2000);
-                return false;
-            }
+                    setTimeout(() => {
+                        const elem = $("#p").text("");
+                    }, 2000);
+                    return false;
+                }
 
-        });
+            });
     }
 
     return {

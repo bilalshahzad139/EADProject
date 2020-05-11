@@ -114,7 +114,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
-    <Folder Include="UploadedFiles\" />
+    <Folder Include="UploadedFiles\ProfilePics\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
