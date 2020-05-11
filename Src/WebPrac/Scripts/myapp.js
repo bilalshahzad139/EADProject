@@ -8,6 +8,7 @@ MyApp = (function () {
         $("#txtPictureName").val("");
         $("#txtName").val("");
         $("#txtPrice").val("");
+        $("#selProdCategory").val(0);
         $("#prodimg").hide();
     }
     function SaveProduct() {
@@ -18,11 +19,18 @@ MyApp = (function () {
         var name = $("#txtName").val();
         var price = $("#txtPrice").val();
         var oldPicName = $("#txtPictureName").val();
-
+        var category = $("#selProdCategory").val();
+        alert(category);
+        if (category == 0)
+        {
+            alert("No category is selected");
+            return;
+        }
         data.append("ProductID", id);
         data.append("Name", name);
         data.append("Price", price);
         data.append("PictureName", oldPicName);
+        data.append("CategoryID", category);
 
 
         var files = $("#myfile").get(0).files;
@@ -38,10 +46,10 @@ MyApp = (function () {
             data: data,
             success: function (r) {
                 console.log(r);
-
+                r.CreatedOn = moment(r.CreatedOn).format('DD/MM/YYYY HH:mm:ss');
                 var obj = {};
                 obj.data = [];
-                obj.data.push({ ProductID: r.ProductID, Name: name, Price: price, PictureName: r.PictureName });
+                obj.data.push({ ProductID: r.ProductID, Name: name, Price: price, PictureName: r.PictureName, CreatedOn: r.CreatedOn, CreatedBy: r.CreatedBy });
 
                 var source = $("#listtemplate").html();
                 var template = Handlebars.compile(source);
@@ -78,6 +86,10 @@ MyApp = (function () {
 
             var html = template(resp);
             $("#maindropdown").append(html);
+            source = $("#dropdowntemplate").html();
+            template = Handlebars.compile(source);
+            html = template(resp);
+            $("#selProdCategory").append(html);
         });
     }
     //function ProductCategoriesAJAXcall(id) {

@@ -136,7 +136,9 @@ namespace WebPrac.Controllers
             {
                 success = true,
                 ProductID = pid,
-                PictureName = dto.PictureName
+                PictureName = dto.PictureName,
+                CreatedOn=dto.CreatedOn,
+                CreatedBy=dto.CreatedBy
             };
             return Json(data, JsonRequestBehavior.AllowGet);
         }

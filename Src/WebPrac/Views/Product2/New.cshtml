@@ -50,8 +50,11 @@
     <input type="hidden" name="PictureName" id="txtPictureName" />
     Name<input type="text" name="Name" id="txtName" /> <br />
     Price: <input type="text" name="Price" id="txtPrice" /> <br />
+    Category:
+    <select name="main" id="selProdCategory">
+        <option value="0">Select Category</option>
+    </select> <br />
     Image: <input type="file" name="Image" id="myfile" /> <br />
-
     <input type="submit" value="Save" id="btnSave" />
     <input type="button" id="btnClear" value="Clear" />
 </div>
@@ -107,7 +110,7 @@
         <option value='{{CategoryID}}' >{{CategoryName}}</option>
         {{/each}}
 
-</script>
+    </script>
 
 <script id="listtemplate" type="text/x-handlebars-template">
     {{#each data}}
