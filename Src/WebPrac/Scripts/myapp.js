@@ -176,7 +176,7 @@ MyApp = (function () {
     }
     function LoadProducts(from, to) {
 
-        loadProductCategories(0);
+        
         var action = null;
         if (to == null && from == null) // in case of all products, range will be null.
             action = 'Product2/GetAllProducts';
@@ -352,6 +352,7 @@ MyApp = (function () {
         Main: function () {
 
             LoadProducts();
+            loadProductCategories();
 
             $("#btnSave").click(function () {
 
