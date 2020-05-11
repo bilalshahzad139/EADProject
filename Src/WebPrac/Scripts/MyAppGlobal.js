@@ -19,7 +19,7 @@ MyAppGlobal = (function () {
                             successFun(resp)
                         }
                     } catch (e) {
-
+                        console.log(e);
                     }
                 },
                 error: function (e) {
