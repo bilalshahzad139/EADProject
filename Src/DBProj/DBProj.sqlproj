@@ -68,8 +68,12 @@
     <Build Include="Tables\Products.sql" />
     <Build Include="Tables\Users.sql" />
     <Build Include="Procedures\dbo_SaveUser.sql" />
+<<<<<<< HEAD
     <Build Include="Tables\ProductPictureNames.sql" />
     <Build Include="Procedures\dbo_InsertProductPictureName.sql" />
+=======
+    <Build Include="Tables\ProductCategory.sql" />
+>>>>>>> 5d970a5207f5fcf4b4c7792832ff6d9af63c0c24
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Users.sql" />

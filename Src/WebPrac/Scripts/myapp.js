@@ -24,7 +24,7 @@ MyApp = (function () {
         data.append("Price", price);
         data.append("PictureName", oldPicName);
 
-
+        
         var files = $("#myfile").get(0).files;
         if (files.length > 0) {
             data.append("Image", files[0]);
@@ -49,10 +49,10 @@ MyApp = (function () {
                 var html = template(obj);
 
                 if (id > 0) {
-                    $("#tblBody tr[pid=" + id + "]").replaceWith(html);
+                    $("#productsDiv tr[pid=" + id + "]").replaceWith(html);
                 }
                 else {
-                    $("#tblBody").prepend(html);
+                    $("#productsDiv").prepend(html);
                 }
 
                 BindEvents();
@@ -76,7 +76,7 @@ MyApp = (function () {
             action = 'Product2/GetAllProducts';
         else {
             action = 'Product2/GetPriceRangedProducts?from=' + from + "&to=" + to;
-            $('#tblBody').empty();  // remove previous products before refreshing product list.
+            $('#productsDiv').empty();  // remove previous products before refreshing product list.
         }
            
         MyAppGlobal.MakeAjaxCall("GET", action ,{}, function (resp) {
@@ -98,12 +98,12 @@ MyApp = (function () {
                 var template = Handlebars.compile(source);
 
                 var html = template(resp);
-                $("#tblBody").append(html);
+                $("#productsDiv").append(html);
 
 
-                $("#tblBody .addcomment").click(function () {
+                $("#productsDiv .addcomment").click(function () {
 
-                    var mainProdContainer = $(this).closest(".prodbox");
+                    var mainProdContainer = $(this).closest(".product");
                     var pid = mainProdContainer.attr("pid");
 
                     var comment = $(this).closest(".commentarea").find(".txtComment").val();
@@ -207,8 +207,93 @@ MyApp = (function () {
         });
     }
 
+ 
+    function SignupHelper() {
+        var fileName="";
+
+        $("#btnSignUp").on("click",
+            function () {
+                var data = new FormData();
+                // getting picture name
+                var files = $("#uploadImage").get(0).files;
+                if (files.length > 0) {
+                    data.append("myProfilePic", files[0]);
+                    fileName = files[0].name;
+                }
+                let name = $("#username").val().trim();
+                let login = $("#login").val().trim();
+                let password = $("#password").val().trim();
+                let cpassword = $("#cpassword").val().trim();
+                if (login !== "" && password !== "" && name !== "" && cpassword !== "") {
+                    if (password !== cpassword) {
+                        $("#cpassword").val("");
+                        $("#password").val("");
+                        $("#p").text("Password not matched!");
+                        setTimeout(() => {
+                            const elem = $("#p").text("");
+                        },
+                            2000);
+                        return false;
+                    }
+
+                    if (fileName === "") {
+                        $("#p").text("Click on avatar to upload picture!");
+                        setTimeout(() => {
+                            const elem = $("#p").text("");
+                        },
+                            2000);
+                        return false;
+                    }
+                    data.append("Name", name);
+                    data.append("Login", login);
+                    data.append("Password", password);
+                    data.append("PictureName", fileName);
+
+                    var settings = {
+                        type: "POST",
+                        url: window.BasePath + "User/Signup",
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        success: function (response) {
+
+                            if (response.isUserExist) {
+                                $("#password").val("");
+                                $("#cpassword").val("");
+                                $("#p").text("User already exists!");
+                                setTimeout(() => {
+                                    const elem = $("#p").text("");
+                                }, 2000);
+                                return false;
+                            }
+                            else {
+                                window.location.href = window.BasePath + "User/Login";
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    };
+
+                    $.ajax(settings);
+                }
+                else {
+                   
+                    $("#p").text("Empty Fields!");
+                    setTimeout(() => {
+                        const elem = $("#p").text("");
+                    }, 2000);
+                    return false;
+                }
+
+            });
+    }
 
     return {
+
+        Signup: function () {
+            SignupHelper();
+        },
         Main: function () {
 
             LoadProducts();
@@ -244,6 +329,10 @@ MyApp = (function () {
                 var u = parseFloat(a[1]);
                 // get lower and upper range and load products accordingly.
                 LoadProducts(l, u);
+            });
+
+            $("#newProdBtn").click(function () {
+                $("#addNewProd").slideToggle(700);
             });
         }
     };
