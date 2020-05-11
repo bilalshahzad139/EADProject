@@ -21,6 +21,19 @@ namespace PMS.DAL
             }
         }
 
+        public static Boolean isUserAlreadyExist(String pLogin)
+        {
+            string mySQLQuery = String.Format(@"SELECT count(*) FROM dbo.Users WHERE login = '{0}'", pLogin);
+            using (DBHelper dbh = new DBHelper())
+            {
+                int result = Convert.ToInt32(dbh.ExecuteScalar(mySQLQuery));
+                if (result != 0)
+                    return true;
+                return false;
+            }
+
+        }
+
         public static int UpdatePassword(UserDTO dto)
         {
             var sqlQuery = "";

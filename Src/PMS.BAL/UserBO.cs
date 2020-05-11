@@ -1,4 +1,5 @@
-﻿using PMS.Entities;
+﻿using PMS.DAL;
+using PMS.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,10 @@ namespace PMS.BAL
         public static int Save(UserDTO dto)
         {
             return DAL.UserDAO.Save(dto);
+        }
+        public static Boolean isUserAlreadyExist(String pLogin)
+        {
+            return UserDAO.isUserAlreadyExist(pLogin);
         }
 
         public static int UpdatePassword(UserDTO dto)
