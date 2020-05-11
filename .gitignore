@@ -9,10 +9,9 @@
 /Src/PMS.DAL/obj
 /Src/PMS.BAL/obj
 /Src/packages
-/Src/.vs
 /Src/DBProj/DBProj.sqlproj.user
 /Src/DBProj/bin
 /Src/DBProj/obj
 /Src/DBProj/DBProj.jfm
 /Src/DBProj/DBProj.dbmdl
-
+/Src/.vs
