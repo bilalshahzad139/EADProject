@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using PMS.BAL;
 using WebPrac.Security;
 
 namespace WebPrac.Controllers
@@ -14,7 +13,7 @@ namespace WebPrac.Controllers
         
         public ActionResult New()
         {
-            return View($"New");
+            return View();
         }
 
         public JsonResult GetAllProducts()
@@ -63,6 +62,8 @@ namespace WebPrac.Controllers
         [HttpPost]
         public JsonResult Save(ProductDTO dto)
         {
+            var uniqueName = "";
+
             if (Request.Files["Image"] != null)
             {
                 var file = Request.Files["Image"];
@@ -71,7 +72,7 @@ namespace WebPrac.Controllers
                     var ext = System.IO.Path.GetExtension(file.FileName);
 
                     //Generate a unique name using Guid
-                    var uniqueName = Guid.NewGuid().ToString() + ext;
+                    uniqueName = Guid.NewGuid().ToString() + ext;
 
                     //Get physical path of our folder where we want to save images
                     var rootPath = Server.MapPath("~/UploadedFiles");
@@ -112,41 +113,18 @@ namespace WebPrac.Controllers
         [HttpPost]
         public JsonResult SaveComment(CommentDTO dto)
         {
-            if (!string.IsNullOrEmpty(dto.CommentText))
-            {
-                dto.CommentOn = DateTime.Now;
-                dto.UserID = SessionManager.User.UserID;
+            dto.CommentOn = DateTime.Now;
+            dto.UserID = SessionManager.User.UserID;
 
-                PMS.BAL.CommentBO.Save(dto);
-                var data = new
-                {
-                    success = true,
-                    UserName = SessionManager.User.Name,
-                    CommentOn = dto.CommentOn,
-                    PictureName = SessionManager.User.PictureName
-                };
-                return Json(data, JsonRequestBehavior.AllowGet);
-            }
-            var data1 = new
+            PMS.BAL.CommentBO.Save(dto);
+            var data = new
             {
-                success = false,
+                success = true,
+                UserName = SessionManager.User.Name,
+                CommentOn = dto.CommentOn,
+                PictureName = SessionManager.User.PictureName
             };
-            return Json(data1, JsonRequestBehavior.AllowGet);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-
-        #region Under Development
-
-        public ActionResult Edit(int id)
-        {
-
-            var prod = ProductBO.GetProductById(id);
-            var redVal= View($"New", prod);
-
-            return redVal;
-            
-        }
-
-        #endregion
     }
 }

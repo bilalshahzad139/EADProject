@@ -28,11 +28,11 @@ namespace DBPractice
             //var prod = PMS.BAL.ProductBO.GetProductById(1);
 
 
-            //var user = PMS.BAL.UserBO.ValidateUser("admin", "admin");
+            var user = PMS.BAL.UserBO.ValidateUser("admin", "admin");
 
-            //var user2 = PMS.BAL.UserBO.ValidateUser("admin", "admin12");
+            var user2 = PMS.BAL.UserBO.ValidateUser("admin", "admin12");
 
-            //System.Console.ReadKey();
+            System.Console.ReadKey();
 
 
         }

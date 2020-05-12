@@ -9,29 +9,30 @@ namespace PMS.DAL
 {
     internal class DBHelper : IDisposable
     {
-        private readonly string _connStr = System.Configuration.ConfigurationManager.ConnectionStrings["MyConnString"].ConnectionString;
-        private readonly SqlConnection _conn = null;
+       String _connStr = @"Data Source=.\SQLEXPRESS2019;Initial Catalog=EADProj;User ID=sa;Password=pucit123";
+        // String _connStr = System.Configuration.ConfigurationManager.ConnectionStrings["MyConnString"].ConnectionString;
+        SqlConnection _conn = null;
         public DBHelper()
         {
             _conn = new SqlConnection(_connStr);
             _conn.Open();
         }
 
-        public int ExecuteQuery(string sqlQuery)
+        public int ExecuteQuery(String sqlQuery)
         {
-            var command = new SqlCommand(sqlQuery, _conn);
+            SqlCommand command = new SqlCommand(sqlQuery, _conn);
             var count = command.ExecuteNonQuery();
             return count;
         }
-        public object ExecuteScalar(string sqlQuery)
+        public Object ExecuteScalar(String sqlQuery)
         {
-            var command = new SqlCommand(sqlQuery, _conn);
+            SqlCommand command = new SqlCommand(sqlQuery, _conn);
             return command.ExecuteScalar();
         }
 
-        public SqlDataReader ExecuteReader(string sqlQuery)
+        public SqlDataReader ExecuteReader(String sqlQuery)
         {
-            var command = new SqlCommand(sqlQuery, _conn);
+            SqlCommand command = new SqlCommand(sqlQuery, _conn);
             return command.ExecuteReader();
         }
 

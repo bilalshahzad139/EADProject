@@ -22,8 +22,8 @@ namespace WebPrac
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/main.css",
                       "~/Content/Site.css"));
+
         }
     }
 }

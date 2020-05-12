@@ -12,20 +12,20 @@ namespace PMS.DAL
     {
         public static int Save(ProductDTO dto)
         {
-            using (var helper = new DBHelper())
+            using (DBHelper helper = new DBHelper())
             {
-                var sqlQuery = "";
+                String sqlQuery = "";
                 if (dto.ProductID > 0)
                 {
-                    sqlQuery =
-                        $"Update dbo.Products Set Name='{dto.Name}',Price='{dto.Price}',PictureName='{dto.PictureName}',ModifiedOn='{dto.ModifiedOn}',ModifiedBy='{dto.ModifiedBy}' Where ProductID={dto.ProductID}";
+                    sqlQuery = String.Format("Update dbo.Products Set Name='{0}',Price='{1}',PictureName='{2}',ModifiedOn='{3}',ModifiedBy='{4}' Where ProductID={5}",
+                        dto.Name, dto.Price, dto.PictureName, dto.ModifiedOn, dto.ModifiedBy, dto.ProductID);
                     helper.ExecuteQuery(sqlQuery);
                     return dto.ProductID;
                 }
                 else
                 {
-                    sqlQuery =
-                        $"INSERT INTO dbo.Products(Name, Price, PictureName, CreatedOn, CreatedBy,IsActive,ProductCategoryID) VALUES('{dto.Name}','{dto.Price}','{dto.PictureName}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1'); Select @@IDENTITY";
+                    sqlQuery = String.Format("INSERT INTO dbo.Products(Name, Price, PictureName, CreatedOn, CreatedBy,IsActive) VALUES('{0}','{1}','{2}','{3}','{4}',{5}); Select @@IDENTITY",
+                        dto.Name, dto.Price, dto.PictureName, dto.CreatedOn, dto.CreatedBy, 1);
 
                     var obj = helper.ExecuteScalar(sqlQuery);
                     return Convert.ToInt32(obj);
@@ -34,72 +34,83 @@ namespace PMS.DAL
         }
         public static ProductDTO GetProductById(int pid)
         {
-            var query = $"Select * from dbo.Products Where ProductId={pid}";
+            var query = String.Format("Select * from dbo.Products Where ProductId={0}", pid);
 
-            using (var helper = new DBHelper())
+            using (DBHelper helper = new DBHelper())
             {
                 var reader = helper.ExecuteReader(query);
 
                 ProductDTO dto = null;
 
-                if (reader.Read()) dto = FillDTO(reader);
+                if (reader.Read())
+                {
+                    dto = FillDTO(reader);
+                }
 
                 return dto;
             }
         }
 
-        public static List<ProductDTO> GetAllProducts(bool pLoadComments=false)
+        public static List<ProductDTO> GetAllProducts(Boolean pLoadComments=false)
         {
-            const string query = "Select * from dbo.Products Where IsActive = 1;";
+            var query = "Select * from dbo.Products Where IsActive = 1;";
 
-            using (var helper = new DBHelper())
+            using (DBHelper helper = new DBHelper())
             {
                 var reader = helper.ExecuteReader(query);
-                var list = new List<ProductDTO>();
+                List<ProductDTO> list = new List<ProductDTO>();
 
                 while (reader.Read())
                 {
                     var dto = FillDTO(reader);
-                    if (dto != null) list.Add(dto);
+                    if (dto != null)
+                    {
+                        list.Add(dto);
+                    }
                 }
-
-                if (!pLoadComments) return list;
-                //var commentsList = CommentDAO.GetAllComments();
-
-                var commentsList = CommentDAO.GetTopComments(2);
-
-                foreach (var prod in list)
+                if (pLoadComments == true)
                 {
-                    var prodComments = commentsList.Where(c => c.ProductID == prod.ProductID).ToList();
-                    prod.Comments = prodComments;
+                    //var commentsList = CommentDAO.GetAllComments();
+
+                    var commentsList = CommentDAO.GetTopComments(2);
+
+                    foreach (var prod in list)
+                    {
+                        List<CommentDTO> prodComments = commentsList.Where(c => c.ProductID == prod.ProductID).ToList();
+                        prod.Comments = prodComments;
+                    }
                 }
                 return list;
             }
         }
 
-        public static List<ProductDTO> GetPriceRangedProducts(int from, int to, bool pLoadComments = false)
+        public static List<ProductDTO> GetPriceRangedProducts(int from, int to, Boolean pLoadComments = false)
         {
             var query = "Select * from dbo.Products Where IsActive = 1 AND (Price Between '"+from+"' AND '"+to+"');";
-            using (var helper = new DBHelper())
+            using (DBHelper helper = new DBHelper())
             {
                 var reader = helper.ExecuteReader(query);
-                var list = new List<ProductDTO>();
+                List<ProductDTO> list = new List<ProductDTO>();
 
                 while (reader.Read())
                 {
                     var dto = FillDTO(reader);
-                    if (dto != null) list.Add(dto);
+                    if (dto != null)
+                    {
+                        list.Add(dto);
+                    }
                 }
-
-                if (!pLoadComments) return list;
-                //var commentsList = CommentDAO.GetAllComments();
-
-                var commentsList = CommentDAO.GetTopComments(2);
-
-                foreach (var prod in list)
+                if (pLoadComments == true)
                 {
-                    var prodComments = commentsList.Where(c => c.ProductID == prod.ProductID).ToList();
-                    prod.Comments = prodComments;
+                    //var commentsList = CommentDAO.GetAllComments();
+
+                    var commentsList = CommentDAO.GetTopComments(2);
+
+                    foreach (var prod in list)
+                    {
+                        List<CommentDTO> prodComments = commentsList.Where(c => c.ProductID == prod.ProductID).ToList();
+                        prod.Comments = prodComments;
+                    }
                 }
                 return list;
             }
@@ -107,9 +118,9 @@ namespace PMS.DAL
 
         public static int DeleteProduct(int pid)
         {
-            var sqlQuery = $"Update dbo.Products Set IsActive=0 Where ProductID={pid}";
+            String sqlQuery = String.Format("Update dbo.Products Set IsActive=0 Where ProductID={0}", pid);
 
-            using (var helper = new DBHelper())
+            using (DBHelper helper = new DBHelper())
             {
                 return helper.ExecuteQuery(sqlQuery);
             }

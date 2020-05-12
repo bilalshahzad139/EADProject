@@ -7,20 +7,20 @@ using System.Threading.Tasks;
 
 namespace PMS.BAL
 {
-    public static class CommentBO
+    public class CommentBO
     {
         public static int Save(CommentDTO dto)
         {
-            return DAL.CommentDAO.Save(dto);
+            return PMS.DAL.CommentDAO.Save(dto);
         }
 
         public static CommentDTO GetCommentById(int pid)
         {
-            return DAL.CommentDAO.GetCommentById(pid);
+            return PMS.DAL.CommentDAO.GetCommentById(pid);
         }
         public static List<CommentDTO> GetAllComments()
         {
-            return DAL.CommentDAO.GetAllComments();
+            return PMS.DAL.CommentDAO.GetAllComments();
         }
 
 

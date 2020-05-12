@@ -12,51 +12,50 @@ namespace PMS.DAL
     {
         public static int Save(UserDTO dto)
         {
-            var sqlQuery = "";
-            sqlQuery = dto.UserID > 0 ? $"Update dbo.Users Set Name='{dto.Name}', PictureName='{dto.PictureName}' Where UserID={dto.UserID}" : $"INSERT INTO dbo.Users(Name, Login,Password, PictureName, IsAdmin,IsActive) VALUES('{dto.Name}','{dto.Login}','{dto.Password}','{dto.PictureName}',{0},{1})";
+            String sqlQuery = "";
+            if (dto.UserID > 0)
+            {
+                sqlQuery = String.Format("Update dbo.Users Set Name='{0}', PictureName='{1}' Where UserID={2}",
+                    dto.Name, dto.PictureName, dto.UserID);
+            }
+            else
+            {
+                sqlQuery = String.Format("INSERT INTO dbo.Users(Name, Login,Password, PictureName, IsAdmin,IsActive) VALUES('{0}','{1}','{2}','{3}',{4},{5})",
+                    dto.Name, dto.Login, dto.Password, dto.PictureName, 0, 1);
+            }
 
-            using (var helper = new DBHelper())
+            using (DBHelper helper = new DBHelper())
             {
                 return helper.ExecuteQuery(sqlQuery);
             }
-        }
-
-        public static Boolean isUserAlreadyExist(String pLogin)
-        {
-            string mySQLQuery = String.Format(@"SELECT count(*) FROM dbo.Users WHERE login = '{0}'", pLogin);
-            using (DBHelper dbh = new DBHelper())
-            {
-                int result = Convert.ToInt32(dbh.ExecuteScalar(mySQLQuery));
-                if (result != 0)
-                    return true;
-                return false;
-            }
-
         }
 
         public static int UpdatePassword(UserDTO dto)
         {
-            var sqlQuery = "";
-            sqlQuery = $"Update dbo.Users Set Password='{dto.Password}' Where UserID={dto.UserID}";
+            String sqlQuery = "";
+            sqlQuery = String.Format("Update dbo.Users Set Password='{0}' Where UserID={1}", dto.Password, dto.UserID);
 
 
-            using (var helper = new DBHelper())
+            using (DBHelper helper = new DBHelper())
             {
                 return helper.ExecuteQuery(sqlQuery);
             }
         }
 
-        public static UserDTO ValidateUser(string pLogin, string pPassword)
+        public static UserDTO ValidateUser(String pLogin, String pPassword)
         {
-            var query = $"Select * from dbo.Users Where Login='{pLogin}' and Password='{pPassword}'";
+            var query = String.Format("Select * from dbo.Users Where Login='{0}' and Password='{1}'", pLogin, pPassword);
 
-            using (var helper = new DBHelper())
+            using (DBHelper helper = new DBHelper())
             {
                 var reader = helper.ExecuteReader(query);
 
                 UserDTO dto = null;
 
-                if (reader.Read()) dto = FillDTO(reader);
+                if (reader.Read())
+                {
+                    dto = FillDTO(reader);
+                }
 
                 return dto;
             }
@@ -65,15 +64,18 @@ namespace PMS.DAL
         public static UserDTO GetUserById(int pid)
         {
 
-            var query = $"Select * from dbo.Users Where UserId={pid}";
+            var query = String.Format("Select * from dbo.Users Where UserId={0}", pid);
 
-            using (var helper = new DBHelper())
+            using (DBHelper helper = new DBHelper())
             {
                 var reader = helper.ExecuteReader(query);
 
                 UserDTO dto = null;
 
-                if (reader.Read()) dto = FillDTO(reader);
+                if (reader.Read())
+                {
+                    dto = FillDTO(reader);
+                }
 
                 return dto;
             }
@@ -81,16 +83,19 @@ namespace PMS.DAL
 
         public static List<UserDTO> GetAllUsers()
         {
-            using (var helper = new DBHelper())
+            using (DBHelper helper = new DBHelper())
             {
                 var query = "Select * from dbo.Users Where IsActive = 1;";
                 var reader = helper.ExecuteReader(query);
-                var list = new List<UserDTO>();
+                List<UserDTO> list = new List<UserDTO>();
 
                 while (reader.Read())
                 {
                     var dto = FillDTO(reader);
-                    if (dto != null) list.Add(dto);
+                    if (dto != null)
+                    {
+                        list.Add(dto);
+                    }
                 }
 
                 return list;
@@ -99,9 +104,9 @@ namespace PMS.DAL
 
         public static int DeleteUser(int pid)
         {
-            var sqlQuery = $"Update dbo.Users Set IsActive=0 Where UserID={pid}";
+            String sqlQuery = String.Format("Update dbo.Users Set IsActive=0 Where UserID={0}", pid);
 
-            using (var helper = new DBHelper())
+            using (DBHelper helper = new DBHelper())
             {
                 return helper.ExecuteQuery(sqlQuery);
             }
