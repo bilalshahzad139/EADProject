@@ -13,6 +13,9 @@
 
         $("document").ready(function () {
             MyApp.Main();
+            MyApp.AutoComplete("#ItemSearchBox", {
+                source: "Product2/AutoSuggestion"
+            });
         });
 
 
@@ -52,6 +55,11 @@
 }
 
 
+
+@* this div is for testin auto-suggestion remove it when search box is done *@
+<div>
+    <input type="text" id="ItemSearchBox"/>
+</div>
 
 
 <div class="text-center"><h2>Product Management</h2></div>

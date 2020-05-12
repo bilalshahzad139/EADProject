@@ -13,10 +13,12 @@ namespace PMS.BAL
         {
             return PMS.DAL.ProductDAO.Save(dto);
         }
+
         public static ProductDTO GetProductById(int pid)
         {
             return PMS.DAL.ProductDAO.GetProductById(pid);
         }
+
         public static List<ProductDTO> GetAllProducts(Boolean pLoadComments=false)
         {
             return PMS.DAL.ProductDAO.GetAllProducts(pLoadComments);
@@ -30,6 +32,11 @@ namespace PMS.BAL
         public static int DeleteProduct(int pid)
         {
             return PMS.DAL.ProductDAO.DeleteProduct(pid);
+        }
+
+        public static List<string> GetMatchingItems(string term)
+        {
+            return PMS.DAL.ProductDAO.GetMatchingItems(term);
         }
 
     }

@@ -115,6 +115,17 @@ namespace PMS.DAL
             }
         }
 
+        public static List<string> GetMatchingItems(string term)
+        {
+            List<string> matchingItems = null;
+            using (var dbh = new DBHelper())
+            {
+                matchingItems = dbh.ExecuteStoredProcedure("GetMatchingItems", term);
+
+            }
+            return matchingItems;
+        }
+
         private static ProductDTO FillDTO(SqlDataReader reader)
         {
             var dto = new ProductDTO();
