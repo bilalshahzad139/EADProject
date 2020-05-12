@@ -1,6 +1,6 @@
 ﻿var MyApp = {};
 
-MyApp = (function() {
+MyApp = (function () {
 
 
     function Clear() {
@@ -26,7 +26,7 @@ MyApp = (function() {
         data.append("PictureName", oldPicName);
 
 
-        
+
         var files = $("#myfile").get(0).files;
 
         if (files.length > 0) {
@@ -39,7 +39,7 @@ MyApp = (function() {
             contentType: false,
             processData: false,
             data: data,
-            success: function(r) {
+            success: function (r) {
                 console.log(r);
 
                 const obj = {};
@@ -64,7 +64,7 @@ MyApp = (function() {
 
                 alert("record is saved");
             },
-            error: function() {
+            error: function () {
                 alert("error has occurred");
 
             }
@@ -75,12 +75,8 @@ MyApp = (function() {
 
     function LoadProducts(from, to) {
 
-<<<<<<< HEAD
-        //debugger;
-=======
         $("#productsDiv").empty();
-        debugger;
->>>>>>> baf2a3fdf1621c13366d033988910f7b8eca7768
+        //debugger;
         var action = null;
         if (to == null && from == null) // in case of all products, range will be null.
             action = "Product2/GetAllProducts";
@@ -88,28 +84,14 @@ MyApp = (function() {
             action = `Product2/GetPriceRangedProducts?from=${from}&to=${to}`;
             $("#productsDiv").empty(); // remove previous products before refreshing product list.
         }
-<<<<<<< HEAD
-           
-        MyAppGlobal.MakeAjaxCall("GET", action ,{}, function (resp) {
-
-            if (resp.data) {
-               // debugger;
-                for (var k in resp.data) {
-                    var obj = resp.data[k];
-                    obj.CreatedOn = moment(obj.CreatedOn).format('DD/MM/YYYY HH:mm:ss');
-
-                    for (var k2 in obj.Comments) {
-                        var comm = obj.Comments[k2];
-                        comm.CommentOn = moment(comm.CommentOn).format('DD/MM/YYYY HH:mm:ss');
-=======
 
         MyAppGlobal.MakeAjaxCall("GET",
             action,
             {},
-            function(resp) {
+            function (resp) {
 
                 if (resp.data) {
-                    debugger;
+                    //debugger;
                     for (let k in resp.data) {
                         const obj = resp.data[k];
                         obj.CreatedOn = moment(obj.CreatedOn).format("DD/MM/YYYY HH:mm:ss");
@@ -118,40 +100,17 @@ MyApp = (function() {
                             const comm = obj.Comments[k2];
                             comm.CommentOn = moment(comm.CommentOn).format("DD/MM/YYYY HH:mm:ss");
                         }
->>>>>>> baf2a3fdf1621c13366d033988910f7b8eca7768
                     }
 
 
-<<<<<<< HEAD
-                var html = template(resp);
-                $("#productsDiv").append(html);
-                $(".addToWishlist").click(function () {
-                    var mainProdContainer = $(this).closest(".product");
-                    var pid = mainProdContainer.attr("pid");
-                    var object = {
-                        pid: pid
-                    }
-                    MyAppGlobal.MakeAjaxCall("POST", 'Product2/AddToWishlist', object, function (resp) {
-                        if (resp.data == 0) {
-                            alert("Product already in Wishlist");
-                        }
-                        else {
-                            alert("Product added to Wishlist");
-                        }
-
-                    });
-
-                });
-=======
                     const source = $("#listtemplate").html();
                     const template = Handlebars.compile(source);
->>>>>>> baf2a3fdf1621c13366d033988910f7b8eca7768
 
                     const html = template(resp);
                     $("#productsDiv").append(html);
 
 
-                    
+
 
                     BindEvents();
 
@@ -160,16 +119,10 @@ MyApp = (function() {
 
     }
 
-<<<<<<< HEAD
-                        if (resp.success) {
-                            alert("added");
-                            //debugger;
-=======
     function BindEvents() {
->>>>>>> baf2a3fdf1621c13366d033988910f7b8eca7768
 
         $(".editprod").unbind("click").bind("click",
-            function() {
+            function () {
                 const $tr = $(this).closest("tr");
                 const pid = $tr.attr("pid");
 
@@ -178,7 +131,7 @@ MyApp = (function() {
                 MyAppGlobal.MakeAjaxCall("GET",
                     "Product2/GetProductById",
                     d,
-                    function(resp) {
+                    function (resp) {
                         $("#txtProductID").val(resp.data.ProductID);
                         $("#txtPictureName").val(resp.data.PictureName);
                         $("#txtName").val(resp.data.Name);
@@ -187,17 +140,11 @@ MyApp = (function() {
 
                     });
 
-<<<<<<< HEAD
-                    return false;
-                });
-                
-=======
                 return false;
             });
->>>>>>> baf2a3fdf1621c13366d033988910f7b8eca7768
 
         $(".deleteprod").unbind("click").bind("click",
-            function() {
+            function () {
 
                 if (!confirm("Do you want to continue?")) {
                     return;
@@ -210,7 +157,7 @@ MyApp = (function() {
                 MyAppGlobal.MakeAjaxCall("POST",
                     "Product2/DeleteProduct",
                     d,
-                    function(resp) {
+                    function (resp) {
 
                         $tr.remove();
                     });
@@ -220,7 +167,7 @@ MyApp = (function() {
             });
 
         $(".emailprod").unbind("click").bind("click",
-            function() {
+            function () {
                 const $tr = $(this).closest("tr");
                 const pid = $tr.attr("pid");
 
@@ -229,7 +176,7 @@ MyApp = (function() {
                 MyAppGlobal.MakeAjaxCall("GET",
                     "Product2/GetProductById",
                     d,
-                    function(resp) {
+                    function (resp) {
 
                         $("#popupname").text(resp.data.Name);
 
@@ -241,8 +188,25 @@ MyApp = (function() {
 
                 return false;
             });
+        $(".addToWishlist").click(function () {
+            var mainProdContainer = $(this).closest(".product");
+            var pid = mainProdContainer.attr("pid");
+            var object = {
+                pid: pid
+            }
+            MyAppGlobal.MakeAjaxCall("POST", 'Product2/AddToWishlist', object, function (resp) {
+                if (resp.data == 0) {
+                    alert("Product already in Wishlist");
+                }
+                else {
+                    alert("Product added to Wishlist");
+                }
 
-        $("#productsDiv .addcomment").on("click", function() {
+            });
+
+        });
+
+        $("#productsDiv .addcomment").on("click", function () {
 
             var mainProdContainer = $(this).closest(".product");
             console.log(mainProdContainer);
@@ -259,11 +223,11 @@ MyApp = (function() {
             MyAppGlobal.MakeAjaxCall("POST",
                 "Product2/SaveComment",
                 obj1,
-                function(resp1) {
+                function (resp1) {
 
                     if (resp1.success) {
                         alert("added");
-                        debugger;
+                        //debugger;
                         console.log(resp1);
 
                         const obj11 = {
@@ -282,6 +246,7 @@ MyApp = (function() {
                     }
 
                 });
+            
 
             $(this).closest(".commentarea").find(".txtComment").val("");
 
@@ -289,9 +254,9 @@ MyApp = (function() {
         });
     }
 
- 
+
     function SignupHelper() {
-        var fileName="";
+        var fileName = "";
 
         $("#btnSignUp").on("click",
             function () {
@@ -360,7 +325,7 @@ MyApp = (function() {
                     $.ajax(settings);
                 }
                 else {
-                   
+
                     $("#p").text("Empty Fields!");
                     setTimeout(() => {
                         const elem = $("#p").text("");
@@ -380,32 +345,32 @@ MyApp = (function() {
 
             LoadProducts();
 
-            $("#btnSave").click(function() {
+            $("#btnSave").click(function () {
 
                 SaveProduct();
                 return false;
             });
 
-            $("#btnClear").click(function() {
+            $("#btnClear").click(function () {
 
                 Clear();
                 return false;
             });
 
-            $("#btnSend").click(function() {
+            $("#btnSend").click(function () {
                 //Call send email function
                 $("#emailpopup").hide();
                 $("#overlay").hide();
                 return false;
             });
 
-            $("#btnClose").click(function() {
+            $("#btnClose").click(function () {
                 $("#emailpopup").hide();
                 $("#overlay").hide();
                 return false;
             });
 
-            $("#priceDropDown").change(function() {
+            $("#priceDropDown").change(function () {
                 const t = $(this).find(":selected").data("price");
                 const a = t.split(":");
                 const l = parseFloat(a[0]);
@@ -414,7 +379,7 @@ MyApp = (function() {
                 LoadProducts(l, u);
             });
 
-            $("#newProdBtn").click(function() {
+            $("#newProdBtn").click(function () {
                 $("#addNewProd").slideToggle(700);
             });
         }
