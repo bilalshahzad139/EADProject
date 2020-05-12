@@ -127,21 +127,6 @@
 </div>
 
 
-@*<script id="listtemplate" type="text/x-handlebars-template">
-        {{#each data}}
-        <tr pid="{{ProductID}}">
-            <td>{{Name}}</td>
-            <td>{{Price}}</td>
-            <td><img src="/UploadedFiles/{{PictureName}}" style="width:100px;height:100px;" /></td>
-            @if (WebPrac.Security.SessionManager.User.IsAdmin)
-            {
-                <td><a href="#" class="editprod">Edit</a></td>
-                <td><a href="#" class="deleteprod">Delete</a></td>
-                <td><a href="#" class="emailprod">Email</a></td>
-            }
-        </tr>
-        {{/each}}
-    </script>*@
 
 <script id="listtemplate" type="text/x-handlebars-template">
     {{#each data}}
