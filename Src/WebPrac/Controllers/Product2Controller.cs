@@ -39,7 +39,7 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
-
+       
         public JsonResult GetProductById(int pid)
         {
             var prod = PMS.BAL.ProductBO.GetProductById(pid);
@@ -133,7 +133,18 @@ namespace WebPrac.Controllers
             };
             return Json(data1, JsonRequestBehavior.AllowGet);
         }
+     /*   [HttpGet]
+        public JsonResult getProductByName(String prodName)
+        {
+            var products = PMS.BAL.ProductBO.getProductByName(prodName);
 
+            var d = new
+            {
+                data = products
+            };
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
+        */
 
         #region Under Development
 

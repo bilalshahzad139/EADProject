@@ -73,6 +73,37 @@ MyApp = (function() {
         $.ajax(settings);
     }
 
+    function LoadProductsByName(prodName) {
+        $("#productsDiv").empty();
+        var action = `Products2/getProductByName?prodName=${prodName}`;
+        MyAppGlobal.MakeAjaxCall("GET",
+            action,
+            {},
+            function (resp) {
+
+                if (resp.data) {
+                    for (let k in resp.data) {
+                        const obj = resp.data[k];
+                        obj.CreatedOn = moment(obj.CreatedOn).format("DD/MM/YYYY HH:mm:ss");
+
+                        for (let k2 in obj.Comments) {
+                            const comm = obj.Comments[k2];
+                            comm.CommentOn = moment(comm.CommentOn).format("DD/MM/YYYY HH:mm:ss");
+                        }
+                    }
+
+
+                    const source = $("#listtemplate").html();
+                    const template = Handlebars.compile(source);
+
+                    const html = template(resp);
+                    $("#productsDiv").append(html);
+                    BindEvents();
+
+                }
+            });
+
+    }
     function LoadProducts(from, to) {
 
         $("#productsDiv").empty();
@@ -363,6 +394,16 @@ MyApp = (function() {
 
             $("#newProdBtn").click(function() {
                 $("#addNewProd").slideToggle(700);
+            });
+
+            $("#btnSearchProduct").click(function () {
+                var prodName = $("#txtProductName").val();
+                if (prodName == "") {
+                    return;
+                }
+                LoadProductsByName(prodName);
+
+
             });
         }
     };
