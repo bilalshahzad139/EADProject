@@ -134,9 +134,9 @@ namespace WebPrac.Controllers
             return Json(data1, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public JsonResult getProductByName(String prodName)
+        public JsonResult GetProductByName(String prodName)
         {
-            var products = PMS.BAL.ProductBO.getProductByName(prodName);
+            var products = ProductBO.GetProductByName(prodName);
 
             var d = new
             {

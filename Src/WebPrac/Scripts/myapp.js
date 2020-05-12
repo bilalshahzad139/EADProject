@@ -75,7 +75,7 @@ MyApp = (function() {
 
     function LoadProductsByName(prodName) {
         $("#productsDiv").empty();
-        var action = `Products2/getProductByName?prodName=${prodName}`;
+        var action = `Products2/GetProductByName?prodName=${prodName}`;
         MyAppGlobal.MakeAjaxCall("GET",
             action,
             {},
