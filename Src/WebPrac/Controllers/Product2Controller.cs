@@ -16,7 +16,7 @@ namespace WebPrac.Controllers
         
         public ActionResult New()
         {
-            return View($"New");
+            return View();
         }
 
         public JsonResult GetAllProducts()
@@ -121,7 +121,6 @@ namespace WebPrac.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-
         [HttpPost]
         public JsonResult SaveComment(CommentDTO dto)
         {
@@ -145,6 +144,16 @@ namespace WebPrac.Controllers
                 success = false,
             };
             return Json(data1, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult AutoSuggestion(string val)
+        {
+            if (string.IsNullOrEmpty(val) || string.IsNullOrWhiteSpace(val))
+                return Json("", JsonRequestBehavior.AllowGet);
+            var data = PMS.BAL.ProductBO.GetMatchingItems(val);
+            return Json(data, JsonRequestBehavior.AllowGet);
+
         }
 
 
