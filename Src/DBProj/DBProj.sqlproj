@@ -69,8 +69,13 @@
     <Build Include="Tables\Users.sql" />
     <Build Include="Procedures\dbo_SaveUser.sql" />
     <Build Include="Tables\ProductCategory.sql" />
+    <Build Include="Tables\ProductPictureNames.sql" />
+    <Build Include="Procedures\InsertProductPictureName.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Users.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment.sql" />
   </ItemGroup>
 </Project>

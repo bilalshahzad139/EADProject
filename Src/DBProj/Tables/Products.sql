@@ -2,7 +2,6 @@
     [ProductID]   INT          IDENTITY (1, 1) NOT NULL,
     [Name]        VARCHAR (50) NOT NULL,
     [Price]       FLOAT (53)   NOT NULL,
-    [PictureName] VARCHAR (50) NOT NULL,
     [CreatedOn]   DATETIME     NOT NULL,
     [CreatedBy]   INT          NOT NULL,
     [ModifiedOn]  DATETIME     NULL,
