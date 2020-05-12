@@ -133,7 +133,7 @@ namespace WebPrac.Controllers
             };
             return Json(data1, JsonRequestBehavior.AllowGet);
         }
-     /*   [HttpGet]
+        [HttpGet]
         public JsonResult getProductByName(String prodName)
         {
             var products = PMS.BAL.ProductBO.getProductByName(prodName);
@@ -144,7 +144,7 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
-        */
+
 
         #region Under Development
 
