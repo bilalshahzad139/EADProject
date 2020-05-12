@@ -80,30 +80,6 @@ MyApp = (function () {
             $("#maindropdown").append(html);
         });
     }
-    //function ProductCategoriesAJAXcall(id) {
-    //    var data = { "id": id };
-
-    //    //object pass to $.ajax function to make an AJAX call.
-
-    //    var settings = {
-    //        type: "GET",
-    //        dataType: "json",
-    //        url: window.BasePath + "Product2/GetAllCategories",
-    //        data: data,
-    //        success: function (resp) {
-    //            //response.data contains whatever is sent from server
-
-               
-
-    //        },
-    //        error: function (err, type, httpStatus) {
-    //            alert('error has occured222');
-    //        }
-    //    };
-
-    //    $.ajax(settings);
-
-    //}
     function LoadProductsByCategory(categoryid) {
         var action = "Product2/GetProductsByCategory";
         $('#tblBody').empty();
