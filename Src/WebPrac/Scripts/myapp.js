@@ -16,18 +16,34 @@ MyApp = (function() {
         const data = new FormData();
 
         var id = $("#txtProductID").val();
-        var name = $("#txtName").val();
-        var price = $("#txtPrice").val();
+        var name = $("#txtName").val().trim();
+        var price = $("#txtPrice").val().trim();
         const oldPicName = $("#txtPictureName").val();
+        var files = $("#myfile").get(0).files;
+
+        if (name === "" || price === "") {
+            $("#ErrMsg").text("Empty Fields!");
+            setTimeout(() => {
+                    const elem = $("#ErrMsg").text("");
+                },
+                3000);
+            return false;
+        }
+        if (oldPicName === "" && files.length === 0) {
+            $("#ErrMsg").text("Click on Choose File to upload Picture of Product!");
+            setTimeout(() => {
+                    const elem = $("#ErrMsg").text("");
+                },
+                3000);
+            return false;
+        }
+
 
         data.append("ProductID", id);
         data.append("Name", name);
         data.append("Price", price);
         data.append("PictureName", oldPicName);
 
-
-        
-        var files = $("#myfile").get(0).files;
 
         if (files.length > 0) {
             data.append("Image", files[0]);
