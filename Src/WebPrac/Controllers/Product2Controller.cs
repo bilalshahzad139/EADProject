@@ -126,5 +126,19 @@ namespace WebPrac.Controllers
             };
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult AddToWishlist(int pid)
+        {
+            int uid=SessionManager.User.UserID;
+            var res = PMS.BAL.ProductBO.AddToWishlist(uid, pid);
+            var data = new
+            {
+                data = res
+            };
+            return Json(data, JsonRequestBehavior.AllowGet);
+
+        }
+
+
     }
 }

@@ -138,12 +138,18 @@
 
         </div>
         <div style="clear:both">
+
             @if (WebPrac.Security.SessionManager.User.IsAdmin)
             {
                 <a href="/Product/Edit/{{ProductID}}" class="btn btn-primary">Edit</a>
                 <a href="/Product/Delete/{{ProductID}}" class="btn btn-primary">Delete</a>
                 <input type="submit" value="Edit" class="editbutton btn btn-primary" pid="{{ProductID}}" />
             }
+            @if(!(WebPrac.Security.SessionManager.User.IsAdmin))
+            {
+                <button class="btn btn-primary addToWishlist" > Add To WishList</button>
+            }
+
         </div>
         <div class="commentarea">
             <p class=" mt-3">Add Comment:</p>

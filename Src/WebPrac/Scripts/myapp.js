@@ -70,7 +70,7 @@ MyApp = (function () {
     }
     function LoadProducts(from, to) {
 
-        debugger;
+        //debugger;
         var action = null;
         if (to == null && from == null) // in case of all products, range will be null.
             action = 'Product2/GetAllProducts';
@@ -82,7 +82,7 @@ MyApp = (function () {
         MyAppGlobal.MakeAjaxCall("GET", action ,{}, function (resp) {
 
             if (resp.data) {
-                debugger;
+               // debugger;
                 for (var k in resp.data) {
                     var obj = resp.data[k];
                     obj.CreatedOn = moment(obj.CreatedOn).format('DD/MM/YYYY HH:mm:ss');
@@ -99,6 +99,23 @@ MyApp = (function () {
 
                 var html = template(resp);
                 $("#productsDiv").append(html);
+                $(".addToWishlist").click(function () {
+                    var mainProdContainer = $(this).closest(".product");
+                    var pid = mainProdContainer.attr("pid");
+                    var object = {
+                        pid: pid
+                    }
+                    MyAppGlobal.MakeAjaxCall("POST", 'Product2/AddToWishlist', object, function (resp) {
+                        if (resp.data == 0) {
+                            alert("Product already in Wishlist");
+                        }
+                        else {
+                            alert("Product added to Wishlist");
+                        }
+
+                    });
+
+                });
 
 
                 $("#productsDiv .addcomment").click(function () {
@@ -118,7 +135,7 @@ MyApp = (function () {
 
                         if (resp.success) {
                             alert("added");
-                            debugger;
+                            //debugger;
 
                             var obj1 = {
                                 PictureName: resp.PictureName,
@@ -139,6 +156,7 @@ MyApp = (function () {
 
                     return false;
                 });
+                
 
                 BindEvents();
 

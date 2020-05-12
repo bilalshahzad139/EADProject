@@ -10,6 +10,7 @@ namespace PMS.DAL
     internal class DBHelper : IDisposable
     {
         String _connStr = System.Configuration.ConfigurationManager.ConnectionStrings["MyConnString"].ConnectionString;
+        //String _connStr="Server=localhost\\SQLEXPRESS;Database=EADProj;User Id=sa;Password=1234;";
         SqlConnection _conn = null;
         public DBHelper()
         {
