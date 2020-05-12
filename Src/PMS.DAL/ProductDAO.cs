@@ -18,14 +18,14 @@ namespace PMS.DAL
                 if (dto.ProductID > 0)
                 {
                     sqlQuery =
-                        $"Update dbo.Products Set Name='{dto.Name}',Price='{dto.Price}',PictureName='{dto.PictureName}',ModifiedOn='{dto.ModifiedOn}',ModifiedBy='{dto.ModifiedBy}' Where ProductID={dto.ProductID}";
+                        $"Update dbo.Products Set Name='{dto.Name}',Price='{dto.Price}',ModifiedOn='{dto.ModifiedOn}',ModifiedBy='{dto.ModifiedBy}' Where ProductID={dto.ProductID}";
                     helper.ExecuteQuery(sqlQuery);
                     return dto.ProductID;
                 }
                 else
                 {
                     sqlQuery =
-                        $"INSERT INTO dbo.Products(Name, Price, PictureName, CreatedOn, CreatedBy,IsActive,ProductCategoryID) VALUES('{dto.Name}','{dto.Price}','{dto.PictureName}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1'); Select @@IDENTITY";
+                        $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID) VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1'); Select @@IDENTITY";
 
                     var obj = helper.ExecuteScalar(sqlQuery);
                     return Convert.ToInt32(obj);
