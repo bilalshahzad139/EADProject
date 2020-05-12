@@ -149,6 +149,10 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Styles\feedback_style.css" />
+    <Content Include="Styles\star-off.png" />
+    <Content Include="Styles\star-on.png" />
+    <Content Include="Styles\tick-mark1.png" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

@@ -9,8 +9,8 @@ namespace PMS.DAL
 {
     internal class DBHelper : IDisposable
     {
-       String _connStr = @"Data Source=.\SQLEXPRESS2019;Initial Catalog=EADProj;User ID=sa;Password=pucit123";
-        // String _connStr = System.Configuration.ConfigurationManager.ConnectionStrings["MyConnString"].ConnectionString;
+         //String _connStr = @"Data Source=.\SQLEXPRESS2019;Initial Catalog=EADProj;User ID=sa;Password=pucit123";
+         String _connStr = System.Configuration.ConfigurationManager.ConnectionStrings["MyConnString"].ConnectionString;
         SqlConnection _conn = null;
         public DBHelper()
         {

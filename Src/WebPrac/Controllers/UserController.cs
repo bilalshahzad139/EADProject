@@ -48,17 +48,29 @@ namespace WebPrac.Controllers
         [HttpGet]
         public ActionResult Logout()
         {
+            UserDTO u = (UserDTO)Session["user"];
             SessionManager.ClearSession();
-            return View("Feedback1");
-           // return RedirectToAction("Login");
+            if (u.IsAdmin == true)
+                return RedirectToAction("Login");
+            else 
+                return View("Feedback");
         }
 
         [HttpGet]
         public ActionResult SentFeedback()
         {
+            //name,email,phone,message from the form can be accessed here.... these attributes are 
+            //suppose to be save in database
+
             return RedirectToAction("Login");
         }
 
+        [HttpGet]
+        public ActionResult Feedback()
+        {
+            return View("Feedback");
+       
+        }
 
         //[HttpGet]
         //public ActionResult Login2()
