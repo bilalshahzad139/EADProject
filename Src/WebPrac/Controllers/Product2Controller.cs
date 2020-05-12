@@ -10,7 +10,7 @@ namespace WebPrac.Controllers
 {
     public class Product2Controller : Controller
     {
-        
+
         public ActionResult New()
         {
             return View();
@@ -19,6 +19,7 @@ namespace WebPrac.Controllers
         public JsonResult GetAllProducts()
         {
             var products = PMS.BAL.ProductBO.GetAllProducts(true);
+
 
             var d = new { 
                 data = products
@@ -31,17 +32,40 @@ namespace WebPrac.Controllers
         }
         public JsonResult AddCategoryinDatabase(String Cat_name)
         {
-            var result = PMS.BAL.ProductCategoryBO.Save(Cat_name);
-            var d = new
+
+            object d;
+            if (Cat_name == "")
             {
-                valid ="true"
-            };
+                d = new
+                {
+                    valid = false
+                };
+            }
+            else
+            {
+                var dto = PMS.BAL.ProductCategoryBO.GetCategory(Cat_name);
+                if (dto != null)
+                {
+                    d = new
+                    {
+                        valid = false
+                    };
+                }
+                else
+                {
+                    var result = PMS.BAL.ProductCategoryBO.Save(Cat_name);
+                    d = new
+                    {
+                        valid = true
+                    };
+                }
+            }
             return Json(d, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetProductsByCategory(int id)
         {
-            var products = PMS.BAL.ProductBO.GetProductsByCategory(id,true);
 
+            var products = PMS.BAL.ProductBO.GetProductsByCategory(id, true);
             var d = new
             {
                 data = products
@@ -61,7 +85,7 @@ namespace WebPrac.Controllers
         [HttpGet]
         public JsonResult GetPriceRangedProducts(int from, int to)
         {
-            
+
             var products = PMS.BAL.ProductBO.GetPriceRangedProducts(from, to, true);
 
             var d = new
@@ -85,12 +109,14 @@ namespace WebPrac.Controllers
         public JsonResult DeleteProduct(int pid)
         {
             PMS.BAL.ProductBO.DeleteProduct(pid);
-            var data = new { 
+
+            var data = new
+            {
                 success = true
             };
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        
+
         [HttpPost]
         public JsonResult Save(ProductDTO dto)
         {
@@ -117,7 +143,7 @@ namespace WebPrac.Controllers
                     dto.PictureName = uniqueName;
                 }
             }
-            
+
 
             if (dto.ProductID > 0)
             {
@@ -136,6 +162,7 @@ namespace WebPrac.Controllers
             {
                 success = true,
                 ProductID = pid,
+
                 PictureName = dto.PictureName,
                 CreatedOn=dto.CreatedOn,
                 CreatedBy=dto.CreatedBy

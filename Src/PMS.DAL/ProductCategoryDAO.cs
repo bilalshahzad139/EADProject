@@ -44,6 +44,24 @@ namespace PMS.DAL
             }
            
         }
+        public static ProductCategoryDTO GetCategory(string Categoryname)
+        {
+            var query = String.Format("Select * from dbo.category Where CategoryName='{0}'", Categoryname);
+
+            using (DBHelper helper = new DBHelper())
+            {
+                var reader = helper.ExecuteReader(query);
+
+                ProductCategoryDTO dto = null;
+
+                if (reader.Read())
+                {
+                    dto = FillDTO(reader);
+                }
+
+                return dto;
+            }
+        }
             private static ProductCategoryDTO FillDTO(SqlDataReader reader)
         {
             var dto = new ProductCategoryDTO();

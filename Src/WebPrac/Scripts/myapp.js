@@ -8,6 +8,7 @@ MyApp = (function () {
         $("#txtPictureName").val("");
         $("#txtName").val("");
         $("#txtPrice").val("");
+
         $("#selProdCategory").val(0);
         $("#prodimg").hide();
     }
@@ -26,12 +27,13 @@ MyApp = (function () {
             alert("No category is selected");
             return;
         }
+
         data.append("ProductID", id);
         data.append("Name", name);
         data.append("Price", price);
         data.append("PictureName", oldPicName);
-        data.append("CategoryID", category);
 
+        data.append("CategoryID", category);
 
         var files = $("#myfile").get(0).files;
         if (files.length > 0) {
@@ -86,36 +88,14 @@ MyApp = (function () {
 
             var html = template(resp);
             $("#maindropdown").append(html);
+
             source = $("#dropdowntemplate").html();
             template = Handlebars.compile(source);
             html = template(resp);
             $("#selProdCategory").append(html);
         });
     }
-    //function ProductCategoriesAJAXcall(id) {
-    //    var data = { "id": id };
-
-    //    //object pass to $.ajax function to make an AJAX call.
-
-    //    var settings = {
-    //        type: "GET",
-    //        dataType: "json",
-    //        url: window.BasePath + "Product2/GetAllCategories",
-    //        data: data,
-    //        success: function (resp) {
-    //            //response.data contains whatever is sent from server
-
-               
-
-    //        },
-    //        error: function (err, type, httpStatus) {
-    //            alert('error has occured222');
-    //        }
-    //    };
-
-    //    $.ajax(settings);
-
-    //}
+   
     function LoadProductsByCategory(categoryid) {
         var action = "Product2/GetProductsByCategory";
         $('#tblBody').empty();
