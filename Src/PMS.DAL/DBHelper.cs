@@ -11,6 +11,7 @@ namespace PMS.DAL
     internal class DBHelper : IDisposable
     {
         private readonly string _connStr = System.Configuration.ConfigurationManager.ConnectionStrings["MyConnString"].ConnectionString;
+        
         private readonly SqlConnection _conn = null;
 
         public DBHelper()
