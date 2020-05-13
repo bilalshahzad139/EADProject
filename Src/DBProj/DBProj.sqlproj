@@ -68,6 +68,10 @@
     <Build Include="Tables\Products.sql" />
     <Build Include="Tables\Users.sql" />
     <Build Include="Procedures\dbo_SaveUser.sql" />
+    <Build Include="Tables\ProductCategory.sql" />
+    <Build Include="Tables\ProductPictureNames.sql" />
+    <Build Include="Procedures\InsertProductPictureName.sql" />
+    <Build Include="Procedures\dbo.GetMatchingItems.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Users.sql" />

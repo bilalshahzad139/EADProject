@@ -15,9 +15,27 @@ MyApp = (function () {
         var data = new FormData();
 
         var id = $("#txtProductID").val();
-        var name = $("#txtName").val();
-        var price = $("#txtPrice").val();
-        var oldPicName = $("#txtPictureName").val();
+        var name = $("#txtName").val().trim();
+        var price = $("#txtPrice").val().trim();
+        const oldPicName = $("#txtPictureName").val();
+        var files = $("#myfile").get(0).files;
+
+        if (name === "" || price === "") {
+            $("#ErrMsg").text("Empty Fields!");
+            setTimeout(() => {
+                    const elem = $("#ErrMsg").text("");
+                },
+                3000);
+            return false;
+        }
+        if (oldPicName === "" && files.length === 0) {
+            $("#ErrMsg").text("Click on Choose File to upload Picture of Product!");
+            setTimeout(() => {
+                    const elem = $("#ErrMsg").text("");
+                },
+                3000);
+            return false;
+        }
 
         data.append("ProductID", id);
         data.append("Name", name);
@@ -25,8 +43,7 @@ MyApp = (function () {
         data.append("PictureName", oldPicName);
 
 
-        var files = $("#myfile").get(0).files;
-        if (files.length > 0) {
+       if (files.length > 0) {
             data.append("Image", files[0]);
         }
 
@@ -207,6 +224,214 @@ MyApp = (function () {
         });
     }
 
+   function AutoCompleteHelper(selector, urlP) {
+
+        let url = urlP.source;
+        $(`${selector}`).on('propertychange input',
+            function (event) {
+
+            //debugger;
+            const val = $(`${selector}`).val();
+            $(`${selector}autocomplete-list`).empty();
+            const data = {
+                "val":val
+            };
+
+            const settings = {
+                type: 'Post',
+                dataType: "json",
+                url: window.BasePath + url,
+                data: data,
+                success: function (resp) {
+                    console.log(resp);
+                    const inp = $(`${selector}`);
+                    autocomplete(inp , resp);
+                },
+                error: function (error) {
+                   console.log(error);
+                }
+            };
+
+            $.ajax(settings);
+
+            }
+        );
+
+
+        function autocomplete(inp ,arr) {
+            var a, b, i;
+            closeAllLists();
+            var currentFocus = -1;
+            a = $("<div>", { "id": inp.attr("id") + "autocomplete-list", "class": "autocomplete-items" }).css({
+                "z-index":"99"
+            });
+            inp.parent().append(a);
+            for (i = 0; i < arr.length; i++) {
+                b = $("<div>");
+                b.html(`<strong>${arr[i].substr(0, inp[0].value.length)}</strong>`);
+                b.html(b.html() + arr[i].substr(inp[0].value.length));
+                b.html(`${b.html()}<input type='hidden' value='${arr[i].trim()}'>`);
+                
+                b.on("click", function (e) {
+                    
+                    inp.val($(this).children("input").val());
+                    closeAllLists();
+                });
+                b.css({
+                    "padding":"5px 8px"
+                })
+                a.width(inp.width()+10);
+                a.css({
+                    "margin":"-2px"
+                })
+                a.append(b);
+            }
+
+            inp.keydown(function (e) {
+                
+                var x = $(`#${$(this).attr("id")}autocomplete-list`);
+                
+                if (x) x = $(x).children("div");
+                if (e.keyCode === 40) { //down
+                    currentFocus++;
+                    addActive(x);
+                } else if (e.keyCode === 38) { //up
+                    currentFocus--;
+                    addActive(x);
+                } else if (e.keyCode === 13) {
+                    //enter
+                    e.preventDefault();
+                    if (currentFocus > -1) {
+                        if (x) x[currentFocus].click();
+                    }
+                } else {
+                    return true;
+                }
+            });
+
+            //Adds active class to current item of list
+            function addActive(x) {
+                /*a function to classify an item as "active":*/
+                if (!x) return false;
+                /*start by removing the "active" class on all items:*/
+                removeActive(x);
+                if (currentFocus >= x.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = (x.length - 1);
+                /*add class "autocomplete-active":*/
+                x[currentFocus].classList.add("autocomplete-active");
+            }
+
+        
+            /*Removes active class from any active item*/
+            function removeActive(x) {
+                /*a function to remove the "active" class from all autocomplete items:*/
+                for (let item = 0; item < x.length; item++) {
+                    
+                    $($(x)[item]).removeClass("autocomplete-active");
+                }
+            }
+
+            // For closing already opened lists
+            document.addEventListener("click", function (e) {
+                closeAllLists(e.target);
+            });
+        }
+
+        function closeAllLists(elmnt) {
+            let inp = $(`${selector}`).parent();
+            inp = inp[0];
+            /*close all autocomplete lists in the document,
+            except the one passed as an argument:*/
+            var x = document.getElementsByClassName("autocomplete-items");
+            for (var i = 0; i < x.length; i++) {
+                if (elmnt != x[i] && elmnt != inp) {
+                    x[i].parentNode.removeChild(x[i]);
+                }
+            }
+        }
+
+    }
+ 
+    function SignupHelper() {
+        var fileName="";
+
+        $("#btnSignUp").on("click",
+            function () {
+                var data = new FormData();
+                // getting picture name
+                var files = $("#uploadImage").get(0).files;
+                if (files.length > 0) {
+                    data.append("myProfilePic", files[0]);
+                    fileName = files[0].name;
+                }
+                let name = $("#username").val().trim();
+                let login = $("#login").val().trim();
+                let password = $("#password").val().trim();
+                let cpassword = $("#cpassword").val().trim();
+                if (login !== "" && password !== "" && name !== "" && cpassword !== "") {
+                    if (password !== cpassword) {
+                        $("#cpassword").val("");
+                        $("#password").val("");
+                        $("#p").text("Password not matched!");
+                        setTimeout(() => {
+                            const elem = $("#p").text("");
+                        },
+                            2000);
+                        return false;
+                    }
+
+                    if (fileName === "") {
+                        $("#p").text("Click on avatar to upload picture!");
+                        setTimeout(() => {
+                            const elem = $("#p").text("");
+                        },
+                            2000);
+                        return false;
+                    }
+                    data.append("Name", name);
+                    data.append("Login", login);
+                    data.append("Password", password);
+                    data.append("PictureName", fileName);
+
+                    var settings = {
+                        type: "POST",
+                        url: window.BasePath + "User/Signup",
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        success: function (response) {
+
+                            if (response.isUserExist) {
+                                $("#password").val("");
+                                $("#cpassword").val("");
+                                $("#p").text("User already exists!");
+                                setTimeout(() => {
+                                    const elem = $("#p").text("");
+                                }, 2000);
+                                return false;
+                            }
+                            else {
+                                window.location.href = window.BasePath + "User/Login";
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    };
+
+                    $.ajax(settings);
+                }
+                else {
+                   
+                    $("#p").text("Empty Fields!");
+                    setTimeout(() => {
+                        const elem = $("#p").text("");
+                    }, 2000);
+                    return false;
+                }
+
+            });
+    }
 
     return {
         Main: function () {
@@ -245,7 +470,15 @@ MyApp = (function () {
                 // get lower and upper range and load products accordingly.
                 LoadProducts(l, u);
             });
+            $("#newProdBtn").click(function() {
+                $("#addNewProd").slideToggle(700);
+            });
+        },
+        AutoComplete: function(selector, data) {
+            AutoCompleteHelper(selector, data);
+
         }
+
     };
 
 })();

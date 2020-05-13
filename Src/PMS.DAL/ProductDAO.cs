@@ -17,25 +17,27 @@ namespace PMS.DAL
                 String sqlQuery = "";
                 if (dto.ProductID > 0)
                 {
-                    sqlQuery = String.Format("Update dbo.Products Set Name='{0}',Price='{1}',PictureName='{2}',ModifiedOn='{3}',ModifiedBy='{4}' Where ProductID={5}",
-                        dto.Name, dto.Price, dto.PictureName, dto.ModifiedOn, dto.ModifiedBy, dto.ProductID);
+                    sqlQuery =
+                        $"Update dbo.Products Set Name='{dto.Name}',Price='{dto.Price}',ModifiedOn='{dto.ModifiedOn}',ModifiedBy='{dto.ModifiedBy}' Where ProductID={dto.ProductID}; Update dbo.ProductPictureNames Set PictureName = '{dto.PictureName}' where ProductID = '{dto.ProductID}'";
                     helper.ExecuteQuery(sqlQuery);
                     return dto.ProductID;
                 }
                 else
                 {
-                    sqlQuery = String.Format("INSERT INTO dbo.Products(Name, Price, PictureName, CreatedOn, CreatedBy,IsActive) VALUES('{0}','{1}','{2}','{3}','{4}',{5}); Select @@IDENTITY",
-                        dto.Name, dto.Price, dto.PictureName, dto.CreatedOn, dto.CreatedBy, 1);
+                    sqlQuery =
+                        $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID) VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1'); Select @@IDENTITY";
 
                     var obj = helper.ExecuteScalar(sqlQuery);
+                    sqlQuery =
+                        $"INSERT INTO dbo.ProductPictureNames(PictureName, ProductID ) Values ('{dto.PictureName}','{Convert.ToInt32(obj)}');";
+                    helper.ExecuteQuery(sqlQuery);
                     return Convert.ToInt32(obj);
                 }
             }
         }
         public static ProductDTO GetProductById(int pid)
         {
-            var query = String.Format("Select * from dbo.Products Where ProductId={0}", pid);
-
+            var query = $"Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.ProductID='{pid}'";
             using (DBHelper helper = new DBHelper())
             {
                 var reader = helper.ExecuteReader(query);
@@ -53,8 +55,7 @@ namespace PMS.DAL
 
         public static List<ProductDTO> GetAllProducts(Boolean pLoadComments=false)
         {
-            var query = "Select * from dbo.Products Where IsActive = 1;";
-
+            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1;";
             using (DBHelper helper = new DBHelper())
             {
                 var reader = helper.ExecuteReader(query);
@@ -126,21 +127,32 @@ namespace PMS.DAL
             }
         }
 
+        public static List<string> GetMatchingItems(string term)
+        {
+            List<string> matchingItems = null;
+            using (var dbh = new DBHelper())
+            {
+                matchingItems = dbh.ExecuteStoredProcedure("GetMatchingItems", term);
+
+            }
+            return matchingItems;
+        }
+
         private static ProductDTO FillDTO(SqlDataReader reader)
         {
             var dto = new ProductDTO();
-            dto.ProductID = reader.GetInt32(0);
-            dto.Name = reader.GetString(1);
-            dto.Price = reader.GetDouble(2);
-            dto.PictureName = reader.GetString(3);
-            dto.CreatedOn = reader.GetDateTime(4);
-            dto.CreatedBy = reader.GetInt32(5);
-            if (reader.GetValue(6) != DBNull.Value)
-                dto.ModifiedOn = reader.GetDateTime(6);
-            if (reader.GetValue(7) != DBNull.Value)
-                dto.ModifiedBy = reader.GetInt32(7);
+            dto.ProductID = reader.GetInt32(reader.GetOrdinal("ProductID"));
+            dto.Name = reader.GetString(reader.GetOrdinal("Name"));
+            dto.Price = reader.GetDouble(reader.GetOrdinal("Price"));
+            dto.PictureName = reader.GetString(reader.GetOrdinal("PictureName"));
+            dto.CreatedOn = reader.GetDateTime(reader.GetOrdinal("CreatedOn"));
+            dto.CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy"));
+            if (reader.GetValue(reader.GetOrdinal("ModifiedOn")) != DBNull.Value)
+                dto.ModifiedOn = reader.GetDateTime(reader.GetOrdinal("ModifiedOn"));
+            if (reader.GetValue(reader.GetOrdinal("ModifiedBy")) != DBNull.Value)
+                dto.ModifiedBy = reader.GetInt32(reader.GetOrdinal("ModifiedBy"));
 
-            dto.IsActive = reader.GetBoolean(8);
+            dto.IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"));
             return dto;
         }
     }

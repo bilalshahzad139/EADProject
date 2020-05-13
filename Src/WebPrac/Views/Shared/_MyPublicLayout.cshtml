@@ -8,8 +8,11 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
-    <title>_MyPublicLayout</title>
+    <script src="~/Scripts/jquery-3.5.0.js"></script>
+    <script>
+        window.BasePath = '@Url.Content("~")';
+    </script>
+    <title>@ViewBag.Title</title>
 
     @RenderSection("scripts",false)
 </head>
