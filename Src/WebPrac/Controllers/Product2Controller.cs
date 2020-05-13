@@ -1,9 +1,11 @@
 ﻿using PMS.Entities;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.WebPages;
 using PMS.BAL;
 using WebPrac.Security;
 
@@ -14,7 +16,7 @@ namespace WebPrac.Controllers
 
         public ActionResult New()
         {
-            return View($"New");
+            return View();
         }
 
         public JsonResult GetAllProducts()
@@ -61,8 +63,19 @@ namespace WebPrac.Controllers
         }
 
         [HttpPost]
-        public JsonResult Save(ProductDTO dto)
+        public ActionResult Save(ProductDTO dto)
         {
+	        if (dto.Name.IsEmpty() || Convert.ToString(dto.Price, CultureInfo.InvariantCulture).IsEmpty())
+	        {
+		        ViewBag.EmptyFiledsMsg = "Empty Fields!";
+		        return View("New");
+	        }
+
+	        if (dto.PictureName.IsEmpty() && Request.Files["Image"] == null)
+	        {
+		        ViewBag.EmptyFiledsMsg = "Click on Choose File to upload Picture of Product!";
+		        return View("New");
+            }
             if (Request.Files["Image"] != null)
             {
                 var file = Request.Files["Image"];
@@ -108,7 +121,6 @@ namespace WebPrac.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-
         [HttpPost]
         public JsonResult SaveComment(CommentDTO dto)
         {
@@ -132,6 +144,16 @@ namespace WebPrac.Controllers
                 success = false,
             };
             return Json(data1, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult AutoSuggestion(string val)
+        {
+            if (string.IsNullOrEmpty(val) || string.IsNullOrWhiteSpace(val))
+                return Json("", JsonRequestBehavior.AllowGet);
+            var data = PMS.BAL.ProductBO.GetMatchingItems(val);
+            return Json(data, JsonRequestBehavior.AllowGet);
+
         }
 
 

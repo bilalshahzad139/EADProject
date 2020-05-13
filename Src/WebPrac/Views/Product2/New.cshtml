@@ -13,6 +13,9 @@
 
         $("document").ready(function () {
             MyApp.Main();
+            MyApp.AutoComplete("#ItemSearchBox", {
+                source: "Product2/AutoSuggestion"
+            });
         });
 
 
@@ -20,38 +23,47 @@
     </script>
 }
 @section styles{
-    <style>
-        #productsDiv {
-            margin: auto;
-            margin-bottom:30px;
-        }
+	<style>
+		#productsDiv {
+			margin: auto;
+			margin-bottom: 30px;
+		}
 
-        #addNewProd{
-            display:none;
-           
-        }
-        .product {
-            margin: 3% 2% 0 2%;
-            border: 1px solid #ddd;
-        }
-        #newProdContent{
-            width:300px;
-            margin:auto;
-        }
-        #pFilter{
-            height:auto;
-            padding:5px 0 5px 0;
-            background-color: darkslategray;
-        }
-        #priceDropDown{
-            width:200px;
-            height:30px; 
-            border-radius:5px;
-        }
-    </style>
+		#addNewProd {
+			display: none;
+
+		}
+		.product {
+			margin: 3% 2% 0 2%;
+			border: 1px solid #ddd;
+		}
+		#newProdContent {
+			width: 300px;
+			margin: auto;
+		}
+		#pFilter {
+			height: auto;
+			padding: 5px 0 5px 0;
+			background-color: darkslategray;
+		}
+		#priceDropDown {
+			width: 200px;
+			height: 30px;
+			border-radius: 5px;
+		}
+		#ErrMsg {
+			color: red;
+            text-align: center
+		}
+	</style>
 }
 
 
+
+@* this div is for testin auto-suggestion remove it when search box is done *@
+<div>
+    <input type="text" id="ItemSearchBox"/>
+</div>
 
 
 <div class="text-center"><h2>Product Management</h2></div>
@@ -60,19 +72,21 @@
 </div>
 
 <div class="p-2 mx-4 shadow rounded-lg" id="addNewProd">
-    <div id="newProdContent">
-        <div class="text-center mb-n5"><h4>Add New Product</h4></div>
-        <img src="" style="width:100px;height:100px;display:none" id="prodimg" /> <br />
-        <input type="hidden" name="ProductID" id="txtProductID" value="0" />
-        <input type="hidden" name="PictureName" id="txtPictureName" />
-        Name:<input type="text" name="Name" id="txtName" class="form-control" />
-        Price: <input type="text" name="Price" id="txtPrice" class="form-control" />
-        Image: <input type="file" name="Image" id="myfile" />
-        <div class="text-center mt-1">
-            <input type="submit" value="Save" id="btnSave" class="btn btn-success mx-1" />
-            <input type="button" id="btnClear" value="Clear" class="btn btn-danger" />
-        </div>
-    </div>
+	<div id="newProdContent">
+		<div class="text-center mb-n5"><h4>Add New Product</h4></div>
+		<img src="" style="width:100px;height:100px;display:none" id="prodimg" /> <br />
+		<input type="hidden" name="ProductID" id="txtProductID" value="0" />
+		<input type="hidden" name="PictureName" id="txtPictureName" />
+		Name:<input type="text" name="Name" id="txtName" class="form-control" />
+		Price: <input type="text" name="Price" id="txtPrice" class="form-control" />
+		Image: <input type="file" name="Image" id="myfile" />
+		<div class="text-center mt-1">
+			<input type="submit" value="Save" id="btnSave" class="btn btn-success mx-1" />
+			<input type="button" id="btnClear" value="Clear" class="btn btn-danger" />
+		</div>
+		<p id="ErrMsg">@ViewBag.EmptyFiledsMsg</p>
+	</div>
+    
 </div>
 
 
