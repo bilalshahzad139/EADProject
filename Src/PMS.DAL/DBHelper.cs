@@ -34,7 +34,14 @@ namespace PMS.DAL
             var command = new SqlCommand(sqlQuery, _conn);
             return command.ExecuteReader();
         }
-
+        public SqlConnection ReturnConnection()
+        {
+            if (_conn != null && _conn.State == System.Data.ConnectionState.Open)
+            {
+                return _conn;
+            }
+            return null;
+        }
         public void Dispose()
         {
             if (_conn != null && _conn.State == System.Data.ConnectionState.Open)

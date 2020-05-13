@@ -107,7 +107,18 @@ namespace WebPrac.Controllers
             };
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+        [HttpGet]
+        public JsonResult GetProductByName(String prodName)
+        {
+            //var prodName = dt.Name;
+            var products = ProductBO.GetProductByName(prodName);
 
+            var d = new
+            {
+                data = products
+            };
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpPost]
         public JsonResult SaveComment(CommentDTO dto)
@@ -133,17 +144,7 @@ namespace WebPrac.Controllers
             };
             return Json(data1, JsonRequestBehavior.AllowGet);
         }
-        [HttpGet]
-        public JsonResult GetProductByName(String prodName)
-        {
-            var products = ProductBO.GetProductByName(prodName);
-
-            var d = new
-            {
-                data = products
-            };
-            return Json(d, JsonRequestBehavior.AllowGet);
-        }
+       
 
 
         #region Under Development

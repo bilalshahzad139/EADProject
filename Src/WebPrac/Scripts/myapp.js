@@ -75,12 +75,12 @@ MyApp = (function() {
 
     function LoadProductsByName(prodName) {
         $("#productsDiv").empty();
-        var action = `Products2/GetProductByName?prodName=${prodName}`;
+        var action = "Product2/GetProductByName?prodName=" + prodName;
+        var data = { };
         MyAppGlobal.MakeAjaxCall("GET",
             action,
-            {},
+            data,
             function (resp) {
-
                 if (resp.data) {
                     for (let k in resp.data) {
                         const obj = resp.data[k];
@@ -107,7 +107,7 @@ MyApp = (function() {
     function LoadProducts(from, to) {
 
         $("#productsDiv").empty();
-        debugger;
+      //  debugger;
         var action = null;
         if (to == null && from == null) // in case of all products, range will be null.
             action = "Product2/GetAllProducts";

@@ -109,14 +109,19 @@ namespace PMS.DAL
             var query = "SP_Product_SearchByName";
             using (var helper = new DBHelper())
             {
-                SqlCommand command = new SqlCommand(query);
+                SqlConnection _conn = helper.ReturnConnection();
+                if (_conn == null)
+                {
+                    return null;
+                }
+                SqlCommand command = new SqlCommand(query,_conn);
                 command.CommandType = System.Data.CommandType.StoredProcedure;
                 SqlParameter param = new SqlParameter();
                 param.ParameterName = "product_name";
                 param.SqlDbType = System.Data.SqlDbType.VarChar;
                 param.Value = prodName;
                 command.Parameters.Add(param);
-                var reader = helper.ExecuteReader(query);
+                var reader = command.ExecuteReader();
                 var list = new List<ProductDTO>();
 
                 while (reader.Read())

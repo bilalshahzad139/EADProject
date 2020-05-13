@@ -5,7 +5,6 @@ MyAppGlobal = (function () {
 
     return {
         MakeAjaxCall: function (httpmethod, url, data, successFun, errorFunc) {
-
             var settings = {
                 type: httpmethod,
                 dataType: "json",
