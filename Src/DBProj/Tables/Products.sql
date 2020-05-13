@@ -9,8 +9,7 @@
     [IsActive]    BIT          NOT NULL,
 
     [ProductCategoryID] INT NOT NULL, 
-    CONSTRAINT [PK_Products] PRIMARY KEY CLUSTERED ([ProductID] ASC),
-    FOREIGN KEY (ProductCategoryID) REFERENCES ProductCategory(ProductCategoryID)
+    CONSTRAINT [PK_Products] PRIMARY KEY CLUSTERED ([ProductID] ASC)
 
 );
 
