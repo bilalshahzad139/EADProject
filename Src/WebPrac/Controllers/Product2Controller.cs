@@ -107,11 +107,11 @@ namespace WebPrac.Controllers
             };
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        [HttpGet]
-        public JsonResult GetProductByName(String prodName)
+        [HttpPost]
+        public JsonResult GetProductByName(ProductSearchDTO dt)
         {
             //var prodName = dt.Name;
-            var products = ProductBO.GetProductByName(prodName);
+            var products = ProductSearchBO.GetProductByName(dt);
 
             var d = new
             {

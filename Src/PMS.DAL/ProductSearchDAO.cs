@@ -27,7 +27,7 @@ namespace PMS.DAL
             dto.IsActive = reader.GetBoolean(8);
             return dto;
         }
-        public static List<ProductDTO> GetProductByName(String prodName)
+        public static List<ProductDTO> GetProductByName(ProductSearchDTO dt)
         {
             var query = "SP_Product_SearchByName";
             using (var helper = new DBHelper())
@@ -42,7 +42,22 @@ namespace PMS.DAL
                 SqlParameter param = new SqlParameter();
                 param.ParameterName = "product_name";
                 param.SqlDbType = System.Data.SqlDbType.VarChar;
-                param.Value = prodName;
+                param.Value = dt.productName;
+                command.Parameters.Add(param);
+                param = new SqlParameter();
+                param.ParameterName = "minPrice";
+                param.SqlDbType = System.Data.SqlDbType.Float;
+                param.Value = dt.minPrice;
+                command.Parameters.Add(param);
+                param = new SqlParameter();
+                param.ParameterName = "maxPrice";
+                param.SqlDbType = System.Data.SqlDbType.Float;
+                param.Value = dt.maxPrice;
+                command.Parameters.Add(param);
+                param = new SqlParameter();
+                param.ParameterName = "categoryId";
+                param.SqlDbType = System.Data.SqlDbType.Int;
+                param.Value = dt.categoryId;
                 command.Parameters.Add(param);
                 var reader = command.ExecuteReader();
                 var list = new List<ProductDTO>();

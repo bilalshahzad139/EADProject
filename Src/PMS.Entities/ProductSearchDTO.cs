@@ -10,7 +10,7 @@ namespace PMS.Entities
     {
         public String productName { get; set; }
         public float minPrice { get; set; }
-        public float maxprice { get; set; }
+        public float maxPrice { get; set; }
         public int categoryId { get; set; }
 
     }

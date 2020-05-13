@@ -9,9 +9,9 @@ namespace PMS.BAL
 {
     public class ProductSearchBO
     {
-        public static List<ProductDTO> GetProductByName(String prodName)
+        public static List<ProductDTO> GetProductByName(ProductSearchDTO dt)
         {
-            return DAL.ProductDAO.GetProductByName(prodName);
+            return DAL.ProductSearchDAO.GetProductByName(dt);
         }
     }
 }

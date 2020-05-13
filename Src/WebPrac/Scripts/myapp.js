@@ -73,15 +73,19 @@ MyApp = (function() {
         $.ajax(settings);
     }
 
-    function LoadProductsByName(prodName) {
+    function LoadProductsByName(prodName,minPrice,maxPrice,categoryId) {
         $("#productsDiv").empty();
-        var action = "Product2/GetProductByName?prodName=" + prodName;
-        var data = { };
-        MyAppGlobal.MakeAjaxCall("GET",
+        var action = "Product2/GetProductByName";
+        const data = { productName: prodName, minPrice: minPrice, maxPrice: maxPrice, categoryId: categoryId };
+        MyAppGlobal.MakeAjaxCall("POST",
             action,
             data,
             function (resp) {
                 if (resp.data) {
+
+                    if (resp.data.length == 0) {
+                        alert("No Result Found.");
+                    }
                     for (let k in resp.data) {
                         const obj = resp.data[k];
                         obj.CreatedOn = moment(obj.CreatedOn).format("DD/MM/YYYY HH:mm:ss");
@@ -401,7 +405,11 @@ MyApp = (function() {
                 if (prodName == "") {
                     return;
                 }
-                LoadProductsByName(prodName);
+                const t = $("#priceDropDown").find(":selected").data("price");
+                const a = t.split(":");
+                const l = parseFloat(a[0]);
+                const u = parseFloat(a[1]);
+                LoadProductsByName(prodName,l,u,1);
 
 
             });

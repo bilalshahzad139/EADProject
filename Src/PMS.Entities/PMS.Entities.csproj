@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommentDTO.cs" />
+    <Compile Include="ProductSearchDTO.cs" />
     <Compile Include="UserDTO.cs" />
     <Compile Include="ProductDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
