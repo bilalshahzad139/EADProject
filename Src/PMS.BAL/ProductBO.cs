@@ -35,6 +35,10 @@ namespace PMS.BAL
         {
             return PMS.DAL.ProductDAO.AddToCart(pid, uid);
         }
+        public static List<PMS.Entities.Cart> getCart(int uid)
+        {
+            return PMS.DAL.ProductDAO.getCart(uid);
+        }
 
     }
 }

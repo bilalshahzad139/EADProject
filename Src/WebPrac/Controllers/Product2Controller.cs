@@ -10,7 +10,13 @@ namespace WebPrac.Controllers
 {
     public class Product2Controller : Controller
     {
-        
+        public ActionResult Cart()
+        {
+            var cart = PMS.BAL.ProductBO.getCart(SessionManager.User.UserID);
+            //ViewBag.uid = SessionManager.User.UserID;
+            return View(cart);
+        }
+
         public ActionResult New()
         {
             return View();

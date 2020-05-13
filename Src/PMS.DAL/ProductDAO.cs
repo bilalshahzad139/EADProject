@@ -155,6 +155,27 @@ namespace PMS.DAL
                 }
             }
         }
+        public static List<PMS.Entities.Cart> getCart(int uid)
+        {
+            String searchQuery = String.Format("select Products.ProductID,Products.Name,Products.Price,Products.PictureName,Orders.Quantity from dbo.Products join dbo.Orders on Products.ProductID=Orders.ProductID where Orders.UserID={0}", uid);
+            List<Cart> list = new List<Cart>();
+            using (DBHelper helper = new DBHelper())
+            {
+                var orders = helper.ExecuteReader(searchQuery);
+                while (orders.Read())
+                {
+                    Cart item = new Cart();
+                    item.name = orders.GetString(orders.GetOrdinal("Name"));
+                    item.pictureName = orders.GetString(orders.GetOrdinal("PictureName"));
+                    item.pid = orders.GetInt32(orders.GetOrdinal("ProductID"));
+                    item.price =(double) orders.GetDouble(orders.GetOrdinal("Price"));
+                    item.quantity = orders.GetInt32(orders.GetOrdinal("Quantity"));
+                    list.Add(item);
+                }
+                return list;
+            }
+                
+        }
         private static ProductDTO FillDTO(SqlDataReader reader)
         {
             var dto = new ProductDTO();

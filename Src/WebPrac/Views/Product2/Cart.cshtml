@@ -1,0 +1,62 @@
+﻿@model List<PMS.Entities.Cart>
+@{
+    ViewBag.Title = "Cart";
+}
+
+<h2>Cart</h2>
+<div id="cartDiv" class="container" style="background-color:cadetblue">
+    <table>
+        <tr>
+            <th>
+                Picture
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+                Quantity
+            </th>
+        </tr>
+        @{
+            for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+
+                    <td>
+                        <img class="rounded-lg" src="/UploadedFiles/@Model[i].pictureName" style="width:100px;height:100px;" />
+                     </td>
+                    <td>
+                        <p>@Model[i].name</p>
+                    </td>
+                    <td>
+                        <p>@Model[i].price</p>
+                    </td>
+                    <td>
+                        <p>@Model[i].quantity</p>
+                    </td>
+                </tr>
+                
+            }
+        }
+    </table>
+    
+</div>
+<style>
+    th{
+        padding-left:3vw;
+        text-align:center;
+        border:1px solid black;
+    }
+    td{
+        text-align:center;
+        border:1px solid black;
+    }
+    tr{
+        border:1px solid black;
+    }
+</style>
+
+
