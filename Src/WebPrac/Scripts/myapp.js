@@ -19,7 +19,7 @@ MyApp = (function() {
         var name = $("#txtName").val().trim();
         var price = $("#txtPrice").val().trim();
         const oldPicName = $("#txtPictureName").val();
-        var files = $("#myfile").get(0).files;
+        const files = $("#myfile").get(0).files;
 
         if (name === "" || price === "") {
             $("#ErrMsg").text("Empty Fields!");
@@ -126,8 +126,6 @@ MyApp = (function() {
                     $("#productsDiv").append(html);
 
 
-                    
-
                     BindEvents();
 
                 }
@@ -205,93 +203,94 @@ MyApp = (function() {
                 return false;
             });
 
-        $("#productsDiv .addcomment").on("click", function() {
+        $("#productsDiv .addcomment").on("click",
+            function() {
 
-            var mainProdContainer = $(this).closest(".product");
-            console.log(mainProdContainer);
-            const pid = mainProdContainer.attr("pid");
+                var mainProdContainer = $(this).closest(".product");
+                console.log(mainProdContainer);
+                const pid = mainProdContainer.attr("pid");
 
-            const comment = $(this).closest(".commentarea").find(".txtComment").val();
+                const comment = $(this).closest(".commentarea").find(".txtComment").val();
 
-            var obj1 = {
-                ProductID: pid,
-                CommentText: comment
-            };
+                var obj1 = {
+                    ProductID: pid,
+                    CommentText: comment
+                };
 
 
-            MyAppGlobal.MakeAjaxCall("POST",
-                "Product2/SaveComment",
-                obj1,
-                function(resp1) {
+                MyAppGlobal.MakeAjaxCall("POST",
+                    "Product2/SaveComment",
+                    obj1,
+                    function(resp1) {
 
-                    if (resp1.success) {
-                        alert("added");
-                        debugger;
-                        console.log(resp1);
+                        if (resp1.success) {
+                            alert("added");
+                            debugger;
+                            console.log(resp1);
 
-                        const obj11 = {
-                            PictureName: resp1.PictureName,
-                            UserName: resp1.UserName,
-                            CommentText: obj1.CommentText,
-                            CommentOn: moment(resp1.CommentOn)
-                                .format("DD/MM/YYYY HH:mm:ss")
-                        };
+                            const obj11 = {
+                                PictureName: resp1.PictureName,
+                                UserName: resp1.UserName,
+                                CommentText: obj1.CommentText,
+                                CommentOn: moment(resp1.CommentOn)
+                                    .format("DD/MM/YYYY HH:mm:ss")
+                            };
 
-                        const source1 = $("#commenttemplate").html();
-                        const template1 = Handlebars.compile(source1);
-                        const html1 = template1(obj11);
-                        mainProdContainer.find(".comments").append(html1);
+                            const source1 = $("#commenttemplate").html();
+                            const template1 = Handlebars.compile(source1);
+                            const html1 = template1(obj11);
+                            mainProdContainer.find(".comments").append(html1);
 
-                    }
+                        }
 
-                });
+                    });
 
-            $(this).closest(".commentarea").find(".txtComment").val("");
+                $(this).closest(".commentarea").find(".txtComment").val("");
 
-            return false;
-        });
+                return false;
+            });
     }
 
     function AutoCompleteHelper(selector, urlP) {
 
-        let url = urlP.source;
-        $(`${selector}`).on('propertychange input',
-            function (event) {
+        const url = urlP.source;
+        $(`${selector}`).on("propertychange input",
+            function(event) {
 
-            //debugger;
-            const val = $(`${selector}`).val();
-            $(`${selector}autocomplete-list`).empty();
-            const data = {
-                "val":val
-            };
+                //debugger;
+                const val = $(`${selector}`).val();
+                $(`${selector}autocomplete-list`).empty();
+                const data = {
+                    "val": val
+                };
 
-            const settings = {
-                type: 'Post',
-                dataType: "json",
-                url: window.BasePath + url,
-                data: data,
-                success: function (resp) {
-                    console.log(resp);
-                    const inp = $(`${selector}`);
-                    autocomplete(inp , resp);
-                },
-                error: function (error) {
-                   console.log(error);
-                }
-            };
+                const settings = {
+                    type: "Post",
+                    dataType: "json",
+                    url: window.BasePath + url,
+                    data: data,
+                    success: function(resp) {
+                        console.log(resp);
+                        const inp = $(`${selector}`);
+                        autocomplete(inp, resp);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                };
 
-            $.ajax(settings);
+                $.ajax(settings);
 
             }
         );
 
 
-        function autocomplete(inp ,arr) {
+        function autocomplete(inp, arr) {
             var a, b, i;
             closeAllLists();
             var currentFocus = -1;
             a = $("<div>", { "id": inp.attr("id") + "autocomplete-list", "class": "autocomplete-items" }).css({
-                "z-index":"99"
+                "z-index": "99"
             });
             inp.parent().append(a);
             for (i = 0; i < arr.length; i++) {
@@ -299,26 +298,27 @@ MyApp = (function() {
                 b.html(`<strong>${arr[i].substr(0, inp[0].value.length)}</strong>`);
                 b.html(b.html() + arr[i].substr(inp[0].value.length));
                 b.html(`${b.html()}<input type='hidden' value='${arr[i].trim()}'>`);
-                
-                b.on("click", function (e) {
-                    
-                    inp.val($(this).children("input").val());
-                    closeAllLists();
-                });
+
+                b.on("click",
+                    function(e) {
+
+                        inp.val($(this).children("input").val());
+                        closeAllLists();
+                    });
                 b.css({
-                    "padding":"5px 8px"
-                })
-                a.width(inp.width()+10);
+                    "padding": "5px 8px"
+                });
+                a.width(inp.width() + 10);
                 a.css({
-                    "margin":"-2px"
-                })
+                    "margin": "-2px"
+                });
                 a.append(b);
             }
 
-            inp.keydown(function (e) {
-                
+            inp.keydown(function(e) {
+
                 var x = $(`#${$(this).attr("id")}autocomplete-list`);
-                
+
                 if (x) x = $(x).children("div");
                 if (e.keyCode === 40) { //down
                     currentFocus++;
@@ -349,20 +349,21 @@ MyApp = (function() {
                 x[currentFocus].classList.add("autocomplete-active");
             }
 
-        
+
             /*Removes active class from any active item*/
             function removeActive(x) {
                 /*a function to remove the "active" class from all autocomplete items:*/
                 for (let item = 0; item < x.length; item++) {
-                    
+
                     $($(x)[item]).removeClass("autocomplete-active");
                 }
             }
 
             // For closing already opened lists
-            document.addEventListener("click", function (e) {
-                closeAllLists(e.target);
-            });
+            document.addEventListener("click",
+                function(e) {
+                    closeAllLists(e.target);
+                });
         }
 
         function closeAllLists(elmnt) {
@@ -370,8 +371,8 @@ MyApp = (function() {
             inp = inp[0];
             /*close all autocomplete lists in the document,
             except the one passed as an argument:*/
-            var x = document.getElementsByClassName("autocomplete-items");
-            for (var i = 0; i < x.length; i++) {
+            const x = document.getElementsByClassName("autocomplete-items");
+            for (let i = 0; i < x.length; i++) {
                 if (elmnt != x[i] && elmnt != inp) {
                     x[i].parentNode.removeChild(x[i]);
                 }
@@ -379,23 +380,23 @@ MyApp = (function() {
         }
 
     }
- 
+
     function SignupHelper() {
-        var fileName="";
+        var fileName = "";
 
         $("#btnSignUp").on("click",
-            function () {
-                var data = new FormData();
+            function() {
+                const data = new FormData();
                 // getting picture name
-                var files = $("#uploadImage").get(0).files;
+                const files = $("#uploadImage").get(0).files;
                 if (files.length > 0) {
                     data.append("myProfilePic", files[0]);
                     fileName = files[0].name;
                 }
-                let name = $("#username").val().trim();
-                let login = $("#login").val().trim();
-                let password = $("#password").val().trim();
-                let cpassword = $("#cpassword").val().trim();
+                const name = $("#username").val().trim();
+                const login = $("#login").val().trim();
+                const password = $("#password").val().trim();
+                const cpassword = $("#cpassword").val().trim();
                 if (login !== "" && password !== "" && name !== "" && cpassword !== "") {
                     if (password !== cpassword) {
                         $("#cpassword").val("");
@@ -411,8 +412,8 @@ MyApp = (function() {
                     if (fileName === "") {
                         $("#p").text("Click on avatar to upload picture!");
                         setTimeout(() => {
-                            const elem = $("#p").text("");
-                        },
+                                const elem = $("#p").text("");
+                            },
                             2000);
                         return false;
                     }
@@ -421,13 +422,13 @@ MyApp = (function() {
                     data.append("Password", password);
                     data.append("PictureName", fileName);
 
-                    var settings = {
+                    const settings = {
                         type: "POST",
                         url: window.BasePath + "User/Signup",
                         contentType: false,
                         processData: false,
                         data: data,
-                        success: function (response) {
+                        success: function(response) {
 
                             if (response.isUserExist) {
                                 $("#password").val("");
@@ -435,26 +436,27 @@ MyApp = (function() {
                                 $("#p").text("User already exists!");
                                 setTimeout(() => {
                                     const elem = $("#p").text("");
-                                }, 2000);
+                                },
+                                    2000);
                                 return false;
-                            }
+                            } 
                             else {
-                                window.location.href = window.BasePath + "User/Login";
+                                window.location.href = window.BasePath + "User/VerifyEmail";
                             }
                         },
-                        error: function (error) {
+                        error: function(error) {
                             console.log(error);
                         }
                     };
 
                     $.ajax(settings);
-                }
-                else {
-                   
+                } else {
+
                     $("#p").text("Empty Fields!");
                     setTimeout(() => {
-                        const elem = $("#p").text("");
-                    }, 2000);
+                            const elem = $("#p").text("");
+                        },
+                        2000);
                     return false;
                 }
 
@@ -462,11 +464,10 @@ MyApp = (function() {
     }
 
     return {
-
-        Signup: function () {
+        Signup: function() {
             SignupHelper();
         },
-        Main: function () {
+        Main: function() {
 
             LoadProducts();
 

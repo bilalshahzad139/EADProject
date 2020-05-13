@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "VerifyEmail";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+@if (ViewData["server-error"]== null)
+{
+    <div style="background: aqua">
+        <p class="text-center text-primary">
+            <b>
+                An email has been sent to your account please verify it
+            </b>
+        </p>
+        <p>Go to Home page
+        <a href="#">
+                Home
+            </a>
+        </p>
+    </div>
+}
+else
+{
+    <h3 class="text-danger alert">@ViewData["server-error"]</h3>
+}
+

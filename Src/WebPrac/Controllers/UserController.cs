@@ -20,9 +20,9 @@ namespace WebPrac.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult Login(String login, String password)
+		public ActionResult Login(string login, string password)
 		{
-			var obj = PMS.BAL.UserBO.ValidateUser(login, password);
+			var obj = UserBO.ValidateUser(login, password);
 			if (obj != null)
 			{
 				Session["user"] = obj;
@@ -37,18 +37,20 @@ namespace WebPrac.Controllers
 
 			return View();
 		}
+
 		[HttpGet]
 		public ActionResult Signup()
 		{
 			ViewBag.Title = "Sign up";
 			return View();
 		}
-		// I am goin to hit it by AJAX
+
+		// I am going to hit it by AJAX
 		[HttpPost]
 		[ActionName("Signup")]
 		public ActionResult Signup(UserDTO userDto)
 		{
-			Object result = null;
+			object result = null;
 			if (userDto.Login.IsEmpty() || userDto.Name.IsEmpty() || userDto.Password.IsEmpty() || userDto.PictureName.IsEmpty())
 			{
 				ViewBag.ErrMsg = "Empty Fields!";
@@ -56,27 +58,26 @@ namespace WebPrac.Controllers
 			}
 			try
 			{
-				Boolean isUserAlreadyExist = UserBO.isUserAlreadyExist(userDto.Login);
+				var isUserAlreadyExist = UserBO.IsUserAlreadyExist(userDto.Login);
 				if (!isUserAlreadyExist)
 				{
 					//Picture handling
-					var uniqueName = "";
 
-					if (Request.Files["myProfilePic"] != null)
+                    if (Request.Files["myProfilePic"] != null)
 					{
 						var file = Request.Files["myProfilePic"];
 						if (file.FileName != "")
 						{
 							Directory.CreateDirectory(Server.MapPath("~/ProfilePictures"));
-							var ext = System.IO.Path.GetExtension(file.FileName);
+							var ext = Path.GetExtension(file.FileName);
 
 							//Generate a unique name using Guid
-							uniqueName = Guid.NewGuid().ToString() + ext;
+							var uniqueName = Guid.NewGuid().ToString() + ext;
 
 							//Get physical path of our folder where we want to save images
 							var rootPath = Server.MapPath("~/ProfilePictures");
 
-							var fileSavePath = System.IO.Path.Combine(rootPath, uniqueName);
+							var fileSavePath = Path.Combine(rootPath, uniqueName);
 
 							// Save the uploaded file to "UploadedFiles" folder
 							file.SaveAs(fileSavePath);
@@ -87,15 +88,13 @@ namespace WebPrac.Controllers
 					
 					var res = UserBO.Save(userDto);
 					if (res == 1)
-					{
-						result = new
-						{
-							isUserExist = isUserAlreadyExist,
-							urlToRedirect = Url.Content("~/User/Login")
-						};
-					}
-
-				}
+                        result = new
+                        {
+                            isUserExist = isUserAlreadyExist,
+                            urlToRedirect = Url.Content("~/User/VerifyEmail")
+                        };
+                    EmailVerifier.SendEmail(userDto);
+                }
 				else
 				{
 					result = new
@@ -112,8 +111,28 @@ namespace WebPrac.Controllers
 					isUserExist = false,
 					urlToRedirect = ""
 				};
-			}
+            }
 			return Json(result, JsonRequestBehavior.AllowGet);
+		}
+
+		[HttpGet]
+		public ActionResult VerifyEmail(string email , string code)
+		{
+            if (string.IsNullOrEmpty(email)||string.IsNullOrEmpty(code))
+            {
+                return View($"VerifyEmail");
+			}
+            var user = new UserDTO()
+            {
+                Login =  email,Password = "",IsActive = false
+            };
+            if (UserBO.EmailVerification(user,code))
+            {
+                ViewBag.EmailVerified = true;
+                return Redirect("~/User/Login");
+            }
+            ViewData["server-error"] = "Something has gone wrong";
+            return View($"VerifyEmail");
 		}
 
 		[HttpGet]

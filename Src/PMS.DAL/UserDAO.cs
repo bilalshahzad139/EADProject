@@ -13,7 +13,7 @@ namespace PMS.DAL
         public static int Save(UserDTO dto)
         {
             var sqlQuery = "";
-            sqlQuery = dto.UserID > 0 ? $"Update dbo.Users Set Name='{dto.Name}', PictureName='{dto.PictureName}' Where UserID={dto.UserID}" : $"INSERT INTO dbo.Users(Name, Login,Password, PictureName, IsAdmin,IsActive) VALUES('{dto.Name}','{dto.Login}','{dto.Password}','{dto.PictureName}',{0},{1})";
+            sqlQuery = dto.UserID > 0 ? $"Update dbo.Users Set Name='{dto.Name}', PictureName='{dto.PictureName}' Where UserID={dto.UserID}" : $"INSERT INTO dbo.Users(Name, Login,Password, PictureName, IsAdmin,IsActive) VALUES('{dto.Name}','{dto.Login}','{dto.Password}','{dto.PictureName}',{0},'{dto.IsActive}')";
 
             using (var helper = new DBHelper())
             {
@@ -21,12 +21,12 @@ namespace PMS.DAL
             }
         }
 
-        public static Boolean isUserAlreadyExist(String pLogin)
+        public static bool isUserAlreadyExist(string pLogin)
         {
-            string mySQLQuery = String.Format(@"SELECT count(*) FROM dbo.Users WHERE login = '{0}'", pLogin);
-            using (DBHelper dbh = new DBHelper())
+            var mySQLQuery = string.Format(@"SELECT count(*) FROM dbo.Users WHERE login = '{0}'", pLogin);
+            using (var dbh = new DBHelper())
             {
-                int result = Convert.ToInt32(dbh.ExecuteScalar(mySQLQuery));
+                var result = Convert.ToInt32(dbh.ExecuteScalar(mySQLQuery));
                 if (result != 0)
                     return true;
                 return false;
@@ -107,16 +107,59 @@ namespace PMS.DAL
             }
         }
 
+        public static bool VerifyEmail(UserDTO user , string code)
+        {
+            var flag = false;
+            var query =
+                $"SELECT * FROM dbo.EmailVerifyingCodes WHERE email = '{user.Login}' AND verification_code = '{code}' AND expired != 'true'";
+            using (var dbh = new DBHelper())
+            {
+                var reader = dbh.ExecuteReader(query);
+                if (!reader.Read()) return flag;
+                flag = true;
+                reader.Dispose();
+                query = $"UPDATE dbo.Users SET IsActive = 'true' WHERE Login = '{user.Login}'";
+                var recAff = dbh.ExecuteQuery(query);
+                user.IsActive = recAff == 1;
+                query = $"UPDATE dbo.EmailVerifyingCodes SET expired = 'true' WHERE email='{user.Login}'";
+                recAff = dbh.ExecuteQuery(query);
+                
+            }
+
+            return flag;
+        }
+
+        public static bool CodeInsertion(UserDTO user, string code)
+        {
+            var flag = false;
+            using (var dbh = new DBHelper())
+            {
+                var query =$"SELECT COUNT(*) FROM dbo.EmailVerifyingCodes WHERE email = '{user.Login}' AND expired = 'false'";
+                var read = (int)dbh.ExecuteScalar(query);
+                query = read == 0 ? $"INSERT INTO dbo.EmailVerifyingCodes VALUES('{user.Login}','{code}','false')" : $"UPDATE dbo.EmailVerifyingCodes SET verification_code = '{code}' WHERE email = '{user.Login}'";
+
+                var recAff = dbh.ExecuteQuery(query);
+                if (recAff != 1) return flag;
+                
+                flag = true;
+            }
+
+            return flag;
+        }
+
         private static UserDTO FillDTO(SqlDataReader reader)
         {
-            var dto = new UserDTO();
-            dto.UserID = reader.GetInt32(0);
-            dto.Name = reader.GetString(1);
-            dto.Login = reader.GetString(2);
-            dto.Password = reader.GetString(3);
-            dto.PictureName = reader.GetString(4);
-            dto.IsAdmin = reader.GetBoolean(5);
-            dto.IsActive = reader.GetBoolean(6);
+            if (reader == null) throw new ArgumentNullException(nameof(reader));
+            var dto = new UserDTO
+            {
+                UserID = reader.GetInt32(0),
+                Name = reader.GetString(1),
+                Login = reader.GetString(2),
+                Password = reader.GetString(3),
+                PictureName = reader.GetString(4),
+                IsAdmin = reader.GetBoolean(5),
+                IsActive = reader.GetBoolean(6)
+            };
 
             return dto;
         }

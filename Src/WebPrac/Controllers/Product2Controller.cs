@@ -13,12 +13,13 @@ namespace WebPrac.Controllers
 {
     public class Product2Controller : Controller
     {
-        
+        [HttpGet]
         public ActionResult New()
         {
             return View();
         }
 
+        [HttpGet]
         public JsonResult GetAllProducts()
         {
             var products = PMS.BAL.ProductBO.GetAllProducts(true);
@@ -42,6 +43,7 @@ namespace WebPrac.Controllers
             return Json(d, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
         public JsonResult GetProductById(int pid)
         {
             var prod = PMS.BAL.ProductBO.GetProductById(pid);
