@@ -127,12 +127,10 @@ namespace WebPrac.Controllers
 				return View("Feedback");
 		}
 
-		[HttpGet]
-		public ActionResult SentFeedback()
+		[HttpPost]
+		public ActionResult Feedback(feedbackDTO sos)
 		{
-			//name,email,phone,message from the form can be accessed here.... these attributes are 
-			//suppose to be save in database
-
+			feedbackBO.saveFeedBack(sos);
 			return RedirectToAction("Login");
 		}
 
