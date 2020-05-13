@@ -7,6 +7,9 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <script>
+        window.BasePath = '@Url.Content("~")';
+    </script>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -16,7 +19,7 @@
     <!-- Font Awesome///////// -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <title>_MyProductLayout</title>
+	<title>@ViewBag.Title</title>
     <style>
         .prodbox {
             padding: 5px;
@@ -72,13 +75,13 @@
             top:0px;
             z-index:100;
         }
-        #myNav > a{
+        .menu a{
             color:chocolate;
             margin:0px 10px 0px 10px;
-            text-decoration:none;
+            text-decoration:none !important;
             font-size:large;
         }
-        #myNav > a:hover{
+        .menu a:hover{
             color:burlywood;
         }
 
@@ -90,7 +93,7 @@
 
     @Styles.Render("~/Content/css")
 
-    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
     <script src="~/Scripts/moment.js"></script>
 
     <script src="~/Scripts/MyAppGlobal.js"></script>
