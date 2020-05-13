@@ -8,9 +8,9 @@ namespace PMS.Entities
 {
     public class ProductCategoryDTO
     {
-        public int CategoryID { get; set; }
+        public int ProductCategoryID { get; set; }
       
-        public string CategoryName { get; set; }
+        public string ProductCategoryName { get; set; }
 
     }
 }

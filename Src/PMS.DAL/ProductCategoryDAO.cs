@@ -16,7 +16,7 @@ namespace PMS.DAL
             {
                 String sqlQuery = "";
                
-                    sqlQuery = String.Format("INSERT INTO dbo.category(CategoryName) VALUES('{0}'); Select @@IDENTITY",
+                    sqlQuery = String.Format("INSERT INTO dbo.ProductCategory(ProductCategoryName) VALUES('{0}'); Select @@IDENTITY",
                         categoryName);
 
                     var obj = helper.ExecuteScalar(sqlQuery);
@@ -26,7 +26,7 @@ namespace PMS.DAL
         }
         public static List<ProductCategoryDTO> GetAllCategories()
         {
-            var query = String.Format("Select * from dbo.category");
+            var query = String.Format("Select * from dbo.ProductCategory");
             using (DBHelper helper = new DBHelper())
             {
                 var reader = helper.ExecuteReader(query);
@@ -46,7 +46,7 @@ namespace PMS.DAL
         }
         public static ProductCategoryDTO GetCategory(string Categoryname)
         {
-            var query = String.Format("Select * from dbo.category Where CategoryName='{0}'", Categoryname);
+            var query = String.Format("Select * from dbo.ProductCategory Where ProductCategoryName='{0}'", Categoryname);
 
             using (DBHelper helper = new DBHelper())
             {
@@ -65,9 +65,9 @@ namespace PMS.DAL
             private static ProductCategoryDTO FillDTO(SqlDataReader reader)
         {
             var dto = new ProductCategoryDTO();
-            dto.CategoryID = reader.GetInt32(0);
+            dto.ProductCategoryID = reader.GetInt32(0);
            
-            dto.CategoryName = reader.GetString(1);
+            dto.ProductCategoryName = reader.GetString(1);
             
             return dto;
         }

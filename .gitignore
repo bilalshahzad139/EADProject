@@ -9,7 +9,6 @@
 /Src/PMS.DAL/obj
 /Src/PMS.BAL/obj
 /Src/packages
-
 /Src/DBProj/DBProj.sqlproj.user
 /Src/DBProj/bin
 /Src/DBProj/obj
@@ -17,6 +16,3 @@
 /Src/DBProj/DBProj.dbmdl
 
 /Src/.vs
-/.vs
-/Src/DBPractice/App.config
-/Src/WebPrac/Web.config

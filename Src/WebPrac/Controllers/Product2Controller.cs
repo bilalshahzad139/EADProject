@@ -1,9 +1,12 @@
 ﻿using PMS.Entities;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.WebPages;
+using PMS.BAL;
 using WebPrac.Security;
 
 namespace WebPrac.Controllers
@@ -118,10 +121,19 @@ namespace WebPrac.Controllers
         }
 
         [HttpPost]
-        public JsonResult Save(ProductDTO dto)
+        public ActionResult Save(ProductDTO dto)
         {
-            var uniqueName = "";
+	        if (dto.Name.IsEmpty() || Convert.ToString(dto.Price, CultureInfo.InvariantCulture).IsEmpty())
+	        {
+		        ViewBag.EmptyFiledsMsg = "Empty Fields!";
+		        return View("New");
+	        }
 
+	        if (dto.PictureName.IsEmpty() && Request.Files["Image"] == null)
+	        {
+		        ViewBag.EmptyFiledsMsg = "Click on Choose File to upload Picture of Product!";
+		        return View("New");
+            }
             if (Request.Files["Image"] != null)
             {
                 var file = Request.Files["Image"];
@@ -130,7 +142,7 @@ namespace WebPrac.Controllers
                     var ext = System.IO.Path.GetExtension(file.FileName);
 
                     //Generate a unique name using Guid
-                    uniqueName = Guid.NewGuid().ToString() + ext;
+                    var uniqueName = Guid.NewGuid().ToString() + ext;
 
                     //Get physical path of our folder where we want to save images
                     var rootPath = Server.MapPath("~/UploadedFiles");
@@ -170,22 +182,54 @@ namespace WebPrac.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-
         [HttpPost]
         public JsonResult SaveComment(CommentDTO dto)
         {
-            dto.CommentOn = DateTime.Now;
-            dto.UserID = SessionManager.User.UserID;
-
-            PMS.BAL.CommentBO.Save(dto);
-            var data = new
+            if (!string.IsNullOrEmpty(dto.CommentText))
             {
-                success = true,
-                UserName = SessionManager.User.Name,
-                CommentOn = dto.CommentOn,
-                PictureName = SessionManager.User.PictureName
+                dto.CommentOn = DateTime.Now;
+                dto.UserID = SessionManager.User.UserID;
+
+                PMS.BAL.CommentBO.Save(dto);
+                var data = new
+                {
+                    success = true,
+                    UserName = SessionManager.User.Name,
+                    CommentOn = dto.CommentOn,
+                    PictureName = SessionManager.User.PictureName
+                };
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+            var data1 = new
+            {
+                success = false,
             };
-            return Json(data, JsonRequestBehavior.AllowGet);
+            return Json(data1, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult AutoSuggestion(string val)
+        {
+            if (string.IsNullOrEmpty(val) || string.IsNullOrWhiteSpace(val))
+                return Json("", JsonRequestBehavior.AllowGet);
+            var data = PMS.BAL.ProductBO.GetMatchingItems(val);
+            return Json(data, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+        #region Under Development
+
+        public ActionResult Edit(int id)
+        {
+
+            var prod = ProductBO.GetProductById(id);
+            var redVal= View($"New", prod);
+
+            return redVal;
+            
+        }
+
+        #endregion
     }
 }
