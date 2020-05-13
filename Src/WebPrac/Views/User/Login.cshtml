@@ -13,7 +13,7 @@
 			</div>
 			<div>
 				<h5>Login ID</h5>
-				<input class="input" type="text" name="login" value="@ViewBag.Login" maxlength="40" required autofocus />
+				<input class="input" id="login" type="text" name="login" value="@ViewBag.Login" maxlength="40" required autofocus />
 			</div>
 		</div>
 		<div class="input-div two">
@@ -37,6 +37,10 @@
 
 @section scripts{
 	<script>
+        let msg ="@ViewBag.MSG";
+        if (msg) {
+            $("#login").focus();
+        }
 		setTimeout(() => {
 			const elem = $("#pid").text("");
 		}, 2000);
