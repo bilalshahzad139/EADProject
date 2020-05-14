@@ -1,10 +1,6 @@
-﻿using PMS.DAL;
+﻿using System.Collections.Generic;
+using PMS.DAL;
 using PMS.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PMS.BAL
 {
@@ -12,35 +8,47 @@ namespace PMS.BAL
     {
         public static int Save(UserDTO dto)
         {
-            return DAL.UserDAO.Save(dto);
+            return UserDAO.Save(dto);
         }
-        public static Boolean isUserAlreadyExist(String pLogin)
+
+        public static bool isUserAlreadyExist(string pLogin)
         {
             return UserDAO.isUserAlreadyExist(pLogin);
         }
 
         public static int UpdatePassword(UserDTO dto)
         {
-            return DAL.UserDAO.UpdatePassword(dto);
+            return UserDAO.UpdatePassword(dto);
         }
 
         public static UserDTO ValidateUser(string pLogin, string pPassword)
         {
-            return DAL.UserDAO.ValidateUser(pLogin, pPassword);
+            return UserDAO.ValidateUser(pLogin, pPassword);
         }
+
         public static UserDTO GetUserById(int pid)
         {
-            return DAL.UserDAO.GetUserById(pid);
+            return UserDAO.GetUserById(pid);
         }
+
         public static List<UserDTO> GetAllUsers()
         {
-            return DAL.UserDAO.GetAllUsers();
+            return UserDAO.GetAllUsers();
         }
 
         public static int DeleteUser(int pid)
         {
-            return DAL.UserDAO.DeleteUser(pid);
+            return UserDAO.DeleteUser(pid);
         }
 
+        public static bool CodeInsertion(UserDTO user, string code)
+        {
+            return UserDAO.CodeInsertion(user, code);
+        }
+
+        public static bool EmailVerification(UserDTO user, string code)
+        {
+            return UserDAO.VerifyEmail(user, code);
+        }
     }
 }
