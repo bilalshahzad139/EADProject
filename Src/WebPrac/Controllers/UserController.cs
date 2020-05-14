@@ -91,8 +91,9 @@ namespace WebPrac.Controllers
 						result = new
 						{
 							isUserExist = isUserAlreadyExist,
-							urlToRedirect = Url.Content("~/User/Login")
+                            urlToRedirect = Url.Content("~/User/VerifyEmail")
 						};
+                        EmailVerifier.SendEmail(userDto);
 					}
 
 				}
@@ -116,31 +117,61 @@ namespace WebPrac.Controllers
 			return Json(result, JsonRequestBehavior.AllowGet);
 		}
 
+        [HttpGet]
+        public ActionResult VerifyEmail(string email , string code)
+        {
+            if (string.IsNullOrEmpty(email)||string.IsNullOrEmpty(code))
+            {
+                return View($"VerifyEmail");
+            }
+            var user = new UserDTO()
+            {
+                Login =  email,Password = "",IsActive = false
+            };
+            if (UserBO.EmailVerification(user,code))
+            {
+                ViewBag.EmailVerified = true;
+                return Redirect("~/User/Login");
+            }
+            ViewData["server-error"] = "Something has gone wrong";
+            return View($"VerifyEmail");
+        }
+
 		[HttpGet]
+
+		//feedback view will be open without an active user so
+		//So i Changed session manager possion
 		public ActionResult Logout()
 		{
 			UserDTO u = (UserDTO)Session["user"];
-			SessionManager.ClearSession();
 			if (u.IsAdmin == true)
+			{
+				//if user is admin, session will be cleared and feedback page will not open
+				SessionManager.ClearSession();
 				return RedirectToAction("Login");
+			}
 			else
-				return View("Feedback");
+				return RedirectToAction("Feedback");
 		}
 
-		[HttpGet]
-		public ActionResult SentFeedback()
+		[HttpPost]
+		public ActionResult Feedback(feedbackDTO sos)
 		{
-			//name,email,phone,message from the form can be accessed here.... these attributes are 
-			//suppose to be save in database
-
+			
+			feedbackBO.saveFeedBack(sos);
+			SessionManager.ClearSession();
 			return RedirectToAction("Login");
 		}
 
 		[HttpGet]
 		public ActionResult Feedback()
 		{
-			return View("Feedback");
-
+			//if user is regularUser session contain something, hence feedback view opened
+			if(Session["user"]!=null)
+			{
+				return View("Feedback");
+			}
+			return RedirectToAction("Login");
 		}
 
 

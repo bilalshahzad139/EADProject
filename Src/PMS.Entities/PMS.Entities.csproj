@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Cart.cs" />
     <Compile Include="CommentDTO.cs" />
+    <Compile Include="feedbackDTO.cs" />
     <Compile Include="UserDTO.cs" />
     <Compile Include="ProductDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

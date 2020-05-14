@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PMS.BAL
 {
-    public class ProductBO
+    public static class ProductBO
     {
         public static int Save(ProductDTO dto)
         {
