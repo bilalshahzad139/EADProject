@@ -72,7 +72,11 @@
     <Build Include="Tables\ProductPictureNames.sql" />
     <Build Include="Procedures\InsertProductPictureName.sql" />
     <Build Include="Procedures\dbo.GetMatchingItems.sql" />
+
+    <Build Include="Tables\dbo.EmailVerifyingCodes.sql" />
+
     <Build Include="Tables\feedback.sql" />
+
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Users.sql" />
