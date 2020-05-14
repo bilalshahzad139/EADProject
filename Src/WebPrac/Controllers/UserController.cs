@@ -91,8 +91,9 @@ namespace WebPrac.Controllers
 						result = new
 						{
 							isUserExist = isUserAlreadyExist,
-							urlToRedirect = Url.Content("~/User/Login")
+                            urlToRedirect = Url.Content("~/User/VerifyEmail")
 						};
+                        EmailVerifier.SendEmail(userDto);
 					}
 
 				}
@@ -115,6 +116,26 @@ namespace WebPrac.Controllers
 			}
 			return Json(result, JsonRequestBehavior.AllowGet);
 		}
+
+        [HttpGet]
+        public ActionResult VerifyEmail(string email , string code)
+        {
+            if (string.IsNullOrEmpty(email)||string.IsNullOrEmpty(code))
+            {
+                return View($"VerifyEmail");
+            }
+            var user = new UserDTO()
+            {
+                Login =  email,Password = "",IsActive = false
+            };
+            if (UserBO.EmailVerification(user,code))
+            {
+                ViewBag.EmailVerified = true;
+                return Redirect("~/User/Login");
+            }
+            ViewData["server-error"] = "Something has gone wrong";
+            return View($"VerifyEmail");
+        }
 
 		[HttpGet]
 		public ActionResult Logout()
