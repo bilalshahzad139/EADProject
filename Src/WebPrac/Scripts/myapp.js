@@ -139,7 +139,7 @@ MyApp = (function() {
         $("#productsDiv").empty();
         var action = "Product2/GetProductByName";
         const data = { productName: prodName, minPrice: minPrice, maxPrice: maxPrice, categoryId: categoryId };
-        MyAppGlobal.MakeAjaxCall("POST",
+        MyAppGlobal.MakeAjaxCall("Get",
             action,
             data,
             function (resp) {
