@@ -156,6 +156,19 @@ namespace WebPrac.Controllers
 
         }
 
+        [HttpGet]
+        public JsonResult GetProductByName(ProductSearchDTO dt)
+        {
+            //var prodName = dt.Name;
+            var products = ProductSearchBO.GetProductByName(dt);
+
+            var d = new
+            {
+                data = products
+            };
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
+
 
         #region Under Development
 
