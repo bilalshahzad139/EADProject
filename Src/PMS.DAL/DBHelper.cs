@@ -56,7 +56,25 @@ namespace PMS.DAL
             }
             return items;
         }
-
+        public SqlDataReader ExecuteReader(string sqlQuery, SqlParameter[] parameter= null)
+        {
+            var command = new SqlCommand(sqlQuery, _conn);
+            if (parameter!=null)
+            {
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+                foreach(var i in parameter)
+                {
+                    command.Parameters.Add(i);
+                }
+            }
+            return command.ExecuteReader();
+        }
+        //public SqlConnection ReturnConnection()
+        //{
+        //    if (_conn != null && _conn.State == System.Data.ConnectionState.Open)
+        //        return _conn;
+        //    return null;
+        //}
         public void Dispose()
         {
             if (_conn != null && _conn.State == System.Data.ConnectionState.Open)
