@@ -117,30 +117,40 @@ namespace WebPrac.Controllers
 		}
 
 		[HttpGet]
+
+		//feedback view will be open without an active user so
+		//So i Changed session manager possion
 		public ActionResult Logout()
 		{
 			UserDTO u = (UserDTO)Session["user"];
-			SessionManager.ClearSession();
 			if (u.IsAdmin == true)
+			{
+				//if user is admin, session will be cleared and feedback page will not open
+				SessionManager.ClearSession();
 				return RedirectToAction("Login");
+			}
 			else
-				return View("Feedback");
+				return RedirectToAction("Feedback");
 		}
 
-		[HttpGet]
-		public ActionResult SentFeedback()
+		[HttpPost]
+		public ActionResult Feedback(feedbackDTO sos)
 		{
-			//name,email,phone,message from the form can be accessed here.... these attributes are 
-			//suppose to be save in database
-
+			
+			feedbackBO.saveFeedBack(sos);
+			SessionManager.ClearSession();
 			return RedirectToAction("Login");
 		}
 
 		[HttpGet]
 		public ActionResult Feedback()
 		{
-			return View("Feedback");
-
+			//if user is regularUser session contain something, hence feedback view opened
+			if(Session["user"]!=null)
+			{
+				return View("Feedback");
+			}
+			return RedirectToAction("Login");
 		}
 
 
