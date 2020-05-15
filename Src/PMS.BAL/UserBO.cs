@@ -58,9 +58,9 @@ namespace PMS.BAL
             return UserDAO.VerifyEmail(user, code);
         }
 
-        public static void GetSaltForLogin(string login, string password)
+        public static string GetSaltForLogin(string login)
         {
-            return UserDAO.GetSaltForLogin(login, password);
+             return UserDAO.GetSaltForLogin(login);
         }
     }
 }

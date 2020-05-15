@@ -84,6 +84,8 @@ namespace WebPrac.Controllers
                         }
                     }
 
+                    userDto.PswSalt = UserPswHashing.CreateSalt();
+                    UserPswHashing.GenerateHash(userDto);
                     var res = UserBO.Save(userDto);
                     if (res == 1)
                     {
