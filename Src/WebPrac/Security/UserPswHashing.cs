@@ -1,32 +1,30 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
+using PMS.Entities;
 
 namespace WebPrac.Security
 {
     public static class UserPswHashing
     {
-        public static string CreateSalt(int size)
+        private static int SaltSize = 16;
+
+        public static string CreateSalt()
         {
             //Generate a cryptographic random number.
-            var rng = new RNGCryptoServiceProvider();
-            var buff = new byte[size];
-            rng.GetBytes(buff);
-            return Convert.ToBase64String(buff);
+            var saltCryptoGenerator = new RNGCryptoServiceProvider();
+            var salt = new byte[UserPswHashing.SaltSize];
+            saltCryptoGenerator.GetBytes(salt);
+            return Convert.ToBase64String(salt);
         }
 
-        public static string GenerateHash(string input, string salt)
+        public static void GenerateHash(UserDTO user)
         {
-            var bytes = Encoding.UTF8.GetBytes(input + salt);
+            var bytes = Encoding.UTF8.GetBytes(user.Password + user.PswSalt);
             var sHA256ManagedString = new SHA256Managed();
             var hash = sHA256ManagedString.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
+            user.Password = Convert.ToBase64String(hash);
         }
 
-        public static bool AreEqual(string plainTextInput, string hashedInput, string salt)
-        {
-            var newHashedPin = GenerateHash(plainTextInput, salt);
-            return newHashedPin.Equals(hashedInput);
-        }
     }
 }
