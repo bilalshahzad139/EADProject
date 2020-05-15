@@ -160,5 +160,21 @@ namespace PMS.DAL
 
             return dto;
         }
+        public static string GetUserEmail(string userLogin)
+        {
+            string sqlQuery = String.Format("select email from dbo.EmailVerifyingCodes where userLogin=" +
+                "(Select Login from Users where Login='{0}')",userLogin);
+            using (DBHelper dbhelper = new DBHelper())
+            {
+                
+                var reader = dbhelper.ExecuteReader(sqlQuery);
+                if(reader!=null)
+                {
+                    string userEmail = reader.ToString();
+                    return userEmail;
+                }
+                return "";
+            }
+        }
     }
 }

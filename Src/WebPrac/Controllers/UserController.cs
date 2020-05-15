@@ -173,8 +173,45 @@ namespace WebPrac.Controllers
 			}
 			return RedirectToAction("Login");
 		}
+		[HttpGet]
+		public ActionResult ForgotPassword()
+		{
+			return View();
+		}
+		[HttpPost]
+		public JsonResult ResetPassword(string userName)
+		{
+			
+			if(UserBO.isUserAlreadyExist(userName))
+			{
 
+				int code = UserBO.sendVerificationCode(userName);
+				if(code!=0)//Code as been sent.
+				{
+					var h = new
+					{
+						statusbit = 1,
+						msg = "Success",
+						data = code
+					};
+					return Json(h, JsonRequestBehavior.AllowGet);
+				}
+				 var b = new
+				{
+					statusbit = 0,
+					msg = "Error Sending Code",
+					data = code
+				};
+				return Json(b, JsonRequestBehavior.AllowGet);
+			}
 
+			 var k = new
+			{
+				statusbit = 0,
+				msg = "User Doesnt Exist",
+			};
+			return Json(k, JsonRequestBehavior.AllowGet);
+		}
 
 		//[HttpGet]
 		//public ActionResult Login2()
