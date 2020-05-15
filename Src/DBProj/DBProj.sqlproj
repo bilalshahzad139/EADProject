@@ -75,6 +75,7 @@
     <Build Include="Procedures\dbo.GetMatchingItems.sql" />
     <Build Include="Tables\dbo.EmailVerifyingCodes.sql" />
     <Build Include="Tables\feedback.sql" />
+    <Build Include="Tables\dbo.Wishlist.sql" />
     <None Include="Scripts\ScriptsIgnoredOnImport.sql" />
     <Build Include="Procedures\dbo.SP_Product_SearchByName.sql" />
   </ItemGroup>

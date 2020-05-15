@@ -38,6 +38,9 @@ namespace PMS.BAL
         {
             return PMS.DAL.ProductDAO.GetMatchingItems(term);
         }
-
+        public static int AddToWishlist(int uid, int pid)
+        {
+            return PMS.DAL.ProductDAO.AddToWishlist(uid, pid);
+        }
     }
 }

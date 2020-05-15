@@ -31,6 +31,8 @@ namespace DBPractice
             //var user = PMS.BAL.UserBO.ValidateUser("admin", "admin");
 
             //var user2 = PMS.BAL.UserBO.ValidateUser("admin", "admin12");
+            var user2 = PMS.BAL.ProductBO.AddToWishlist(2,3);
+
 
             //System.Console.ReadKey();
 
