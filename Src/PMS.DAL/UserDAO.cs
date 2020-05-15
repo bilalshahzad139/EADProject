@@ -181,5 +181,10 @@ namespace PMS.DAL
 
             return dto;
         }
+
+        public static void GetSaltForLogin(string login, string password)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
