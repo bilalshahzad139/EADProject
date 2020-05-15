@@ -291,6 +291,7 @@
     <Content Include="Scripts\jquery-3.5.0.min.map" />
     <Content Include="Views\Shared\_MyLayout.cshtml" />
     <Content Include="Views\User\Feedback.cshtml" />
+    <Content Include="Views\User\UpdateProfile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PMS.BAL\PMS.BAL.csproj">

@@ -43,7 +43,7 @@ namespace WebPrac.Controllers
 			ViewBag.Title = "Sign up";
 			return View();
 		}
-		// I am goin to hit it by AJAX
+		// I am going to hit it by AJAX
 		[HttpPost]
 		[ActionName("Signup")]
 		public ActionResult Signup(UserDTO userDto)
@@ -131,6 +131,77 @@ namespace WebPrac.Controllers
 			}
 			else
 				return RedirectToAction("Feedback");
+		}
+		public ActionResult UpdateProfile()
+		{
+			if (Session["user"] != null)
+			{
+				UserDTO activeUser = (UserDTO)Session["user"];
+				ViewBag.Login =activeUser.Login;
+				ViewBag.Name=activeUser.Name;
+				return View("UpdateProfile");
+			}
+			return RedirectToAction("Login");
+
+		}
+
+		[HttpPost]
+		public JsonResult UpdateProfile(UserDTO userDTO)
+		{
+
+			if (String.IsNullOrEmpty(userDTO.Login) || String.IsNullOrEmpty(userDTO.Name) || String.IsNullOrEmpty(userDTO.Password))
+			{
+				var data = new
+				{
+
+					success = 2,
+					result = "Please Fill in All the Fields..."
+
+				};
+				return Json(data, JsonRequestBehavior.AllowGet);
+			}
+			else
+			{
+				UserDTO activeUser = (UserDTO)Session["user"];
+				if (!UserBO.isAnotherUserExistExceptActivUser(userDTO.Login, activeUser.UserID))
+				{
+					userDTO.UserID = activeUser.UserID;
+					var updateResult = UserBO.Update(userDTO);
+					if (updateResult > 0)
+					{
+						activeUser.Name = userDTO.Name;
+						activeUser.Password = userDTO.Password;
+						activeUser.Login = userDTO.Login;
+						Session["user"] = activeUser;
+						var data = new
+						{
+							success = 1,
+							result = "Updated Successfully..."
+						};
+						return Json(data, JsonRequestBehavior.AllowGet);
+					}
+					else
+					{
+						var data = new
+						{
+							success = 0,
+							result = "Some Error Occcured while Updating..."
+						};
+						return Json(data, JsonRequestBehavior.AllowGet);
+
+					}
+				}
+				else
+				{
+					var data = new
+					{
+						success = 2,
+						result = "User ALready Exist...Please Try again with another 'Login'"
+					};
+					return Json(data, JsonRequestBehavior.AllowGet);
+				}
+			}
+
 		}
 
 		[HttpPost]

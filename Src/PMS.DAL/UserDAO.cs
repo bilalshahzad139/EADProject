@@ -74,12 +74,33 @@ namespace PMS.DAL
                 return false;
             }
         }
+        public static bool isAnotherUserExistExceptActivUser(string pLogin,int UserID)
+        {
+            var mySQLQuery = string.Format(@"SELECT count(*) FROM dbo.Users WHERE login = '{0}' and UserID!='{1}'", pLogin,UserID);
+            using (var dbh = new DBHelper())
+            {
+                var result = Convert.ToInt32(dbh.ExecuteScalar(mySQLQuery));
+                if (result != 0)
+                    return true;
+                return false;
+            }
+        }
 
         public static int UpdatePassword(UserDTO dto)
         {
             var sqlQuery = "";
             sqlQuery = $"Update dbo.Users Set Password='{dto.Password}' Where UserID={dto.UserID}";
 
+
+            using (var helper = new DBHelper())
+            {
+                return helper.ExecuteQuery(sqlQuery);
+            }
+        }
+        public static int Update(UserDTO dto)
+        {
+            var sqlQuery = "";
+            sqlQuery = $"Update dbo.Users Set Password='{dto.Password}' ,  Name='{dto.Name}', Login='{dto.Login}' Where UserID={dto.UserID}";
 
             using (var helper = new DBHelper())
             {
