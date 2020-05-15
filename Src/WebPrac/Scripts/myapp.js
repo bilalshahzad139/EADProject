@@ -135,6 +135,42 @@ MyApp = (function() {
 
     }
 
+    function LoadProductsByName(prodName, minPrice, maxPrice, categoryId) {
+        $("#productsDiv").empty();
+        var action = "Product2/GetProductByName";
+        const data = { productName: prodName, minPrice: minPrice, maxPrice: maxPrice, categoryId: categoryId };
+        MyAppGlobal.MakeAjaxCall("Get",
+            action,
+            data,
+            function (resp) {
+                if (resp.data) {
+
+                    if (resp.data.length == 0) {
+                        alert("No Result Found.");
+                    }
+                    for (let k in resp.data) {
+                        const obj = resp.data[k];
+                        obj.CreatedOn = moment(obj.CreatedOn).format("DD/MM/YYYY HH:mm:ss");
+
+                        for (let k2 in obj.Comments) {
+                            const comm = obj.Comments[k2];
+                            comm.CommentOn = moment(comm.CommentOn).format("DD/MM/YYYY HH:mm:ss");
+                        }
+                    }
+
+
+                    const source = $("#listtemplate").html();
+                    const template = Handlebars.compile(source);
+
+                    const html = template(resp);
+                    $("#productsDiv").append(html);
+                    BindEvents();
+
+                }
+            });
+
+    }
+
     function BindEvents() {
 
         $(".editprod").unbind("click").bind("click",
@@ -506,6 +542,22 @@ MyApp = (function() {
 
             $("#newProdBtn").click(function() {
                 $("#addNewProd").slideToggle(700);
+            });
+
+            $("#btnSearchProduct").click(function () {
+                var prodName = $("#txtProductName").val();
+                if (prodName == "") {
+                    return;
+                }
+                const t = $("#priceDropDown").find(":selected").data("price");
+                const a = t.split(":");
+                const l = parseFloat(a[0]);
+                const u = parseFloat(a[1]);
+                const category = 0;
+                //category = $("#maindropdown").val();
+                LoadProductsByName(prodName, l, u, category);
+
+
             });
         },
         AutoComplete: function(selector, data) {

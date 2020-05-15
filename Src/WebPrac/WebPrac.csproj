@@ -129,6 +129,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\EmailVerifier.cs" />
     <Compile Include="Security\SessionManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -291,7 +292,11 @@
     <Content Include="Scripts\jquery-3.5.0.min.map" />
     <Content Include="Views\Shared\_MyLayout.cshtml" />
     <Content Include="Views\User\Feedback.cshtml" />
+<<<<<<< HEAD
     <Content Include="Views\User\UpdateProfile.cshtml" />
+=======
+    <Content Include="Views\User\VerifyEmail.cshtml" />
+>>>>>>> b35893e44291d12ced4e85d85e53ca77bed9eb66
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PMS.BAL\PMS.BAL.csproj">
