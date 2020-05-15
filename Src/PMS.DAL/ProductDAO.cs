@@ -161,7 +161,7 @@ namespace PMS.DAL
             dto.ProductID = reader.GetInt32(reader.GetOrdinal("ProductID"));
             dto.Name = reader.GetString(reader.GetOrdinal("Name"));
             dto.Price = reader.GetDouble(reader.GetOrdinal("Price"));
-            dto.PictureName = reader.GetString(reader.GetOrdinal("PictureName"));
+         //   dto.PictureName = reader.GetString(reader.GetOrdinal("PictureName"));
             dto.CreatedOn = reader.GetDateTime(reader.GetOrdinal("CreatedOn"));
             dto.CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy"));
             if (reader.GetValue(reader.GetOrdinal("ModifiedOn")) != DBNull.Value)

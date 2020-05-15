@@ -33,11 +33,11 @@ namespace PMS.DAL
             return command.ExecuteScalar();
         }
 
-        public SqlDataReader ExecuteReader(string sqlQuery)
-        {
-            var command = new SqlCommand(sqlQuery, _conn);
-            return command.ExecuteReader();
-        }
+        //public SqlDataReader ExecuteReader(string sqlQuery)
+        //{
+        //    var command = new SqlCommand(sqlQuery, _conn);
+        //    return command.ExecuteReader();
+        //}
 
         public List<string> ExecuteStoredProcedure(string procedureName, string term)
         {
@@ -56,7 +56,19 @@ namespace PMS.DAL
             }
             return items;
         }
-
+        public SqlDataReader ExecuteReader(string sqlQuery, SqlParameter[] parameter= null)
+        {
+            var command = new SqlCommand(sqlQuery, _conn);
+            if (parameter!=null)
+            {
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+                foreach(var i in parameter)
+                {
+                    command.Parameters.Add(i);
+                }
+            }
+            return command.ExecuteReader();
+        }
         public void Dispose()
         {
             if (_conn != null && _conn.State == System.Data.ConnectionState.Open)

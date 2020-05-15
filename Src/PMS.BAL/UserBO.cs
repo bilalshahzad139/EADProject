@@ -10,12 +10,19 @@ namespace PMS.BAL
         {
             return UserDAO.Save(dto);
         }
+        public static int Update(UserDTO dto)
+        {
+            return UserDAO.Update(dto);
+        }
 
         public static bool isUserAlreadyExist(string pLogin)
         {
             return UserDAO.isUserAlreadyExist(pLogin);
         }
-
+        public static bool isAnotherUserExistExceptActivUser(string pLogin,int UserID)
+        {
+            return UserDAO.isAnotherUserExistExceptActivUser(pLogin,UserID);
+        }
         public static int UpdatePassword(UserDTO dto)
         {
             return UserDAO.UpdatePassword(dto);
