@@ -129,6 +129,30 @@ namespace PMS.DAL
             }
             return matchingItems;
         }
+        public static int AddToWishlist(int uid, int pid)
+        {
+            String sqlQuery = String.Format("select IsInList from dbo.Wishlist where UserID={0} and ProductID={1}", uid, pid);
+            using (DBHelper helper = new DBHelper())
+            {
+                int result;
+                var res = helper.ExecuteScalar(sqlQuery);
+                if (res == null)
+                {
+                    //if the product is not in wishlist then insert it
+                    String insertQuery = String.Format("insert into dbo.Wishlist(UserID, ProductID, IsInList) VALUES('{0}','{1}','{2}')", uid, pid, 1);
+                    result = helper.ExecuteQuery(insertQuery);
+                    return result;
+                }
+                else
+                {
+                    //if the product is already in wishlist 
+                    result = 0;
+                    return result;
+                }
+
+            }
+        }
+
 
         private static ProductDTO FillDTO(SqlDataReader reader)
         {
