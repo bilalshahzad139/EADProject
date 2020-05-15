@@ -76,6 +76,7 @@
     <Build Include="Tables\dbo.EmailVerifyingCodes.sql" />
 
     <Build Include="Tables\feedback.sql" />
+    <Build Include="Tables\dbo.Wishlist.sql" />
 
   </ItemGroup>
   <ItemGroup>
