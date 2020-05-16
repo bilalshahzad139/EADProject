@@ -19,17 +19,19 @@ namespace WebPrac.Controllers
         [HttpPost]
         public ActionResult Login(string login, string password)
         {
-
-            var obj = UserBO.ValidateUser(login, password);
-            if (obj != null)
+            var user = new UserDTO {Login = login, Password = password, PswSalt = UserBO.GetSaltForLogin(login)};
+            if (!string.IsNullOrEmpty(user.PswSalt))
             {
-                Session["user"] = obj;
-                return Redirect(obj.IsAdmin ? "~/Home/Admin" : "~/Home/NormalUser");
+                UserPswHashing.GenerateHash(user);
+                var obj = UserBO.ValidateUser(user.Login, user.Password);
+                if (obj != null)
+                {
+                    Session["user"] = obj;
+                    return Redirect(obj.IsAdmin ? "~/Home/Admin" : "~/Home/NormalUser");
+                }
             }
-
             ViewBag.MSG = "Invalid Login/Password";
             ViewBag.Login = login;
-
             return View();
         }
 
@@ -60,7 +62,6 @@ namespace WebPrac.Controllers
                 {
                     //Picture handling
                     var uniqueName = "";
-
                     if (Request.Files["myProfilePic"] != null)
                     {
                         var file = Request.Files["myProfilePic"];
@@ -74,12 +75,10 @@ namespace WebPrac.Controllers
 
                             //Get physical path of our folder where we want to save images
                             var rootPath = Server.MapPath("~/ProfilePictures");
-
                             var fileSavePath = Path.Combine(rootPath, uniqueName);
 
                             // Save the uploaded file to "UploadedFiles" folder
                             file.SaveAs(fileSavePath);
-
                             userDto.PictureName = uniqueName;
                         }
                     }
@@ -91,28 +90,19 @@ namespace WebPrac.Controllers
                     {
                         result = new
                         {
-                            isUserExist = isUserAlreadyExist,
-                            urlToRedirect = Url.Content("~/User/VerifyEmail")
+                            isUserExist = isUserAlreadyExist, urlToRedirect = Url.Content("~/User/VerifyEmail")
                         };
                         EmailVerifier.SendEmail(userDto);
                     }
                 }
                 else
                 {
-                    result = new
-                    {
-                        isUserExist = isUserAlreadyExist,
-                        urlToRedirect = ""
-                    };
+                    result = new {isUserExist = isUserAlreadyExist, urlToRedirect = ""};
                 }
             }
             catch (Exception ex)
             {
-                result = new
-                {
-                    isUserExist = false,
-                    urlToRedirect = ""
-                };
+                result = new {isUserExist = false, urlToRedirect = ""};
             }
 
             return Json(result, JsonRequestBehavior.AllowGet);
@@ -122,11 +112,7 @@ namespace WebPrac.Controllers
         public ActionResult VerifyEmail(string email, string code)
         {
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(code)) return View("VerifyEmail");
-
-            var user = new UserDTO
-            {
-                Login = email, Password = "", IsActive = false
-            };
+            var user = new UserDTO {Login = email, Password = "", IsActive = false};
             if (UserBO.EmailVerification(user, code))
             {
                 ViewBag.EmailVerified = true;
@@ -173,11 +159,7 @@ namespace WebPrac.Controllers
             if (string.IsNullOrEmpty(userDTO.Login) || string.IsNullOrEmpty(userDTO.Name) ||
                 string.IsNullOrEmpty(userDTO.Password))
             {
-                var data = new
-                {
-                    success = 2,
-                    result = "Please Fill in All the Fields..."
-                };
+                var data = new {success = 2, result = "Please Fill in All the Fields..."};
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
 
@@ -192,30 +174,18 @@ namespace WebPrac.Controllers
                     activeUser.Password = userDTO.Password;
                     activeUser.Login = userDTO.Login;
                     Session["user"] = activeUser;
-                    var data = new
-                    {
-                        success = 1,
-                        result = "Updated Successfully..."
-                    };
+                    var data = new {success = 1, result = "Updated Successfully..."};
                     return Json(data, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    var data = new
-                    {
-                        success = 0,
-                        result = "Some Error Occcured while Updating..."
-                    };
+                    var data = new {success = 0, result = "Some Error Occcured while Updating..."};
                     return Json(data, JsonRequestBehavior.AllowGet);
                 }
             }
 
             {
-                var data = new
-                {
-                    success = 2,
-                    result = "User ALready Exist...Please Try again with another 'Login'"
-                };
+                var data = new {success = 2, result = "User ALready Exist...Please Try again with another 'Login'"};
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
         }
@@ -233,10 +203,8 @@ namespace WebPrac.Controllers
         {
             //if user is regularUser session contain something, hence feedback view opened
             if (Session["user"] != null) return View("Feedback");
-
             return RedirectToAction("Login");
         }
-
 
         //[HttpGet]
         //public ActionResult Login2()
