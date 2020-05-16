@@ -7,9 +7,9 @@ As
 begin
 		if(@categoryId=0 AND @maxPrice=0)
 		begin
+			
 			Select 
 				tbl1.ProductID,
-				tbl2.PictureName
 				Name,
 				Price,
 				ProductCategoryID,
@@ -17,7 +17,8 @@ begin
 				CreatedOn,
 				CreatedBy,
 				ModifiedOn,
-				ModifiedBy
+				ModifiedBy,
+				tbl2.PictureName
 			from dbo.Products tbl1
 			JOIN dbo.ProductPictureNames tbl2
 			on tbl1.ProductID=tbl2.ProductID
@@ -28,7 +29,6 @@ begin
 		begin
 			Select 
 				tbl1.ProductID,
-				tbl2.PictureName
 				Name,
 				Price,
 				ProductCategoryID,
@@ -36,7 +36,8 @@ begin
 				CreatedOn,
 				CreatedBy,
 				ModifiedOn,
-				ModifiedBy
+				ModifiedBy,
+				tbl2.PictureName
 			from dbo.Products tbl1
 			JOIN dbo.ProductPictureNames tbl2
 			on tbl1.ProductID=tbl2.ProductID
@@ -47,7 +48,6 @@ begin
 		begin
 			Select 
 				tbl1.ProductID,
-				tbl2.PictureName
 				Name,
 				Price,
 				ProductCategoryID,
@@ -55,7 +55,8 @@ begin
 				CreatedOn,
 				CreatedBy,
 				ModifiedOn,
-				ModifiedBy
+				ModifiedBy,
+				tbl2.PictureName
 			from dbo.Products tbl1
 			JOIN dbo.ProductPictureNames tbl2
 			on tbl1.ProductID=tbl2.ProductID
