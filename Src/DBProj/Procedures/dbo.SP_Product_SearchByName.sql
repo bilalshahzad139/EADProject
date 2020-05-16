@@ -7,20 +7,58 @@ As
 begin
 		if(@categoryId=0 AND @maxPrice=0)
 		begin
-			
-			Select *from dbo.Products
+			Select 
+				tbl1.ProductID,
+				tbl2.PictureName
+				Name,
+				Price,
+				ProductCategoryID,
+				IsActive,
+				CreatedOn,
+				CreatedBy,
+				ModifiedOn,
+				ModifiedBy
+			from dbo.Products tbl1
+			JOIN dbo.ProductPictureNames tbl2
+			on tbl1.ProductID=tbl2.ProductID
 			where CHARINDEX(@product_name,Name)>0
 			AND Price>= @minPrice;
 		end
 		else if(@categoryId=0)
 		begin
-			Select * from dbo.Products
+			Select 
+				tbl1.ProductID,
+				tbl2.PictureName
+				Name,
+				Price,
+				ProductCategoryID,
+				IsActive,
+				CreatedOn,
+				CreatedBy,
+				ModifiedOn,
+				ModifiedBy
+			from dbo.Products tbl1
+			JOIN dbo.ProductPictureNames tbl2
+			on tbl1.ProductID=tbl2.ProductID
 			where CHARINDEX(@product_name,Name)>0
 			AND Price between @minPrice AND @maxPrice
 		end
 		else if(@maxPrice=0) 
 		begin
-			Select * from dbo.Products
+			Select 
+				tbl1.ProductID,
+				tbl2.PictureName
+				Name,
+				Price,
+				ProductCategoryID,
+				IsActive,
+				CreatedOn,
+				CreatedBy,
+				ModifiedOn,
+				ModifiedBy
+			from dbo.Products tbl1
+			JOIN dbo.ProductPictureNames tbl2
+			on tbl1.ProductID=tbl2.ProductID
 			where CHARINDEX(@product_name,Name)>0
 			AND Price>= @minPrice 	
 			AND ProductCategoryID=@categoryId
