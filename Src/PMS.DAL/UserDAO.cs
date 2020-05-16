@@ -13,7 +13,7 @@ namespace PMS.DAL
             var sqlQuery = "";
             sqlQuery = dto.UserID > 0
                 ? $"Update dbo.Users Set Name='{dto.Name}', PictureName='{dto.PictureName}' Where UserID={dto.UserID}"
-                : $"INSERT INTO dbo.Users(Name, Login,Password, PictureName, IsAdmin,IsActive) VALUES('{dto.Name}','{dto.Login}','{dto.Password}','{dto.PictureName}',{0},'{dto.IsActive}')";
+                : $"INSERT INTO dbo.Users(Name, Login,Password, PictureName,Email , IsAdmin,IsActive) VALUES('{dto.Name}','{dto.Login}','{dto.Password}','{dto.PictureName}','{dto.Email}',{0},'{dto.IsActive}')";
 
             using (var helper = new DBHelper())
             {
@@ -65,10 +65,10 @@ namespace PMS.DAL
 
         public static bool isUserAlreadyExist(string pLogin)
         {
-            var mySQLQuery = string.Format(@"SELECT count(*) FROM dbo.Users WHERE login = '{0}'", pLogin);
+            var mySqlQuery = $@"SELECT count(*) FROM dbo.Users WHERE login = '{pLogin}'";
             using (var dbh = new DBHelper())
             {
-                var result = Convert.ToInt32(dbh.ExecuteScalar(mySQLQuery));
+                var result = Convert.ToInt32(dbh.ExecuteScalar(mySqlQuery));
                 if (result != 0)
                     return true;
                 return false;

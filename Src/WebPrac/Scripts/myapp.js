@@ -428,12 +428,22 @@ MyApp = (function() {
                     data.append("myProfilePic", files[0]);
                     fileName = files[0].name;
                 }
+                debugger;
                 let name = $("#username").val().trim();
                 let login = $("#login").val().trim();
                 let password = $("#password").val().trim();
                 let cpassword = $("#cpassword").val().trim();
                 let email = $("#email").val().trim();
                 if (login !== "" && password !== "" && name !== "" && cpassword !== "" && email !== "") {
+                    debugger;
+                    if (!validateEmail(email)) {
+                        $("#p").text("You have entered an invalid email address!!");
+                        setTimeout(() => {
+                                const elem = $("#p").text("");
+                            },
+                            2000);
+                        return false;
+                    }
                     if (password !== cpassword) {
                         $("#cpassword").val("");
                         $("#password").val("");
@@ -457,7 +467,8 @@ MyApp = (function() {
                     data.append("Login", login);
                     data.append("Password", password);
                     data.append("PictureName", fileName);
-
+                    data.append("Email", email);
+                     
                     var settings = {
                         type: "POST",
                         url: window.BasePath + "User/Signup",
@@ -496,6 +507,10 @@ MyApp = (function() {
                 }
 
             });
+    }
+    function validateEmail(email) {
+        var mailformate = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return mailformate.test(email);
     }
 
     return {

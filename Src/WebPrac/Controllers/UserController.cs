@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.WebPages;
@@ -56,6 +57,15 @@ namespace WebPrac.Controllers
 			}
 			try
 			{
+				//Server side Email validation
+				string expression = @"^[a-z][a-z|0-9|]*([_][a-z|0-9]+)*([.][a-z|" + @"0-9]+([_][a-z|0-9]+)*)?@[a-z][a-z|0-9|]*\.([a-z]" + @"[a-z|0-9]*(\.[a-z][a-z|0-9]*)?)$";
+				Match match = Regex.Match(userDto.Email, expression, RegexOptions.IgnoreCase);
+				if (!match.Success)
+				{
+					ViewBag.ErrMsg = "You have entered Invalid Email Address!";
+					return View("Signup");
+				}
+
 				Boolean isUserAlreadyExist = UserBO.isUserAlreadyExist(userDto.Login);
 				if (!isUserAlreadyExist)
 				{
@@ -84,7 +94,8 @@ namespace WebPrac.Controllers
 							userDto.PictureName = uniqueName;
 						}
 					}
-					
+
+					userDto.IsActive = true;
 					var res = UserBO.Save(userDto);
 					if (res == 1)
 					{
