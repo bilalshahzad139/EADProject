@@ -6,6 +6,7 @@
     [PictureName] VARCHAR (50) NOT NULL,
     [IsAdmin]     BIT          NOT NULL,
     [IsActive]    BIT          NOT NULL,
+    [Email] NVARCHAR(50)       NOT NULL, 
     CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ([UserID] ASC)
 );
 

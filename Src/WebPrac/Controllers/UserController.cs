@@ -49,7 +49,7 @@ namespace WebPrac.Controllers
 		public ActionResult Signup(UserDTO userDto)
 		{
 			Object result = null;
-			if (userDto.Login.IsEmpty() || userDto.Name.IsEmpty() || userDto.Password.IsEmpty() || userDto.PictureName.IsEmpty())
+			if (!userDto.IsValidUser())
 			{
 				ViewBag.ErrMsg = "Empty Fields!";
 				return View("Signup");

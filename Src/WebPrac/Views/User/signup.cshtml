@@ -5,67 +5,76 @@
 
 }
 
-<div class="main-div">
+	<div class="main-div">
 
-	<img src=@Url.Content("~/Images/profile.png") class="avatar" id="uploadPreview">
+		<img src=@Url.Content("~/Images/profile.png") class="avatar" id="uploadPreview">
 
 
-	<input id="uploadImage" type="file" name="myPhoto" onchange="PreviewImage();" style="opacity:0; padding:0; " />
-	<script type="text/javascript">
+		<input id="uploadImage" type="file" name="myPhoto" onchange="PreviewImage();" style="opacity:0; padding:0; " />
+		<script type="text/javascript">
 
-		function PreviewImage() {
-			var oFReader = new FileReader();
-			oFReader.readAsDataURL(document.getElementById("uploadImage").files[0]);
+			function PreviewImage() {
+				var oFReader = new FileReader();
+				oFReader.readAsDataURL(document.getElementById("uploadImage").files[0]);
 
-			oFReader.onload = function (oFREvent) {
-				document.getElementById("uploadPreview").src = oFREvent.target.result;
+				oFReader.onload = function (oFREvent) {
+					document.getElementById("uploadPreview").src = oFREvent.target.result;
+				};
 			};
-		};
 
-	</script>
-	<h2>Welcome</h2>
-	<div class="input-div one">
-		<div class="i">
-			<i class="fa fa-venus"></i>
+		</script>
+		<h2>Welcome</h2>
+		<div class="input-div one">
+			<div class="i">
+				<i class="fa fa-venus"></i>
+			</div>
+			<div>
+				<h5>Username</h5>
+				<input class="input" type="text" required name="uname" id="username" maxlength="40" />
+			</div>
 		</div>
-		<div>
-			<h5>Username</h5>
-			<input class="input" type="text" required name="uname" id="username" maxlength="40" />
+		<div class="input-div one">
+			<div class="i">
+				<i class="fa fa-user"></i>
+			</div>
+			<div>
+				<h5>Login ID</h5>
+				<input class="input" type="text" required name="lid" id="login" maxlength="40" />
+			</div>
+		</div>
+		<div class="input-div two">
+			<div class="i">
+				<i class="fa fa-lock"></i>
+			</div>
+			<div>
+				<h5>Password</h5>
+				<input class="input" type="password" required name="pswd" id="password" maxlength="40" />
+			</div>
+		</div>
+		<div class="input-div two">
+			<div class="i">
+				<i class="fa fa-lock"></i>
+			</div>
+			<div>
+				<h5>Email</h5>
+				<input class="input" type="email" required name="email" id="email" maxlength="40" />
+			</div>
+		</div>
+		<div class="input-div two">
+			<div class="i">
+				<i class="fa fa-lock"></i>
+			</div>
+			<div>
+				<h5>Confirm Password</h5>
+				<input class="input" type="password" required name="cp" id="cpassword" maxlength="40" />
+			</div>
+		</div>
+		<input class="btn" value="Sign Up" type="button" id="btnSignUp">
+		<a href="@Url.Content("~/User/Login")">Already have an account?</a>
+		<div id="divv">
+			<p style="color:red;" id="p">@ViewBag.ErrMsg</p>
 		</div>
 	</div>
-	<div class="input-div one">
-		<div class="i">
-			<i class="fa fa-user"></i>
-		</div>
-		<div>
-			<h5>Login ID</h5>
-			<input class="input" type="text" required name="lid" id="login" maxlength="40" />
-		</div>
-	</div>
-	<div class="input-div two">
-		<div class="i">
-			<i class="fa fa-lock"></i>
-		</div>
-		<div>
-			<h5>Password</h5>
-			<input class="input" type="password" required name="pswd" id="password" maxlength="40" />
-		</div>
-	</div>
-	<div class="input-div two">
-		<div class="i">
-			<i class="fa fa-lock"></i>
-		</div>
-		<div>
-			<h5>Confirm Password</h5>
-			<input class="input" type="password" required name="cp" id="cpassword" maxlength="40" />
-		</div>
-	</div>
-	<input class="btn" value="Sign Up" type="button" id="btnSignUp">
-	<a href="@Url.Content("~/User/Login")">Already have an account?</a>
-	<div id="divv">
-		<p style="color:red;" id="p">@ViewBag.ErrMsg</p>
-	</div>
-</div>
 
 
 @section scripts{

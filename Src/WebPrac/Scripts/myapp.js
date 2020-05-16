@@ -432,7 +432,8 @@ MyApp = (function() {
                 let login = $("#login").val().trim();
                 let password = $("#password").val().trim();
                 let cpassword = $("#cpassword").val().trim();
-                if (login !== "" && password !== "" && name !== "" && cpassword !== "") {
+                let email = $("#email").val().trim();
+                if (login !== "" && password !== "" && name !== "" && cpassword !== "" && email !== "") {
                     if (password !== cpassword) {
                         $("#cpassword").val("");
                         $("#password").val("");
