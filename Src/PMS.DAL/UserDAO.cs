@@ -1,8 +1,7 @@
-﻿using PMS.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-
+using PMS.Entities;
 
 namespace PMS.DAL
 {
@@ -10,15 +9,20 @@ namespace PMS.DAL
     {
         public static int Save(UserDTO dto)
         {
+            int count = 0, count2 = 0;
             var sqlQuery = "";
             sqlQuery = dto.UserID > 0
                 ? $"Update dbo.Users Set Name='{dto.Name}', PictureName='{dto.PictureName}' Where UserID={dto.UserID}"
-                : $"INSERT INTO dbo.Users(Name, Login,Password, PictureName, IsAdmin,IsActive) VALUES('{dto.Name}','{dto.Login}','{dto.Password}','{dto.PictureName}',{0},'{dto.IsActive}')";
+                : $"INSERT INTO dbo.Users(Name, Login,Password, PictureName, IsAdmin,IsActive) VALUES('{dto.Name}','{dto.Login}','{dto.Password}','{dto.PictureName}',{0},'{dto.IsActive}');";
 
             using (var helper = new DBHelper())
             {
-                return helper.ExecuteQuery(sqlQuery);
+                count = helper.ExecuteQuery(sqlQuery);
+                sqlQuery = $"INSERT INTO dbo.UserPswSalt (Login, salt) VALUES('{dto.Login}','{dto.PswSalt}')";
+                count2 = helper.ExecuteQuery(sqlQuery);
             }
+
+            return count;
         }
 
         public static bool VerifyEmail(UserDTO user, string code)
@@ -74,9 +78,11 @@ namespace PMS.DAL
                 return false;
             }
         }
-        public static bool isAnotherUserExistExceptActivUser(string pLogin,int UserID)
+
+        public static bool isAnotherUserExistExceptActivUser(string pLogin, int UserID)
         {
-            var mySQLQuery = string.Format(@"SELECT count(*) FROM dbo.Users WHERE login = '{0}' and UserID!='{1}'", pLogin,UserID);
+            var mySQLQuery = string.Format(@"SELECT count(*) FROM dbo.Users WHERE login = '{0}' and UserID!='{1}'",
+                pLogin, UserID);
             using (var dbh = new DBHelper())
             {
                 var result = Convert.ToInt32(dbh.ExecuteScalar(mySQLQuery));
@@ -97,10 +103,12 @@ namespace PMS.DAL
                 return helper.ExecuteQuery(sqlQuery);
             }
         }
+
         public static int Update(UserDTO dto)
         {
             var sqlQuery = "";
-            sqlQuery = $"Update dbo.Users Set Password='{dto.Password}' ,  Name='{dto.Name}', Login='{dto.Login}' Where UserID={dto.UserID}";
+            sqlQuery =
+                $"Update dbo.Users Set Password='{dto.Password}' ,  Name='{dto.Name}', Login='{dto.Login}' Where UserID={dto.UserID}";
 
             using (var helper = new DBHelper())
             {
@@ -180,6 +188,21 @@ namespace PMS.DAL
             dto.IsActive = reader.GetBoolean(6);
 
             return dto;
+        }
+
+        public static string GetSaltForLogin(string login)
+        {
+            string salt =null;
+            var selectQuery = $"SELECT salt FROM dbo.UserPswSalt WHERE Login = '{login}'";
+            using (var helper = new DBHelper())
+            {
+                var reader = helper.ExecuteReader(selectQuery);
+                if (reader.Read())
+                {
+                    salt = reader.GetString(reader.GetOrdinal("salt"));
+                }
+            }
+            return salt;
         }
     }
 }
