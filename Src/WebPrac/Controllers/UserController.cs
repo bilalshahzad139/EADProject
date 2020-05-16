@@ -1,49 +1,49 @@
-﻿using PMS.BAL;
-using PMS.Entities;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.WebPages;
+using PMS.BAL;
+using PMS.Entities;
 using WebPrac.Security;
 
 namespace WebPrac.Controllers
 {
-	public class UserController : Controller
-	{
-		[HttpGet]
-		public ActionResult Login()
-		{
-			return View();
-		}
 
-		[HttpPost]
-		public ActionResult Login(String login, String password)
-		{
-			var obj = PMS.BAL.UserBO.ValidateUser(login, password);
-			if (obj != null)
-			{
-				Session["user"] = obj;
-				if (obj.IsAdmin == true)
-					return Redirect("~/Home/Admin");
-				else
-					return Redirect("~/Home/NormalUser");
-			}
+    [HttpGet]
+    public ActionResult Login()
+    {
+        return View();
+    }
 
-			ViewBag.MSG = "Invalid Login/Password";
-			ViewBag.Login = login;
+    [HttpPost]
+    public ActionResult Login(string login, string password)
+    {
+        var user = new UserDTO {Login = login, Password = password, PswSalt = UserBO.GetSaltForLogin(login)};
+        if (!string.IsNullOrEmpty(user.PswSalt))
+        {
+            UserPswHashing.GenerateHash(user);
+            var obj = UserBO.ValidateUser(user.Login, user.Password);
+            if (obj != null)
+            {
+                Session["user"] = obj;
+                return Redirect(obj.IsAdmin ? "~/Home/Admin" : "~/Home/NormalUser");
+            }
+        }
+        ViewBag.MSG = "Invalid Login/Password";
+        ViewBag.Login = login;
+        return View();
+    }
 
-			return View();
-		}
-		[HttpGet]
-		public ActionResult Signup()
-		{
-			ViewBag.Title = "Sign up";
-			return View();
-		}
+    [HttpGet]
+    public ActionResult Signup()
+    {
+        ViewBag.Title = "Sign up";
+        return View();
+    }
+  
 		// I am going to hit it by AJAX
 		[HttpPost]
 		[ActionName("Signup")]
@@ -55,254 +55,211 @@ namespace WebPrac.Controllers
 				ViewBag.ErrMsg = "Empty Fields!";
 				return View("Signup");
 			}
-			try
-			{
-				//Server side Email validation
-				string expression = @"^[a-z][a-z|0-9|]*([_][a-z|0-9]+)*([.][a-z|" + @"0-9]+([_][a-z|0-9]+)*)?@[a-z][a-z|0-9|]*\.([a-z]" + @"[a-z|0-9]*(\.[a-z][a-z|0-9]*)?)$";
-				Match match = Regex.Match(userDto.Email, expression, RegexOptions.IgnoreCase);
-				if (!match.Success)
-				{
-					ViewBag.ErrMsg = "You have entered Invalid Email Address!";
-					return View("Signup");
-				}
+      try
+      {
+          //Server side Email validation
+          string expression = @"^[a-z][a-z|0-9|]*([_][a-z|0-9]+)*([.][a-z|" + @"0-9]+([_][a-z|0-9]+)*)?@[a-z][a-z|0-9|]*\.([a-z]" + @"[a-z|0-9]*(\.[a-z][a-z|0-9]*)?)$";
+          Match match = Regex.Match(userDto.Email, expression, RegexOptions.IgnoreCase);
+          if (!match.Success)
+          {
+            ViewBag.ErrMsg = "You have entered Invalid Email Address!";
+            return View("Signup");
+          }
+        
+          var isUserAlreadyExist = UserBO.isUserAlreadyExist(userDto.Login);
+          if (!isUserAlreadyExist)
+          {
+              //Picture handling
+              var uniqueName = "";
+              if (Request.Files["myProfilePic"] != null)
+              {
+                  var file = Request.Files["myProfilePic"];
+                  if (file.FileName != "")
+                  {
+                      Directory.CreateDirectory(Server.MapPath("~/ProfilePictures"));
+                      var ext = Path.GetExtension(file.FileName);
 
-				Boolean isUserAlreadyExist = UserBO.isUserAlreadyExist(userDto.Login);
-				if (!isUserAlreadyExist)
-				{
-					//Picture handling
-					var uniqueName = "";
+                      //Generate a unique name using Guid
+                      uniqueName = Guid.NewGuid() + ext;
 
-					if (Request.Files["myProfilePic"] != null)
-					{
-						var file = Request.Files["myProfilePic"];
-						if (file.FileName != "")
-						{
-							Directory.CreateDirectory(Server.MapPath("~/ProfilePictures"));
-							var ext = System.IO.Path.GetExtension(file.FileName);
+                      //Get physical path of our folder where we want to save images
+                      var rootPath = Server.MapPath("~/ProfilePictures");
+                      var fileSavePath = Path.Combine(rootPath, uniqueName);
 
-							//Generate a unique name using Guid
-							uniqueName = Guid.NewGuid().ToString() + ext;
+                      // Save the uploaded file to "UploadedFiles" folder
+                      file.SaveAs(fileSavePath);
+                      userDto.PictureName = uniqueName;
+                  }
+              }
 
-							//Get physical path of our folder where we want to save images
-							var rootPath = Server.MapPath("~/ProfilePictures");
+              userDto.PswSalt = UserPswHashing.CreateSalt();
+              UserPswHashing.GenerateHash(userDto);
+              var res = UserBO.Save(userDto);
+              if (res == 1)
+              {
+                  result = new
+                  {
+                      isUserExist = isUserAlreadyExist, urlToRedirect = Url.Content("~/User/VerifyEmail")
+                  };
+                  EmailVerifier.SendEmail(userDto);
+              }
+            }
+            else
+            {
+                result = new {isUserExist = isUserAlreadyExist, urlToRedirect = ""};
+            }
+          }
+          catch (Exception ex)
+          {
+              result = new {isUserExist = false, urlToRedirect = ""};
+          }
 
-							var fileSavePath = System.IO.Path.Combine(rootPath, uniqueName);
-
-							// Save the uploaded file to "UploadedFiles" folder
-							file.SaveAs(fileSavePath);
-
-							userDto.PictureName = uniqueName;
-						}
-					}
-
-					userDto.IsActive = true;
-					var res = UserBO.Save(userDto);
-					if (res == 1)
-					{
-						result = new
-						{
-							isUserExist = isUserAlreadyExist,
-                            urlToRedirect = Url.Content("~/User/VerifyEmail")
-						};
-                        EmailVerifier.SendEmail(userDto);
-					}
-
-				}
-				else
-				{
-					result = new
-					{
-						isUserExist = isUserAlreadyExist,
-						urlToRedirect = ""
-					};
-				}
-			}
-			catch (Exception ex)
-			{
-				result = new
-				{
-					isUserExist = false,
-					urlToRedirect = ""
-				};
-			}
-			return Json(result, JsonRequestBehavior.AllowGet);
-		}
+          return Json(result, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpGet]
-        public ActionResult VerifyEmail(string email , string code)
+        public ActionResult VerifyEmail(string email, string code)
         {
-            if (string.IsNullOrEmpty(email)||string.IsNullOrEmpty(code))
-            {
-                return View($"VerifyEmail");
-            }
-            var user = new UserDTO()
-            {
-                Login =  email,Password = "",IsActive = false
-            };
-            if (UserBO.EmailVerification(user,code))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(code)) return View("VerifyEmail");
+            var user = new UserDTO {Login = email, Password = "", IsActive = false};
+            if (UserBO.EmailVerification(user, code))
             {
                 ViewBag.EmailVerified = true;
                 return Redirect("~/User/Login");
             }
+
             ViewData["server-error"] = "Something has gone wrong";
-            return View($"VerifyEmail");
+            return View("VerifyEmail");
         }
 
-		[HttpGet]
+        [HttpGet]
 
-		//feedback view will be open without an active user so
-		//So i Changed session manager possion
-		public ActionResult Logout()
-		{
-			UserDTO u = (UserDTO)Session["user"];
-			if (u.IsAdmin == true)
-			{
-				//if user is admin, session will be cleared and feedback page will not open
-				SessionManager.ClearSession();
-				return RedirectToAction("Login");
-			}
-			else
-				return RedirectToAction("Feedback");
-		}
-		public ActionResult UpdateProfile()
-		{
-			if (Session["user"] != null)
-			{
-				UserDTO activeUser = (UserDTO)Session["user"];
-				ViewBag.Login =activeUser.Login;
-				ViewBag.Name=activeUser.Name;
-				return View("UpdateProfile");
-			}
-			return RedirectToAction("Login");
+        //feedback view will be open without an active user so
+        //So i Changed session manager possion
+        public ActionResult Logout()
+        {
+            var u = (UserDTO) Session["user"];
+            if (u.IsAdmin)
+            {
+                //if user is admin, session will be cleared and feedback page will not open
+                SessionManager.ClearSession();
+                return RedirectToAction("Login");
+            }
 
-		}
+            return RedirectToAction("Feedback");
+        }
 
-		[HttpPost]
-		public JsonResult UpdateProfile(UserDTO userDTO)
-		{
+        public ActionResult UpdateProfile()
+        {
+            if (Session["user"] != null)
+            {
+                var activeUser = (UserDTO) Session["user"];
+                ViewBag.Login = activeUser.Login;
+                ViewBag.Name = activeUser.Name;
+                return View("UpdateProfile");
+            }
 
-			if (String.IsNullOrEmpty(userDTO.Login) || String.IsNullOrEmpty(userDTO.Name) || String.IsNullOrEmpty(userDTO.Password))
-			{
-				var data = new
-				{
+            return RedirectToAction("Login");
+        }
 
-					success = 2,
-					result = "Please Fill in All the Fields..."
+        [HttpPost]
+        public JsonResult UpdateProfile(UserDTO userDTO)
+        {
+            if (string.IsNullOrEmpty(userDTO.Login) || string.IsNullOrEmpty(userDTO.Name) ||
+                string.IsNullOrEmpty(userDTO.Password))
+            {
+                var data = new {success = 2, result = "Please Fill in All the Fields..."};
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
 
-				};
-				return Json(data, JsonRequestBehavior.AllowGet);
-			}
-			else
-			{
-				UserDTO activeUser = (UserDTO)Session["user"];
-				if (!UserBO.isAnotherUserExistExceptActivUser(userDTO.Login, activeUser.UserID))
-				{
-					userDTO.UserID = activeUser.UserID;
-					var updateResult = UserBO.Update(userDTO);
-					if (updateResult > 0)
-					{
-						activeUser.Name = userDTO.Name;
-						activeUser.Password = userDTO.Password;
-						activeUser.Login = userDTO.Login;
-						Session["user"] = activeUser;
-						var data = new
-						{
-							success = 1,
-							result = "Updated Successfully..."
-						};
-						return Json(data, JsonRequestBehavior.AllowGet);
-					}
-					else
-					{
-						var data = new
-						{
-							success = 0,
-							result = "Some Error Occcured while Updating..."
-						};
-						return Json(data, JsonRequestBehavior.AllowGet);
+            var activeUser = (UserDTO) Session["user"];
+            if (!UserBO.isAnotherUserExistExceptActivUser(userDTO.Login, activeUser.UserID))
+            {
+                userDTO.UserID = activeUser.UserID;
+                var updateResult = UserBO.Update(userDTO);
+                if (updateResult > 0)
+                {
+                    activeUser.Name = userDTO.Name;
+                    activeUser.Password = userDTO.Password;
+                    activeUser.Login = userDTO.Login;
+                    Session["user"] = activeUser;
+                    var data = new {success = 1, result = "Updated Successfully..."};
+                    return Json(data, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    var data = new {success = 0, result = "Some Error Occcured while Updating..."};
+                    return Json(data, JsonRequestBehavior.AllowGet);
+                }
+            }
 
-					}
-				}
-				else
-				{
-					var data = new
-					{
-						success = 2,
-						result = "User ALready Exist...Please Try again with another 'Login'"
-					};
-					return Json(data, JsonRequestBehavior.AllowGet);
-				}
-			}
+            {
+                var data = new {success = 2, result = "User ALready Exist...Please Try again with another 'Login'"};
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-		}
+        [HttpPost]
+        public ActionResult Feedback(feedbackDTO sos)
+        {
+            feedbackBO.saveFeedBack(sos);
+            SessionManager.ClearSession();
+            return RedirectToAction("Login");
+        }
 
-		[HttpPost]
-		public ActionResult Feedback(feedbackDTO sos)
-		{
-			
-			feedbackBO.saveFeedBack(sos);
-			SessionManager.ClearSession();
-			return RedirectToAction("Login");
-		}
+        [HttpGet]
+        public ActionResult Feedback()
+        {
+            //if user is regularUser session contain something, hence feedback view opened
+            if (Session["user"] != null) return View("Feedback");
+            return RedirectToAction("Login");
+        }
 
-		[HttpGet]
-		public ActionResult Feedback()
-		{
-			//if user is regularUser session contain something, hence feedback view opened
-			if(Session["user"]!=null)
-			{
-				return View("Feedback");
-			}
-			return RedirectToAction("Login");
-		}
+        //[HttpGet]
+        //public ActionResult Login2()
+        //{
+        //    return View();
+        //}
 
+        //[HttpPost]
+        //public JsonResult ValidateUser(String login, String password)
+        //{
 
+        //    Object data = null;
 
-		//[HttpGet]
-		//public ActionResult Login2()
-		//{
-		//    return View();
-		//}
+        //    try
+        //    {
+        //        var url = "";
+        //        var flag = false;
 
-		//[HttpPost]
-		//public JsonResult ValidateUser(String login, String password)
-		//{
+        //        var obj = PMS.BAL.UserBO.ValidateUser(login, password);
+        //        if (obj != null)
+        //        {
+        //            flag = true;
+        //            SessionManager.User = obj;
 
-		//    Object data = null;
+        //            if (obj.IsAdmin == true)
+        //                url = Url.Content("~/Home/Admin");
+        //            else
+        //                url = Url.Content("~/Home/NormalUser");
+        //        }
 
-		//    try
-		//    {
-		//        var url = "";
-		//        var flag = false;
+        //        data = new
+        //        {
+        //            valid = flag,
+        //            urlToRedirect = url
+        //        };
+        //    }
+        //    catch (Exception)
+        //    {
+        //        data = new
+        //        {
+        //            valid = false,
+        //            urlToRedirect = ""
+        //        };
+        //    }
 
-		//        var obj = PMS.BAL.UserBO.ValidateUser(login, password);
-		//        if (obj != null)
-		//        {
-		//            flag = true;
-		//            SessionManager.User = obj;
-
-		//            if (obj.IsAdmin == true)
-		//                url = Url.Content("~/Home/Admin");
-		//            else
-		//                url = Url.Content("~/Home/NormalUser");
-		//        }
-
-		//        data = new
-		//        {
-		//            valid = flag,
-		//            urlToRedirect = url
-		//        };
-		//    }
-		//    catch (Exception)
-		//    {
-		//        data = new
-		//        {
-		//            valid = false,
-		//            urlToRedirect = ""
-		//        };
-		//    }
-
-		//    return Json(data, JsonRequestBehavior.AllowGet);
-		//}
-	}
+        //    return Json(data, JsonRequestBehavior.AllowGet);
+        //}
+    }
 }

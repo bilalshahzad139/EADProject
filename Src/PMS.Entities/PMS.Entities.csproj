@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="CommentDTO.cs" />
     <Compile Include="feedbackDTO.cs" />
+    <Compile Include="ProductCategoryDTO.cs" />
     <Compile Include="ProductSearchDTO.cs" />
     <Compile Include="UserDTO.cs" />
     <Compile Include="ProductDTO.cs" />

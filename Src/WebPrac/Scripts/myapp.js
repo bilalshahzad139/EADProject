@@ -89,6 +89,91 @@ MyApp = (function() {
         $.ajax(settings);
     }
 
+function loadProductCategories() {
+        
+        var action = "Product2/GetAllCategories"
+        MyAppGlobal.MakeAjaxCall("GET", action, {}, function (resp) {
+
+            var source = $("#dropdowntemplate").html();
+            var template = Handlebars.compile(source);
+
+            var html = template(resp);
+            $("#maindropdown").append(html);
+            $("#selProdCategory").append(html);
+        });
+    }
+   
+    function LoadProductsByCategory(categoryid) {
+        var action = "Product2/GetProductsByCategory";
+        $('#productsDiv').empty();
+        MyAppGlobal.MakeAjaxCall("GET", action, {"id":categoryid}, function (resp) {
+
+            if (resp.data) {
+
+                for (var k in resp.data) {
+                    var obj = resp.data[k];
+                    obj.CreatedOn = moment(obj.CreatedOn).format('DD/MM/YYYY HH:mm:ss');
+
+                    for (var k2 in obj.Comments) {
+                        var comm = obj.Comments[k2];
+                        comm.CommentOn = moment(comm.CommentOn).format('DD/MM/YYYY HH:mm:ss');
+                    }
+                }
+
+
+                var source = $("#listtemplate").html();
+                var template = Handlebars.compile(source);
+
+                var html = template(resp);
+                $("#productsDiv").append(html);
+
+
+                $("#productsDiv .addcomment").click(function () {
+
+                    var mainProdContainer = $(this).closest(".prodbox");
+                    var pid = mainProdContainer.attr("pid");
+
+                    var comment = $(this).closest(".commentarea").find(".txtComment").val();
+
+                    var obj = {
+                        ProductID: pid,
+                        CommentText: comment
+                    }
+
+
+                    MyAppGlobal.MakeAjaxCall("POST", 'Product2/SaveComment', obj, function (resp) {
+
+                        if (resp.success) {
+                            alert("added");
+
+
+                            var obj1 = {
+                                PictureName: resp.PictureName,
+                                UserName: resp.UserName,
+                                CommentText: obj.CommentText,
+                                CommentOn: moment(resp.CommentOn).format('DD/MM/YYYY HH:mm:ss')
+                            };
+
+                            var source = $("#commenttemplate").html();
+                            var template = Handlebars.compile(source);
+
+                            var html = template(obj1);
+                            mainProdContainer.find(".comments").append(html);
+
+                        }
+
+                    });
+
+                    return false;
+                });
+
+                BindEvents();
+
+            }
+                });
+
+    }
+	
     function LoadProducts(from, to) {
 
         $("#productsDiv").empty();
@@ -514,6 +599,40 @@ MyApp = (function() {
     }
 
     return {
+		 addCategory: function () {
+            $("#btn_submit_Addcategory").click(function () {
+                var categoryName = $("#categoryName").val();
+                var data = new FormData();
+                data.append("Cat_name", categoryName);
+                var d = { "Cat_name": categoryName };
+
+                if (categoryName == "") {
+                    alert("empty");
+
+                }
+                else {
+
+                    var settings = {
+                        type: "GET",
+                        dataType: "json",
+                        url: window.BasePath + 'Product2/AddCategoryinDatabase',
+                        data: d,
+                        success: function (resp) {
+                            //response.data contains whatever is sent from server
+
+                            alert("suceess")
+
+                        },
+                        error: function (err, type, httpStatus) {
+                            alert('error has occured222');
+                        }
+                    }
+
+                    $.ajax(settings);
+                }
+
+            });
+        },
 
         Signup: function () {
             SignupHelper();

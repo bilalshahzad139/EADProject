@@ -78,6 +78,7 @@
     <Build Include="Tables\dbo.Wishlist.sql" />
     <None Include="Scripts\ScriptsIgnoredOnImport.sql" />
     <Build Include="Procedures\dbo.SP_Product_SearchByName.sql" />
+    <Build Include="Tables\dbo.UserPswSalt.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Users.sql" />

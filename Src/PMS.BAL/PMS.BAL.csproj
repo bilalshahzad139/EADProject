@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="CommentBO.cs" />
     <Compile Include="feedbackBO.cs" />
+    <Compile Include="ProductCategoryBO.cs" />
     <Compile Include="ProductSearchBO.cs" />
     <Compile Include="UserBO.cs" />
     <Compile Include="ProductBO.cs" />

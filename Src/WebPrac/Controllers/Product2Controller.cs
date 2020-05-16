@@ -28,6 +28,62 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
+		 public ActionResult AddCategory()
+        {
+            return View();
+        }
+        public JsonResult AddCategoryinDatabase(String Cat_name)
+        {
+
+            object d;
+            if (Cat_name == "")
+            {
+                d = new
+                {
+                    valid = false
+                };
+            }
+            else
+            {
+                var dto = PMS.BAL.ProductCategoryBO.GetCategory(Cat_name);
+                if (dto != null)
+                {
+                    d = new
+                    {
+                        valid = false
+                    };
+                }
+                else
+                {
+                    var result = PMS.BAL.ProductCategoryBO.Save(Cat_name);
+                    d = new
+                    {
+                        valid = true
+                    };
+                }
+            }
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetProductsByCategory(int id)
+        {
+
+            Object products = null;// PMS.BAL.ProductBO.GetProductsByCategory(id, true);
+            var d = new
+            {
+                data = products
+            };
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetAllCategories()
+        {
+            var productCategories = PMS.BAL.ProductCategoryBO.GetAllCategories();
+
+            var d = new
+            {
+                data = productCategories
+            };
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpGet]
         public JsonResult GetPriceRangedProducts(int from, int to)

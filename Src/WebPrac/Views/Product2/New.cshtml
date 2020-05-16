@@ -13,7 +13,7 @@
 
         $("document").ready(function () {
             MyApp.Main();
-            MyApp.AutoComplete("#ItemSearchBox", {
+            MyApp.AutoComplete("#txtProductName", {
                 source: "Product2/AutoSuggestion"
             });
         });
@@ -104,8 +104,10 @@
             <option data-price="25001:30000" value="6"> Rs25,001 - Rs30,000 </option>
             <option data-price="30001:@Int32.MaxValue" value="7"> Rs30,000 - Max </option>
         </select>
-        <input type="text" id="txtProductName" name="txtProductName" placeholder="Search" />
-        <button id="btnSearchProduct">Search</button>
+        <div style="display: inline-block">
+            <input type="search" id="txtProductName" name="txtProductName" placeholder="Search" />
+            <button id="btnSearchProduct">Search</button>
+        </div>
         <span class="text-warning ml-5">Other filters go there, remove this text when you add new filters</span>
     </div>
     <div class="row justify-content-center" id="productsDiv">
@@ -214,3 +216,10 @@
     <br />
     <div style="clear:both"></div>
 </script>
+<script id="dropdowntemplate" type="text/x-handlebars-template">
+
+        {{#each data}}
+        <option value='{{ProductCategoryID}}' >{{ProductCategoryName}}</option>
+        {{/each}}
+
+    </script>
