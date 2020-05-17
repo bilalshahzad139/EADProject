@@ -518,6 +518,15 @@ function loadProductCategories() {
                 let password = $("#password").val().trim();
                 let cpassword = $("#cpassword").val().trim();
                 if (login !== "" && password !== "" && name !== "" && cpassword !== "") {
+                    //client side validation of Email address
+                    if (!validateEmail(login)) {
+                        $("#p").text("You have entered an invalid email address!!");
+                        setTimeout(() => {
+                                const elem = $("#p").text("");
+                            },
+                            2000);
+                        return false;
+                    }
                     if (password !== cpassword) {
                         $("#cpassword").val("");
                         $("#password").val("");
@@ -560,6 +569,7 @@ function loadProductCategories() {
                                 return false;
                             }
                             else {
+                                alert("An Email is send to you for verification of your Email address.");
                                 window.location.href = window.BasePath + "User/Login";
                             }
                         },
@@ -581,7 +591,10 @@ function loadProductCategories() {
 
             });
     }
-
+    function validateEmail(email) {
+        var mailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return mailFormat.test(email);
+    }
     return {
 		 addCategory: function () {
             $("#btn_submit_Addcategory").click(function () {

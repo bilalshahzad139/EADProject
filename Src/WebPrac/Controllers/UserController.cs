@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using System.Web.WebPages;
 using PMS.BAL;
@@ -48,8 +49,7 @@ namespace WebPrac.Controllers
         public ActionResult Signup(UserDTO userDto)
         {
             object result = null;
-            if (userDto.Login.IsEmpty() || userDto.Name.IsEmpty() || userDto.Password.IsEmpty() ||
-                userDto.PictureName.IsEmpty())
+            if (!userDto.IsValid())
             {
                 ViewBag.ErrMsg = "Empty Fields!";
                 return View("Signup");
@@ -57,6 +57,15 @@ namespace WebPrac.Controllers
 
             try
             {
+	            //Server side Email validation
+	            string expression = @"^[a-z][a-z|0-9|]*([_][a-z|0-9]+)*([.][a-z|" + @"0-9]+([_][a-z|0-9]+)*)?@[a-z][a-z|0-9|]*\.([a-z]" + @"[a-z|0-9]*(\.[a-z][a-z|0-9]*)?)$";
+	            Match match = Regex.Match(userDto.Login, expression, RegexOptions.IgnoreCase);
+	            if (!match.Success)
+	            {
+		            ViewBag.ErrMsg = "You have entered Invalid Email Address!";
+		            return View("Signup");
+	            }
+
                 var isUserAlreadyExist = UserBO.isUserAlreadyExist(userDto.Login);
                 if (!isUserAlreadyExist)
                 {
@@ -83,6 +92,7 @@ namespace WebPrac.Controllers
                         }
                     }
 
+                    userDto.IsActive = true;
                     userDto.PswSalt = UserPswHashing.CreateSalt();
                     UserPswHashing.GenerateHash(userDto);
                     var res = UserBO.Save(userDto);
@@ -205,52 +215,5 @@ namespace WebPrac.Controllers
             if (Session["user"] != null) return View("Feedback");
             return RedirectToAction("Login");
         }
-
-        //[HttpGet]
-        //public ActionResult Login2()
-        //{
-        //    return View();
-        //}
-
-        //[HttpPost]
-        //public JsonResult ValidateUser(String login, String password)
-        //{
-
-        //    Object data = null;
-
-        //    try
-        //    {
-        //        var url = "";
-        //        var flag = false;
-
-        //        var obj = PMS.BAL.UserBO.ValidateUser(login, password);
-        //        if (obj != null)
-        //        {
-        //            flag = true;
-        //            SessionManager.User = obj;
-
-        //            if (obj.IsAdmin == true)
-        //                url = Url.Content("~/Home/Admin");
-        //            else
-        //                url = Url.Content("~/Home/NormalUser");
-        //        }
-
-        //        data = new
-        //        {
-        //            valid = flag,
-        //            urlToRedirect = url
-        //        };
-        //    }
-        //    catch (Exception)
-        //    {
-        //        data = new
-        //        {
-        //            valid = false,
-        //            urlToRedirect = ""
-        //        };
-        //    }
-
-        //    return Json(data, JsonRequestBehavior.AllowGet);
-        //}
     }
 }
