@@ -1,4 +1,7 @@
-﻿namespace PMS.Entities
+﻿using System;
+using System.Web.WebPages;
+
+namespace PMS.Entities
 {
     public class UserDTO
     {
@@ -10,5 +13,10 @@
         public bool IsAdmin { get; set; }
         public bool IsActive { get; set; }
         public string PswSalt { get; set; }
+
+        public Boolean IsValid()
+        {
+	        return !Login.IsEmpty() && !Name.IsEmpty() && !Password.IsEmpty() && !PictureName.IsEmpty();
+        }
     }
 }
