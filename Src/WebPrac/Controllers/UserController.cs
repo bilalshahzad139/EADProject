@@ -174,7 +174,7 @@ namespace WebPrac.Controllers
                 return View("UpdateProfile");
             }
 
-            return RedirectToAction("Login");
+            return RedirectToAction($"Login");
         }
 
         [HttpPost]
