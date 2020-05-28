@@ -19,7 +19,7 @@
     <!-- Font Awesome///////// -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-	<title>@ViewBag.Title</title>
+    <title>@ViewBag.Title</title>
     <style>
         .prodbox {
             padding: 5px;
@@ -32,24 +32,26 @@
             float: left;
         }
 
-        .comments .comment .picture img {
-            width: 30px;
-            height: 30px;
-        }
+            .comments .comment .picture img {
+                width: 30px;
+                height: 30px;
+            }
 
         .comments .comment .name {
             color: red;
         }
-        .comments{
-            max-height:90px;
-            overflow-y:scroll;
-            border:1px solid grey;
-            border-radius:5px;
+
+        .comments {
+            max-height: 90px;
+            overflow-y: scroll;
+            border: 1px solid grey;
+            border-radius: 5px;
         }
-        .comments .comment .comment-text {
-            font-family: Helvetica, Arial, sans-serif;
-            font-size: 12px;
-        }
+
+            .comments .comment .comment-text {
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 12px;
+            }
 
         #topBar {
             height: auto;
@@ -69,24 +71,25 @@
 
         #myNav {
             background: linear-gradient(45deg, rgba(61,29,1,1) 0%, rgba(51,26,79,1) 100%);
-            text-align:center;
-            height:auto;
-            position:sticky;
-            top:0px;
-            z-index:100;
-        }
-        .menu a{
-            color:chocolate;
-            margin:0px 10px 0px 10px;
-            text-decoration:none !important;
-            font-size:large;
-        }
-        .menu a:hover{
-            color:burlywood;
+            text-align: center;
+            height: auto;
+            position: sticky;
+            top: 0px;
+            z-index: 100;
         }
 
+        .menu a {
+            color: chocolate;
+            margin: 0px 10px 0px 10px;
+            text-decoration: none !important;
+            font-size: large;
+        }
+
+            .menu a:hover {
+                color: burlywood;
+            }
     </style>
-    
+
     <script>
         window.BasePath = '@Url.Content("~")';
     </script>
@@ -99,9 +102,10 @@
     <script src="~/Scripts/MyAppGlobal.js"></script>
 
     @RenderSection("scripts", false)
-    @RenderSection("styles", false);
+    @RenderSection("styles", false)
 </head>
 <body>
+
     <div class="text-center" id="topBar">
         @*logo and name*@
         <div>
@@ -133,10 +137,11 @@
             <a href="/User/UpdateProfile">Update Profile</a>
             <a href="/User/Logout">Logout</a>
         </div>
-  </div>
-    <span style="color:red">@TempData["Message"]</span>
+    </div>
+    <span style="color: red">@TempData["Message"]</span>
     <div>
         @RenderBody()
     </div>
+
 </body>
 </html>
