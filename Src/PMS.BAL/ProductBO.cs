@@ -1,9 +1,6 @@
 ﻿using PMS.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PMS.BAL
 {
@@ -19,7 +16,7 @@ namespace PMS.BAL
             return PMS.DAL.ProductDAO.GetProductById(pid);
         }
 
-        public static List<ProductDTO> GetAllProducts(Boolean pLoadComments=false)
+        public static List<ProductDTO> GetAllProducts(Boolean pLoadComments = false)
         {
             return PMS.DAL.ProductDAO.GetAllProducts(pLoadComments);
         }

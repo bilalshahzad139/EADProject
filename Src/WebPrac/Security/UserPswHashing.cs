@@ -1,7 +1,7 @@
-﻿using System;
+﻿using PMS.Entities;
+using System;
 using System.Security.Cryptography;
 using System.Text;
-using PMS.Entities;
 
 namespace WebPrac.Security
 {

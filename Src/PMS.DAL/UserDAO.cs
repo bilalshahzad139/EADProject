@@ -1,7 +1,7 @@
-﻿using System;
+﻿using PMS.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using PMS.Entities;
 
 namespace PMS.DAL
 {
@@ -53,7 +53,7 @@ namespace PMS.DAL
             {
                 var query =
                     $"SELECT COUNT(*) FROM dbo.EmailVerifyingCodes WHERE email = '{user.Login}' AND expired = 'false'";
-                var read = (int) dbh.ExecuteScalar(query);
+                var read = (int)dbh.ExecuteScalar(query);
                 query = read == 0
                     ? $"INSERT INTO dbo.EmailVerifyingCodes VALUES('{user.Login}','{code}','false')"
                     : $"UPDATE dbo.EmailVerifyingCodes SET verification_code = '{code}' WHERE email = '{user.Login}'";
@@ -192,7 +192,7 @@ namespace PMS.DAL
 
         public static string GetSaltForLogin(string login)
         {
-            string salt =null;
+            string salt = null;
             var selectQuery = $"SELECT salt FROM dbo.UserPswSalt WHERE Login = '{login}'";
             using (var helper = new DBHelper())
             {

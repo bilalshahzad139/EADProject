@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using PMS.DAL;
+﻿using PMS.DAL;
 using PMS.Entities;
+using System.Collections.Generic;
 
 namespace PMS.BAL
 {
@@ -19,9 +19,9 @@ namespace PMS.BAL
         {
             return UserDAO.isUserAlreadyExist(pLogin);
         }
-        public static bool isAnotherUserExistExceptActivUser(string pLogin,int UserID)
+        public static bool isAnotherUserExistExceptActivUser(string pLogin, int UserID)
         {
-            return UserDAO.isAnotherUserExistExceptActivUser(pLogin,UserID);
+            return UserDAO.isAnotherUserExistExceptActivUser(pLogin, UserID);
         }
         public static int UpdatePassword(UserDTO dto)
         {
@@ -60,7 +60,7 @@ namespace PMS.BAL
 
         public static string GetSaltForLogin(string login)
         {
-             return UserDAO.GetSaltForLogin(login);
+            return UserDAO.GetSaltForLogin(login);
         }
     }
 }

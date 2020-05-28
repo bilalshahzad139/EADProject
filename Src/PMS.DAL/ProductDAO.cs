@@ -1,10 +1,8 @@
-﻿using System;
+﻿using PMS.Entities;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PMS.Entities;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace PMS.DAL
 {
@@ -52,7 +50,7 @@ namespace PMS.DAL
             }
         }
 
-        public static List<ProductDTO> GetAllProducts(bool pLoadComments=false)
+        public static List<ProductDTO> GetAllProducts(bool pLoadComments = false)
         {
             const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1;";
 
@@ -83,7 +81,7 @@ namespace PMS.DAL
 
         public static List<ProductDTO> GetPriceRangedProducts(int from, int to, bool pLoadComments = false)
         {
-            var query = "Select * from dbo.Products Where IsActive = 1 AND (Price Between '"+from+"' AND '"+to+"');";
+            var query = "Select * from dbo.Products Where IsActive = 1 AND (Price Between '" + from + "' AND '" + to + "');";
             using (var helper = new DBHelper())
             {
                 var reader = helper.ExecuteReader(query);

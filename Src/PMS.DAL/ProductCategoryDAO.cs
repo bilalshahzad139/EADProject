@@ -2,9 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PMS.DAL
 {
@@ -15,13 +12,13 @@ namespace PMS.DAL
             using (DBHelper helper = new DBHelper())
             {
                 String sqlQuery = "";
-               
-                    sqlQuery = String.Format("INSERT INTO dbo.ProductCategory(ProductCategoryName) VALUES('{0}'); Select @@IDENTITY",
-                        categoryName);
 
-                    var obj = helper.ExecuteScalar(sqlQuery);
-                    return Convert.ToInt32(obj);
-                
+                sqlQuery = String.Format("INSERT INTO dbo.ProductCategory(ProductCategoryName) VALUES('{0}'); Select @@IDENTITY",
+                    categoryName);
+
+                var obj = helper.ExecuteScalar(sqlQuery);
+                return Convert.ToInt32(obj);
+
             }
         }
         public static List<ProductCategoryDTO> GetAllCategories()
@@ -42,7 +39,7 @@ namespace PMS.DAL
                 }
                 return list;
             }
-           
+
         }
         public static ProductCategoryDTO GetCategory(string Categoryname)
         {
@@ -62,13 +59,13 @@ namespace PMS.DAL
                 return dto;
             }
         }
-            private static ProductCategoryDTO FillDTO(SqlDataReader reader)
+        private static ProductCategoryDTO FillDTO(SqlDataReader reader)
         {
             var dto = new ProductCategoryDTO();
             dto.ProductCategoryID = reader.GetInt32(0);
-           
+
             dto.ProductCategoryName = reader.GetString(1);
-            
+
             return dto;
         }
     }
