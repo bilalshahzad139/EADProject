@@ -103,7 +103,7 @@ namespace WebPrac.Controllers
                         }
                     }
 
-                    userDto.IsActive = true;
+                    userDto.IsActive = false;
                     userDto.PswSalt = UserPswHashing.CreateSalt();
                     UserPswHashing.GenerateHash(userDto);
                     var res = UserBO.Save(userDto);
@@ -122,9 +122,7 @@ namespace WebPrac.Controllers
                     result = new { isUserExist = isUserAlreadyExist, urlToRedirect = "" };
                 }
             }
-#pragma warning disable CS0168 // The variable 'ex' is declared but never used
             catch (Exception ex)
-#pragma warning restore CS0168 // The variable 'ex' is declared but never used
             {
                 result = new { isUserExist = false, urlToRedirect = "" };
             }
@@ -191,6 +189,8 @@ namespace WebPrac.Controllers
             if (!UserBO.isAnotherUserExistExceptActivUser(userDTO.Login, activeUser.UserID))
             {
                 userDTO.UserID = activeUser.UserID;
+                userDTO.PswSalt = UserPswHashing.CreateSalt();
+                UserPswHashing.GenerateHash(userDTO);
                 var updateResult = UserBO.Update(userDTO);
                 if (updateResult > 0)
                 {

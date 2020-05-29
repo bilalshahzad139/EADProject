@@ -106,14 +106,25 @@ namespace PMS.DAL
 
         public static int Update(UserDTO dto)
         {
-            var sqlQuery = "";
-            sqlQuery =
+            var recAff = 0;
+            var sqlQuery =
                 $"Update dbo.Users Set Password='{dto.Password}' ,  Name='{dto.Name}', Login='{dto.Login}' Where UserID={dto.UserID}";
 
             using (var helper = new DBHelper())
             {
-                return helper.ExecuteQuery(sqlQuery);
+                try
+                {
+                    recAff =  helper.ExecuteQuery(sqlQuery);
+                    sqlQuery = $"UPDATE dbo.UserPswSalt SET salt='{dto.PswSalt}' WHERE Login='{dto.Login}'";
+                    _ = helper.ExecuteQuery(sqlQuery);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
+
+            return recAff;
         }
 
         public static UserDTO ValidateUser(string pLogin, string pPassword)
