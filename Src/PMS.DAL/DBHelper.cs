@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PMS.DAL
 {
     internal class DBHelper : IDisposable
     {
         private readonly string _connStr = System.Configuration.ConfigurationManager.ConnectionStrings["MyConnString"].ConnectionString;
-        
+
         private readonly SqlConnection _conn = null;
 
         public DBHelper()
@@ -42,27 +39,27 @@ namespace PMS.DAL
         public List<string> ExecuteStoredProcedure(string procedureName, string term)
         {
             var items = new List<string>();
-            var command = new SqlCommand(procedureName, _conn) {CommandType = CommandType.StoredProcedure};
+            var command = new SqlCommand(procedureName, _conn) { CommandType = CommandType.StoredProcedure };
             command.Parameters.Add(new SqlParameter()
             {
                 ParameterName = "@term",
                 Value = term
             });
             var reader = command.ExecuteReader();
-            
+
             while (reader.Read())
             {
                 items.Add(reader.GetString(reader.GetOrdinal("Name")));
             }
             return items;
         }
-        public SqlDataReader ExecuteReader(string sqlQuery, SqlParameter[] parameter= null)
+        public SqlDataReader ExecuteReader(string sqlQuery, SqlParameter[] parameter = null)
         {
             var command = new SqlCommand(sqlQuery, _conn);
-            if (parameter!=null)
+            if (parameter != null)
             {
                 command.CommandType = System.Data.CommandType.StoredProcedure;
-                foreach(var i in parameter)
+                foreach (var i in parameter)
                 {
                     command.Parameters.Add(i);
                 }

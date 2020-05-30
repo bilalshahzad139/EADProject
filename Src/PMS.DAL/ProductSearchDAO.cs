@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PMS.DAL
 {
@@ -43,7 +41,7 @@ namespace PMS.DAL
                     new SqlParameter(){ParameterName="categoryId",SqlDbType=System.Data.SqlDbType.Int, Value= dt.categoryId }
                 };
 
-                var reader = helper.ExecuteReader(query, sqlParameters); 
+                var reader = helper.ExecuteReader(query, sqlParameters);
 
                 var list = new List<ProductDTO>();
 

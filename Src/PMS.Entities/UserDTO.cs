@@ -16,7 +16,7 @@ namespace PMS.Entities
 
         public Boolean IsValid()
         {
-	        return !Login.IsEmpty() && !Name.IsEmpty() && !Password.IsEmpty() && !PictureName.IsEmpty();
+            return !Login.IsEmpty() && !Name.IsEmpty() && !Password.IsEmpty() && !PictureName.IsEmpty();
         }
     }
 }

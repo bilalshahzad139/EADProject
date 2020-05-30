@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DBPractice
+﻿namespace DBPractice
 {
     class Program
     {
@@ -31,7 +25,7 @@ namespace DBPractice
             //var user = PMS.BAL.UserBO.ValidateUser("admin", "admin");
 
             //var user2 = PMS.BAL.UserBO.ValidateUser("admin", "admin12");
-            var user2 = PMS.BAL.ProductBO.AddToWishlist(2,3);
+            var user2 = PMS.BAL.ProductBO.AddToWishlist(2, 3);
 
 
             //System.Console.ReadKey();
