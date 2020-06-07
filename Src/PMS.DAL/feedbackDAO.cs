@@ -9,8 +9,8 @@ namespace PMS.DAL
         {
             String sqlQuery = "";
 
-            sqlQuery = String.Format("INSERT INTO dbo.feedback(name,email,pNo,message) VALUES('{0}','{1}','{2}','{3}')",
-                    zoz.name, zoz.email, zoz.pNo, zoz.message);
+            sqlQuery = String.Format("INSERT INTO dbo.feedback(name,message) VALUES('{0}','{1}')",
+                    zoz.name, zoz.message);
 
             using (DBHelper helper = new DBHelper())
             {

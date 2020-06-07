@@ -1,4 +1,5 @@
-﻿using PMS.BAL;
+﻿using Microsoft.Ajax.Utilities;
+using PMS.BAL;
 using PMS.Entities;
 using System;
 using System.IO;
@@ -10,6 +11,7 @@ namespace WebPrac.Controllers
 {
     public class UserController : Controller
     {
+        string nameForFeedback = null;
         [HttpGet]
         public ActionResult Login()
         {
@@ -29,6 +31,8 @@ namespace WebPrac.Controllers
                     if (obj != null)
                     {
                         Session["user"] = obj;
+                        //nameforfeedback is global veriable
+                        nameForFeedback = obj.Name;
                         return Redirect(obj.IsAdmin ? "~/Home/Admin" : "~/Home/NormalUser");
                     }
                 }
@@ -215,9 +219,12 @@ namespace WebPrac.Controllers
         }
 
         [HttpPost]
-        public ActionResult Feedback(feedbackDTO sos)
+        public ActionResult Feedback(string msg)
         {
-            feedbackBO.saveFeedBack(sos);
+            feedbackDTO dod=null;
+            dod.message = msg;
+            dod.name = nameForFeedback;
+            feedbackBO.saveFeedBack(dod);
             SessionManager.ClearSession();
             return RedirectToAction("Login");
         }
@@ -226,7 +233,10 @@ namespace WebPrac.Controllers
         public ActionResult Feedback()
         {
             //if user is regularUser session contain something, hence feedback view opened
-            if (Session["user"] != null) return View("Feedback");
+            if (Session["user"] != null)
+            {
+                return View("Feedback");
+            }
             return RedirectToAction("Login");
         }
     }
