@@ -5,12 +5,12 @@ namespace PMS.DAL
 {
     public static class feedbackDAO
     {
-        public static int saveFeedBack(feedbackDTO zoz)
+        public static int saveFeedBack(string ms,string ns)
         {
             String sqlQuery = "";
 
             sqlQuery = String.Format("INSERT INTO dbo.feedback(name,message) VALUES('{0}','{1}')",
-                    zoz.name, zoz.message);
+                    ns, ms);
 
             using (DBHelper helper = new DBHelper())
             {

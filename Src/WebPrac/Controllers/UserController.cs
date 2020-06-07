@@ -11,7 +11,7 @@ namespace WebPrac.Controllers
 {
     public class UserController : Controller
     {
-        string nameForFeedback = null;
+        
         [HttpGet]
         public ActionResult Login()
         {
@@ -28,11 +28,11 @@ namespace WebPrac.Controllers
                 {
                     UserPswHashing.GenerateHash(user);
                     var obj = UserBO.ValidateUser(user.Login, user.Password);
+                    
                     if (obj != null)
                     {
                         Session["user"] = obj;
-                        //nameforfeedback is global veriable
-                        nameForFeedback = obj.Name;
+                        
                         return Redirect(obj.IsAdmin ? "~/Home/Admin" : "~/Home/NormalUser");
                     }
                 }
@@ -221,10 +221,8 @@ namespace WebPrac.Controllers
         [HttpPost]
         public ActionResult Feedback(string msg)
         {
-            feedbackDTO dod=null;
-            dod.message = msg;
-            dod.name = nameForFeedback;
-            feedbackBO.saveFeedBack(dod);
+            var n = (UserDTO)Session["user"];
+            feedbackBO.saveFeedBack(msg,n.Name);
             SessionManager.ClearSession();
             return RedirectToAction("Login");
         }
