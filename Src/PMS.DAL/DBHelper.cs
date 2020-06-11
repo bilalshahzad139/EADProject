@@ -7,7 +7,8 @@ namespace PMS.DAL
 {
     internal class DBHelper : IDisposable
     {
-        private readonly string _connStr = System.Configuration.ConfigurationManager.ConnectionStrings["MyConnString"].ConnectionString;
+        private readonly string _connStr = "Data Source=HAIER-PC\\SQLEXPRESS;Initial Catalog = EADProj; User ID = sa; Password=12345;";
+            // System.Configuration.ConfigurationManager.ConnectionStrings["MyConnString"].ConnectionString;
 
         private readonly SqlConnection _conn = null;
 

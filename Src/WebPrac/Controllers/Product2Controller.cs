@@ -10,12 +10,23 @@ namespace WebPrac.Controllers
 {
     public class Product2Controller : Controller
     {
+        //remove it
+        [HttpPost]
+        public ActionResult test()
+        {
+            var products = PMS.BAL.ProductBO.GetAllProducts(true);
 
+            var d = new
+            {
+                data = products
+            };
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
+        //
         public ActionResult New()
         {
             return View();
         }
-
         public JsonResult GetAllProducts()
         {
             var products = PMS.BAL.ProductBO.GetAllProducts(true);
@@ -82,7 +93,6 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
-
         [HttpGet]
         public JsonResult GetPriceRangedProducts(int from, int to)
         {
@@ -95,7 +105,6 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
-
         public JsonResult GetProductById(int pid)
         {
             var prod = PMS.BAL.ProductBO.GetProductById(pid);
@@ -105,7 +114,6 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
-
         [HttpPost]
         public JsonResult DeleteProduct(int pid)
         {
@@ -125,7 +133,6 @@ namespace WebPrac.Controllers
                 ViewBag.EmptyFiledsMsg = "Empty Fields!";
                 return View("New");
             }
-
             if (dto.PictureName.IsEmpty() && Request.Files["Image"] == null)
             {
                 ViewBag.EmptyFiledsMsg = "Click on Choose File to upload Picture of Product!";
@@ -133,40 +140,22 @@ namespace WebPrac.Controllers
             }
             if (Request.Files["Image"] != null)
             {
+               
                 var file = Request.Files["Image"];
                 if (file.FileName != "")
                 {
                     var ext = System.IO.Path.GetExtension(file.FileName);
-
                     //Generate a unique name using Guid
                     var uniqueName = Guid.NewGuid().ToString() + ext;
-
                     //Get physical path of our folder where we want to save images
                     var rootPath = Server.MapPath("~/UploadedFiles");
-
                     var fileSavePath = System.IO.Path.Combine(rootPath, uniqueName);
-
                     // Save the uploaded file to "UploadedFiles" folder
-                    file.SaveAs(fileSavePath);
-
+                    //file.SaveAs(fileSavePath);
                     dto.PictureName = uniqueName;
                 }
             }
-
-
-            if (dto.ProductID > 0)
-            {
-                dto.ModifiedOn = DateTime.Now;
-                dto.ModifiedBy = 1;
-            }
-            else
-            {
-                dto.CreatedOn = DateTime.Now;
-                dto.CreatedBy = 1;
-            }
-
             var pid = PMS.BAL.ProductBO.Save(dto);
-
             var data = new
             {
                 success = true,
@@ -223,6 +212,16 @@ namespace WebPrac.Controllers
             return Json(d, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetLatestProducts()
+        {
+            var products = PMS.BAL.ProductBO.GetLatestProducts(true);
+
+            var d = new
+            {
+                data = products
+            };
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
 
         #region Under Development
 

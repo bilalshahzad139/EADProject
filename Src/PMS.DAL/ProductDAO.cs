@@ -49,10 +49,9 @@ namespace PMS.DAL
                 return dto;
             }
         }
-
         public static List<ProductDTO> GetAllProducts(bool pLoadComments = false)
         {
-            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1;";
+            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 ;";
 
             using (var helper = new DBHelper())
             {
@@ -78,7 +77,6 @@ namespace PMS.DAL
                 return list;
             }
         }
-
         public static List<ProductDTO> GetPriceRangedProducts(int from, int to, bool pLoadComments = false)
         {
             var query = "Select * from dbo.Products Where IsActive = 1 AND (Price Between '" + from + "' AND '" + to + "');";
@@ -106,7 +104,6 @@ namespace PMS.DAL
                 return list;
             }
         }
-
         public static int DeleteProduct(int pid)
         {
             var sqlQuery = $"Update dbo.Products Set IsActive=0 Where ProductID={pid}";
@@ -116,7 +113,6 @@ namespace PMS.DAL
                 return helper.ExecuteQuery(sqlQuery);
             }
         }
-
         public static List<string> GetMatchingItems(string term)
         {
             List<string> matchingItems = null;
@@ -148,6 +144,31 @@ namespace PMS.DAL
                     return result;
                 }
 
+            }
+        }
+        public static List<ProductDTO> GetLatestProducts(bool pLoadComments = false)
+        {
+            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 Order BY CreatedOn desc;";
+
+            using (var helper = new DBHelper())
+            {
+                var reader = helper.ExecuteReader(query);
+                var list = new List<ProductDTO>();
+
+                while (reader.Read())
+                {
+                    var dto = FillDTO(reader);
+                    if (dto != null) list.Add(dto);
+                }
+                if (!pLoadComments) return list;
+                //var commentsList = CommentDAO.GetAllComments();
+                var commentsList = CommentDAO.GetTopComments(2);
+                foreach (var prod in list)
+                {
+                    var prodComments = commentsList.Where(c => c.ProductID == prod.ProductID).ToList();
+                    prod.Comments = prodComments;
+                }
+                return list;
             }
         }
 

@@ -1,4 +1,6 @@
-﻿namespace DBPractice
+﻿using System;
+
+namespace DBPractice
 {
     class Program
     {
@@ -6,8 +8,8 @@
         {
             //var dto = new PMS.Entities.ProductDTO();
             //dto.ProductID = 0;
-            //dto.Name = "Mobile 2";
-            //dto.Price = 200;
+            //dto.Name = "test";
+            //dto.Price = 2090;
             //dto.PictureName = "abc.jpg";
             //dto.CreatedOn = DateTime.Now;
             //dto.CreatedBy = 1;
@@ -25,7 +27,7 @@
             //var user = PMS.BAL.UserBO.ValidateUser("admin", "admin");
 
             //var user2 = PMS.BAL.UserBO.ValidateUser("admin", "admin12");
-            var user2 = PMS.BAL.ProductBO.AddToWishlist(2, 3);
+            // var user2 = PMS.BAL.ProductBO.AddToWishlist(2, 16);
 
 
             //System.Console.ReadKey();
