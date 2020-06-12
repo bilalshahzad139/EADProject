@@ -10,19 +10,6 @@ namespace WebPrac.Controllers
 {
     public class Product2Controller : Controller
     {
-        //remove it
-        [HttpPost]
-        public ActionResult test()
-        {
-            var products = PMS.BAL.ProductBO.GetAllProducts(true);
-
-            var d = new
-            {
-                data = products
-            };
-            return Json(d, JsonRequestBehavior.AllowGet);
-        }
-        //
         public ActionResult New()
         {
             return View();
@@ -30,7 +17,6 @@ namespace WebPrac.Controllers
         public JsonResult GetAllProducts()
         {
             var products = PMS.BAL.ProductBO.GetAllProducts(true);
-
             var d = new
             {
                 data = products
@@ -124,11 +110,10 @@ namespace WebPrac.Controllers
             };
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
         [HttpPost]
         public ActionResult Save(ProductDTO dto)
         {
-            if (dto.Name.IsEmpty() || Convert.ToString(dto.Price, CultureInfo.InvariantCulture).IsEmpty())
+            if (dto.Name.IsEmpty() || Convert.ToString(dto.Price, CultureInfo.InvariantCulture).IsEmpty() || Convert.ToString(dto.Quantity, CultureInfo.InvariantCulture).IsEmpty())
             {
                 ViewBag.EmptyFiledsMsg = "Empty Fields!";
                 return View("New");
@@ -164,7 +149,6 @@ namespace WebPrac.Controllers
             };
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
         [HttpPost]
         public JsonResult SaveComment(CommentDTO dto)
         {
@@ -189,7 +173,6 @@ namespace WebPrac.Controllers
             };
             return Json(data1, JsonRequestBehavior.AllowGet);
         }
-
         [HttpPost]
         public JsonResult AutoSuggestion(string val)
         {
@@ -199,7 +182,6 @@ namespace WebPrac.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
 
         }
-
         [HttpGet]
         public JsonResult GetProductByName(ProductSearchDTO dt)
         {
@@ -211,7 +193,6 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
-
         public JsonResult GetLatestProducts()
         {
             var products = PMS.BAL.ProductBO.GetLatestProducts(true);
@@ -222,7 +203,16 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult getTrendingProducts()
+        {
+            var products = PMS.BAL.ProductBO.getTrendingProducts(true);
 
+            var d = new
+            {
+                data = products
+            };
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
         #region Under Development
 
         public ActionResult Edit(int id)

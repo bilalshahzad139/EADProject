@@ -31,6 +31,35 @@ MyApp = (function() {
                 }
             });
     }
+    function getTrendingProd()
+    {
+        $("#productsDiv").empty();
+        debugger;
+        var action = null;
+        action = "Product2/getTrendingProducts";
+        MyAppGlobal.MakeAjaxCall("GET",
+            action,
+            {},
+            function (resp) {
+                if (resp.data) {
+                    debugger;
+                    for (let k in resp.data) {
+                        const obj = resp.data[k];
+                        obj.CreatedOn = moment(obj.CreatedOn).format("DD/MM/YYYY HH:mm:ss");
+
+                        for (let k2 in obj.Comments) {
+                            const comm = obj.Comments[k2];
+                            comm.CommentOn = moment(comm.CommentOn).format("DD/MM/YYYY HH:mm:ss");
+                        }
+                    }
+                    const source = $("#listtemplate").html();
+                    const template = Handlebars.compile(source);
+                    const html = template(resp);
+                    $("#productsDiv").append(html);
+                    BindEvents();
+                }
+            });
+    }
 
     function Clear() {
         $("#txtProductID").val(0);
@@ -40,7 +69,6 @@ MyApp = (function() {
         $("#prodimg").hide();
     }
     function SaveProduct() {
-
         const data = new FormData();
 
         var id = $("#txtProductID").val();
@@ -48,8 +76,9 @@ MyApp = (function() {
         var price = $("#txtPrice").val().trim();
         const oldPicName = $("#txtPictureName").val();
         var files = $("#myfile").get(0).files;
+        var quantity = $("#txtQuantity").val().trim();
 
-        if (name === "" || price === "") {
+        if (name === "" || price === "" || quantity === "") {
             $("#ErrMsg").text("Empty Fields!");
             setTimeout(() => {
                     const elem = $("#ErrMsg").text("");
@@ -71,7 +100,7 @@ MyApp = (function() {
         data.append("Name", name);
         data.append("Price", price);
         data.append("PictureName", oldPicName);
-
+        data.append("Quantity", quantity);
 
         if (files.length > 0) {
             data.append("Image", files[0]);
@@ -98,10 +127,10 @@ MyApp = (function() {
                 }
                 BindEvents();
                 Clear();
-                alert("record is saved 20");
+                alert("record is saved");
             },
             error: function() {
-                alert("error has occurred 20");
+                alert("error has occurred");
             }
         };
 
@@ -216,22 +245,13 @@ MyApp = (function() {
                             comm.CommentOn = moment(comm.CommentOn).format("DD/MM/YYYY HH:mm:ss");
                         }
                     }
-
-
                     const source = $("#listtemplate").html();
                     const template = Handlebars.compile(source);
-
                     const html = template(resp);
                     $("#productsDiv").append(html);
-
-
-                    
-
                     BindEvents();
-
                 }
             });
-
     }
     function LoadProductsByName(prodName, minPrice, maxPrice, categoryId) {
         $("#productsDiv").empty();
@@ -648,12 +668,10 @@ MyApp = (function() {
             LoadProducts();
            
             $("#btnSave").click(function() {
-
                 SaveProduct();
                 return false;
             });
-            $("#btnClear").click(function() {
-                
+            $("#btnClear").click(function() {               
                 Clear();
                 return false;
             });
@@ -691,13 +709,14 @@ MyApp = (function() {
                 const category = 0;
                 //category = $("#maindropdown").val();
                 LoadProductsByName(prodName, l, u, category);
-
-
             });
-
 
             $("#btnLatestProd").click(function () {
                 getLatestProd();
+                return false;
+            });
+            $("#btnTrendingProd").click(function () {
+                getTrendingProd();
                 return false;
             });
         },

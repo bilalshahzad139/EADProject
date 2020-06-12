@@ -42,6 +42,9 @@ namespace PMS.BAL
         {
             return PMS.DAL.ProductDAO.GetLatestProducts(pLoadComments);
         }
-
+        public static List<ProductDTO> getTrendingProducts(Boolean pLoadComments = false)
+        {
+            return PMS.DAL.ProductDAO.getTrendingProducts(pLoadComments);
+        }
     }
 }

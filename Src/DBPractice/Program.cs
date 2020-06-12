@@ -8,12 +8,13 @@ namespace DBPractice
         {
             //var dto = new PMS.Entities.ProductDTO();
             //dto.ProductID = 0;
-            //dto.Name = "test";
-            //dto.Price = 2090;
-            //dto.PictureName = "abc.jpg";
+            //dto.Name = "test3";
+            //dto.Price = 5000;
+            //dto.PictureName = "qwe.jpg";
             //dto.CreatedOn = DateTime.Now;
             //dto.CreatedBy = 1;
-
+            //dto.Quantity = 100;
+            //dto.Sold = 0;
             //PMS.BAL.ProductBO.Save(dto);
 
 

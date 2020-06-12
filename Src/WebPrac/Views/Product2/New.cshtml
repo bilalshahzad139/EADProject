@@ -65,20 +65,21 @@
 </div>
 
 <div class="p-2 mx-4 shadow rounded-lg" id="addNewProd">
-	<div id="newProdContent">
-		<div class="text-center mb-n5"><h4>Add New Product</h4></div>
-		<img src="" style="width:100px;height:100px;display:none" id="prodimg" /> <br />
-		<input type="hidden" name="ProductID" id="txtProductID" value="0" />
-		<input type="hidden" name="PictureName" id="txtPictureName" />
-		Name:<input type="text" name="Name" id="txtName" class="form-control" />
-		Price: <input type="text" name="Price" id="txtPrice" class="form-control" />
-		Image: <input type="file" name="Image" id="myfile" />
-		<div class="text-center mt-1">
-			<input type="submit" value="Save" id="btnSave" class="btn btn-success mx-1" />
-			<input type="button" id="btnClear" value="Clear" class="btn btn-danger" />
-		</div>
-		<p id="ErrMsg">@ViewBag.EmptyFiledsMsg</p>
-	</div>
+    <div id="newProdContent">
+        <div class="text-center mb-n5"><h4>Add New Product</h4></div>
+        <img src="" style="width:100px;height:100px;display:none" id="prodimg" /> <br />
+        <input type="hidden" name="ProductID" id="txtProductID" value="0" />
+        <input type="hidden" name="PictureName" id="txtPictureName" />
+        Name:<input type="text" name="Name" id="txtName" class="form-control" />
+        Price: <input type="text" name="Price" id="txtPrice" class="form-control" />
+        Qunatity: <input type="text" name="Quantity" id="txtQuantity" class="form-control" />
+        Image: <input type="file" name="Image" id="myfile" />
+        <div class="text-center mt-1">
+            <input type="submit" value="Save" id="btnSave" class="btn btn-success mx-1" />
+            <input type="button" id="btnClear" value="Clear" class="btn btn-danger" />
+        </div>
+        <p id="ErrMsg">@ViewBag.EmptyFiledsMsg</p>
+    </div>
     
 </div>
 
@@ -103,6 +104,9 @@
         </div>
         <button id="btnLatestProd">
             Latest Products
+        </button>
+        <button id="btnTrendingProd">
+            Trending Products
         </button>
         <span class="text-warning ml-5">Other filters go there, remove this text when you add new filters</span>
     </div>

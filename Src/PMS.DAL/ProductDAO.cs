@@ -12,7 +12,7 @@ namespace PMS.DAL
         {
             using (var helper = new DBHelper())
             {
-                var sqlQuery = "";
+                var sqlQuery = "" ;
                 if (dto.ProductID > 0)
                 {
                     sqlQuery =
@@ -23,7 +23,7 @@ namespace PMS.DAL
                 else
                 {
                     sqlQuery =
-                        $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID) VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1'); Select @@IDENTITY";
+                        $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID,Quantity,Sold) VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1','{dto.Quantity}','0'); Select @@IDENTITY";
 
                     var obj = helper.ExecuteScalar(sqlQuery);
                     sqlQuery =
@@ -51,7 +51,7 @@ namespace PMS.DAL
         }
         public static List<ProductDTO> GetAllProducts(bool pLoadComments = false)
         {
-            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 ;";
+            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName, a.Quantity, a.Sold from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 ;";
 
             using (var helper = new DBHelper())
             {
@@ -148,7 +148,33 @@ namespace PMS.DAL
         }
         public static List<ProductDTO> GetLatestProducts(bool pLoadComments = false)
         {
-            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 Order BY CreatedOn desc;";
+            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive,  a.Quantity, a.Sold, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 Order BY CreatedOn desc;";
+
+            using (var helper = new DBHelper())
+            {
+                var reader = helper.ExecuteReader(query);
+                var list = new List<ProductDTO>();
+
+                while (reader.Read())
+                {
+                    var dto = FillDTO(reader);
+                    if (dto != null) list.Add(dto);
+                }
+                if (!pLoadComments) return list;
+                //var commentsList = CommentDAO.GetAllComments();
+                var commentsList = CommentDAO.GetTopComments(2);
+                foreach (var prod in list)
+                {
+                    var prodComments = commentsList.Where(c => c.ProductID == prod.ProductID).ToList();
+                    prod.Comments = prodComments;
+                }
+                return list;
+            }
+        }
+
+        public static List<ProductDTO> getTrendingProducts(bool pLoadComments = false)
+        {
+            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive,  a.Quantity, a.Sold, (a.Quantity-a.Sold) remaining, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 Order BY remaining;";
 
             using (var helper = new DBHelper())
             {
@@ -173,13 +199,14 @@ namespace PMS.DAL
         }
 
 
-
         private static ProductDTO FillDTO(SqlDataReader reader)
         {
             var dto = new ProductDTO();
             dto.ProductID = reader.GetInt32(reader.GetOrdinal("ProductID"));
             dto.Name = reader.GetString(reader.GetOrdinal("Name"));
             dto.Price = reader.GetDouble(reader.GetOrdinal("Price"));
+            dto.Quantity = reader.GetInt32(reader.GetOrdinal("Quantity"));
+            dto.Sold = reader.GetInt32(reader.GetOrdinal("Sold"));
             dto.PictureName = reader.GetString(reader.GetOrdinal("PictureName"));
             dto.CreatedOn = reader.GetDateTime(reader.GetOrdinal("CreatedOn"));
             dto.CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy"));

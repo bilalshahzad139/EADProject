@@ -7,8 +7,7 @@ namespace PMS.DAL
 {
     internal class DBHelper : IDisposable
     {
-        private readonly string _connStr = "Data Source=HAIER-PC\\SQLEXPRESS;Initial Catalog = EADProj; User ID = sa; Password=12345;";
-            // System.Configuration.ConfigurationManager.ConnectionStrings["MyConnString"].ConnectionString;
+        private readonly string _connStr =  System.Configuration.ConfigurationManager.ConnectionStrings["MyConnString"].ConnectionString;
 
         private readonly SqlConnection _conn = null;
 
@@ -17,26 +16,22 @@ namespace PMS.DAL
             _conn = new SqlConnection(_connStr);
             _conn.Open();
         }
-
         public int ExecuteQuery(string sqlQuery)
         {
             var command = new SqlCommand(sqlQuery, _conn);
             var count = command.ExecuteNonQuery();
             return count;
         }
-
         public object ExecuteScalar(string sqlQuery)
         {
             var command = new SqlCommand(sqlQuery, _conn);
             return command.ExecuteScalar();
         }
-
         //public SqlDataReader ExecuteReader(string sqlQuery)
         //{
         //    var command = new SqlCommand(sqlQuery, _conn);
         //    return command.ExecuteReader();
         //}
-
         public List<string> ExecuteStoredProcedure(string procedureName, string term)
         {
             var items = new List<string>();

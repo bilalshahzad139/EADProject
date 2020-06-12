@@ -82,7 +82,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Users.sql" />
-    <None Include="Data\ProductCategory.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
