@@ -226,6 +226,7 @@ namespace WebPrac.Controllers
                     activeUser.Name = userDTO.Name;
                     activeUser.Password = userDTO.Password;
                     activeUser.Login = userDTO.Login;
+                    activeUser.PictureName = userDTO.PictureName;
                     Session["user"] = activeUser;
                     var data = new { success = 1, result = "Updated Successfully..." };
                     return Json(data, JsonRequestBehavior.AllowGet);
