@@ -5,7 +5,7 @@
 
 <div class="main-div">
     <form action=@Url.Content("~/User/UpdateProfile") method="POST">
-        <img src=@Url.Content("~/Images/profile.png") class="avatar" id="uploadPreview">
+        <img src=@Url.Content("~/ProfilePictures/"+@ViewBag.PictureName) class="avatar" id="uploadPreview">
 
         <input id="uploadImage" type="file" name="myPhoto" onchange="PreviewImage();" style="opacity:0; padding:0; " />
         <script type="text/javascript">
@@ -70,12 +70,11 @@
 
         })
 
-            $("#uploadPreview").on("click", function (e) {
+        $("#uploadPreview").on("click", function (e) {
             e.preventDefault();
-                $("#uploadImage").trigger('click');
+            $("#uploadImage").trigger('click');
 
         });
-        MyApp.Signup();
     });
 
     $("#updatebtn").click(function () {
@@ -83,15 +82,28 @@
         var name = $("#username").val();
         var pass = $("#password").val();
         var login = $("#login").val();
+        var files = $("#uploadImage").get(0).files;
         if (name.length == 0 || pass.length == 0 || login.length == 0) {
             $("#pid").text("Please Fill in All the Fields...");
         }
+        else if (files.length <= 0) {
+            $("#pid").text("Please Select an Image...");
+        }
         else {
+            var tempData = new FormData();
+            tempData.append("myProfilePic", files[0]);
+            var fileName = files[0].name;
+            tempData.append("Name", name);
+            tempData.append("Login", login);
+            tempData.append("Password", pass);
+            tempData.append("PictureName", fileName);
+
             var settings = {
                 type: "POST",
-                dataType: "json",
+                contentType: false,
+                processData: false,
                 url: "UpdateProfile",
-                data: { "Name": name, "Password": pass, "Login": login },
+                data: tempData,
                 success: function (response) {
                     if (response.success == 1) {
                         alert(response.result);

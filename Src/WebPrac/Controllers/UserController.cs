@@ -173,6 +173,7 @@ namespace WebPrac.Controllers
                 var activeUser = (UserDTO)Session["user"];
                 ViewBag.Login = activeUser.Login;
                 ViewBag.Name = activeUser.Name;
+                ViewBag.PictureName = activeUser.PictureName;
                 return View("UpdateProfile");
             }
 
@@ -193,9 +194,10 @@ namespace WebPrac.Controllers
             if (!UserBO.isAnotherUserExistExceptActivUser(userDTO.Login, activeUser.UserID))
             {
                 userDTO.UserID = activeUser.UserID;
-             
+
                 //Picture handling
-                var uniqueName = "";
+                int i = Request.Files.Count; 
+                var uniqueName ="";
                 if (Request.Files["myProfilePic"] != null)
                 {
                     var file = Request.Files["myProfilePic"];
