@@ -193,6 +193,29 @@ namespace WebPrac.Controllers
             if (!UserBO.isAnotherUserExistExceptActivUser(userDTO.Login, activeUser.UserID))
             {
                 userDTO.UserID = activeUser.UserID;
+             
+                //Picture handling
+                var uniqueName = "";
+                if (Request.Files["myProfilePic"] != null)
+                {
+                    var file = Request.Files["myProfilePic"];
+                    if (file.FileName != "")
+                    {
+                        Directory.CreateDirectory(Server.MapPath("~/ProfilePictures"));
+                        var ext = Path.GetExtension(file.FileName);
+
+                        //Generate a unique name using Guid
+                        uniqueName = Guid.NewGuid() + ext;
+
+                        //Get physical path of our folder where we want to save images
+                        var rootPath = Server.MapPath("~/ProfilePictures");
+                        var fileSavePath = Path.Combine(rootPath, uniqueName);
+
+                        // Save the uploaded file to "UploadedFiles" folder
+                        file.SaveAs(fileSavePath);
+                        userDTO.PictureName = uniqueName;
+                    }
+                }
                 userDTO.PswSalt = UserPswHashing.CreateSalt();
                 UserPswHashing.GenerateHash(userDTO);
                 var updateResult = UserBO.Update(userDTO);

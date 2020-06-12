@@ -4,8 +4,22 @@
 }
 
 <div class="main-div">
-    <form action="@Url.Content("~/User/UpdateProfile")" method="POST">
-        <img src="@Url.Content("~/Images/profile.png")" class="avatar">
+    <form action=@Url.Content("~/User/UpdateProfile") method="POST">
+        <img src=@Url.Content("~/Images/profile.png") class="avatar" id="uploadPreview">
+
+        <input id="uploadImage" type="file" name="myPhoto" onchange="PreviewImage();" style="opacity:0; padding:0; " />
+        <script type="text/javascript">
+
+            function PreviewImage() {
+                var oFReader = new FileReader();
+                oFReader.readAsDataURL(document.getElementById("uploadImage").files[0]);
+
+                oFReader.onload = function (oFREvent) {
+                    document.getElementById("uploadPreview").src = oFREvent.target.result;
+                };
+            };
+
+        </script>
         <h4>Update Profile</h4>
         <div class="input-div one">
             <div class="i">
@@ -22,7 +36,7 @@
             </div>
             <div>
                 <h5>Login ID</h5>
-                <input class="input" type="text" required name="lid" id="login" maxlength="40"  value="@ViewBag.Login"/>
+                <input class="input" type="text" required name="lid" id="login" maxlength="40" value="@ViewBag.Login" />
             </div>
         </div>
         <div class="input-div two">
@@ -36,7 +50,7 @@
         </div>
         <p style="color:red;" id="pid"></p>
         <input type="button" id="updatebtn" class="btn" value="Update" name="updatebtn">
-        <a href="@Url.Content("~/Home/Admin")" style="text-decoration:none">
+        <a href=@Url.Content("~/Home/Admin") style="text-decoration:none">
             <input type="button" class="btn" value="Cancel" name="Cancel">
         </a>
 
@@ -44,16 +58,24 @@
 
 </div>
 
+
 <script>
     $(document).ready(function () {
         const inputs = document.querySelectorAll('.input');
         inputs.forEach(input => {
             if (input.value != "") {
                 let parent = input.parentNode.parentNode;
-		        parent.classList.add('focus');
+                parent.classList.add('focus');
             }
 
-	    })
+        })
+
+            $("#uploadPreview").on("click", function (e) {
+            e.preventDefault();
+                $("#uploadImage").trigger('click');
+
+        });
+        MyApp.Signup();
     });
 
     $("#updatebtn").click(function () {
@@ -62,7 +84,7 @@
         var pass = $("#password").val();
         var login = $("#login").val();
         if (name.length == 0 || pass.length == 0 || login.length == 0) {
-             $("#pid").text("Please Fill in All the Fields...");
+            $("#pid").text("Please Fill in All the Fields...");
         }
         else {
             var settings = {
