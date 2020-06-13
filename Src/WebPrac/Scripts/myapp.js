@@ -233,7 +233,7 @@ MyApp = (function() {
             action,
             {},
             function(resp) {
-
+                console.log(resp.data);
                 if (resp.data) {
                     debugger;
                     for (let k in resp.data) {
