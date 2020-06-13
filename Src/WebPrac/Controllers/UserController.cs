@@ -190,13 +190,21 @@ namespace WebPrac.Controllers
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
 
+            //Server side Email validation
+            string expression = @"^[a-z][a-z|0-9|]*([_][a-z|0-9]+)*([.][a-z|" + @"0-9]+([_][a-z|0-9]+)*)?@[a-z][a-z|0-9|]*\.([a-z]" + @"[a-z|0-9]*(\.[a-z][a-z|0-9]*)?)$";
+            Match match = Regex.Match(userDTO.Login, expression, RegexOptions.IgnoreCase);
+            if (!match.Success)
+            {
+                var data = new { success = 2, result = "You have entered an invalid email address...Please Enter valid email...!!!" };
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+
             var activeUser = (UserDTO)Session["user"];
             if (!UserBO.isAnotherUserExistExceptActivUser(userDTO.Login, activeUser.UserID))
             {
                 userDTO.UserID = activeUser.UserID;
 
                 //Picture handling
-                int i = Request.Files.Count; 
                 var uniqueName ="";
                 if (Request.Files["myProfilePic"] != null)
                 {
@@ -220,7 +228,7 @@ namespace WebPrac.Controllers
                 }
                 userDTO.PswSalt = UserPswHashing.CreateSalt();
                 UserPswHashing.GenerateHash(userDTO);
-                var updateResult = UserBO.Update(userDTO);
+                var updateResult = UserBO.Update(userDTO,activeUser.Login);
                 if (updateResult > 0)
                 {
                     activeUser.Name = userDTO.Name;
@@ -228,6 +236,7 @@ namespace WebPrac.Controllers
                     activeUser.Login = userDTO.Login;
                     activeUser.PictureName = userDTO.PictureName;
                     Session["user"] = activeUser;
+                    EmailVerifier.SendEmail(userDTO);
                     var data = new { success = 1, result = "Updated Successfully..." };
                     return Json(data, JsonRequestBehavior.AllowGet);
                 }
@@ -237,7 +246,7 @@ namespace WebPrac.Controllers
                     return Json(data, JsonRequestBehavior.AllowGet);
                 }
             }
-
+            else
             {
                 var data = new { success = 2, result = "User ALready Exist...Please Try again with another 'Login'" };
                 return Json(data, JsonRequestBehavior.AllowGet);

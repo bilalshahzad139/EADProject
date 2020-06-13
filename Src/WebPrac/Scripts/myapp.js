@@ -1,6 +1,6 @@
 ﻿var MyApp = {};
 
-MyApp = (function() {
+MyApp = (function () {
 
 
     function Clear() {
@@ -24,16 +24,16 @@ MyApp = (function() {
         if (name === "" || price === "") {
             $("#ErrMsg").text("Empty Fields!");
             setTimeout(() => {
-                    const elem = $("#ErrMsg").text("");
-                },
+                const elem = $("#ErrMsg").text("");
+            },
                 3000);
             return false;
         }
         if (oldPicName === "" && files.length === 0) {
             $("#ErrMsg").text("Click on Choose File to upload Picture of Product!");
             setTimeout(() => {
-                    const elem = $("#ErrMsg").text("");
-                },
+                const elem = $("#ErrMsg").text("");
+            },
                 3000);
             return false;
         }
@@ -55,7 +55,7 @@ MyApp = (function() {
             contentType: false,
             processData: false,
             data: data,
-            success: function(r) {
+            success: function (r) {
                 console.log(r);
 
                 const obj = {};
@@ -80,7 +80,7 @@ MyApp = (function() {
 
                 alert("record is saved");
             },
-            error: function() {
+            error: function () {
                 alert("error has occurred");
 
             }
@@ -89,8 +89,8 @@ MyApp = (function() {
         $.ajax(settings);
     }
 
-function loadProductCategories() {
-        
+    function loadProductCategories() {
+
         var action = "Product2/GetAllCategories"
         MyAppGlobal.MakeAjaxCall("GET", action, {}, function (resp) {
 
@@ -102,11 +102,11 @@ function loadProductCategories() {
             $("#selProdCategory").append(html);
         });
     }
-   
+
     function LoadProductsByCategory(categoryid) {
         var action = "Product2/GetProductsByCategory";
         $('#productsDiv').empty();
-        MyAppGlobal.MakeAjaxCall("GET", action, {"id":categoryid}, function (resp) {
+        MyAppGlobal.MakeAjaxCall("GET", action, { "id": categoryid }, function (resp) {
 
             if (resp.data) {
 
@@ -170,10 +170,10 @@ function loadProductCategories() {
                 BindEvents();
 
             }
-                });
+        });
 
     }
-	
+
     function LoadProducts(from, to) {
 
         $("#productsDiv").empty();
@@ -189,7 +189,7 @@ function loadProductCategories() {
         MyAppGlobal.MakeAjaxCall("GET",
             action,
             {},
-            function(resp) {
+            function (resp) {
 
                 if (resp.data) {
                     debugger;
@@ -211,7 +211,7 @@ function loadProductCategories() {
                     $("#productsDiv").append(html);
 
 
-                    
+
 
                     BindEvents();
 
@@ -259,7 +259,7 @@ function loadProductCategories() {
     function BindEvents() {
 
         $(".editprod").unbind("click").bind("click",
-            function() {
+            function () {
                 const $tr = $(this).closest("tr");
                 const pid = $tr.attr("pid");
 
@@ -268,7 +268,7 @@ function loadProductCategories() {
                 MyAppGlobal.MakeAjaxCall("GET",
                     "Product2/GetProductById",
                     d,
-                    function(resp) {
+                    function (resp) {
                         $("#txtProductID").val(resp.data.ProductID);
                         $("#txtPictureName").val(resp.data.PictureName);
                         $("#txtName").val(resp.data.Name);
@@ -281,7 +281,7 @@ function loadProductCategories() {
             });
 
         $(".deleteprod").unbind("click").bind("click",
-            function() {
+            function () {
 
                 if (!confirm("Do you want to continue?")) {
                     return;
@@ -294,7 +294,7 @@ function loadProductCategories() {
                 MyAppGlobal.MakeAjaxCall("POST",
                     "Product2/DeleteProduct",
                     d,
-                    function(resp) {
+                    function (resp) {
 
                         $tr.remove();
                     });
@@ -304,7 +304,7 @@ function loadProductCategories() {
             });
 
         $(".emailprod").unbind("click").bind("click",
-            function() {
+            function () {
                 const $tr = $(this).closest("tr");
                 const pid = $tr.attr("pid");
 
@@ -313,7 +313,7 @@ function loadProductCategories() {
                 MyAppGlobal.MakeAjaxCall("GET",
                     "Product2/GetProductById",
                     d,
-                    function(resp) {
+                    function (resp) {
 
                         $("#popupname").text(resp.data.Name);
 
@@ -326,7 +326,7 @@ function loadProductCategories() {
                 return false;
             });
 
-        $("#productsDiv .addcomment").on("click", function() {
+        $("#productsDiv .addcomment").on("click", function () {
 
             var mainProdContainer = $(this).closest(".product");
             console.log(mainProdContainer);
@@ -343,7 +343,7 @@ function loadProductCategories() {
             MyAppGlobal.MakeAjaxCall("POST",
                 "Product2/SaveComment",
                 obj1,
-                function(resp1) {
+                function (resp1) {
 
                     if (resp1.success) {
                         alert("added");
@@ -379,40 +379,40 @@ function loadProductCategories() {
         $(`${selector}`).on('propertychange input',
             function (event) {
 
-            //debugger;
-            const val = $(`${selector}`).val();
-            $(`${selector}autocomplete-list`).empty();
-            const data = {
-                "val":val
-            };
+                //debugger;
+                const val = $(`${selector}`).val();
+                $(`${selector}autocomplete-list`).empty();
+                const data = {
+                    "val": val
+                };
 
-            const settings = {
-                type: 'Post',
-                dataType: "json",
-                url: window.BasePath + url,
-                data: data,
-                success: function (resp) {
-                    console.log(resp);
-                    const inp = $(`${selector}`);
-                    autocomplete(inp , resp);
-                },
-                error: function (error) {
-                   console.log(error);
-                }
-            };
+                const settings = {
+                    type: 'Post',
+                    dataType: "json",
+                    url: window.BasePath + url,
+                    data: data,
+                    success: function (resp) {
+                        console.log(resp);
+                        const inp = $(`${selector}`);
+                        autocomplete(inp, resp);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                };
 
-            $.ajax(settings);
+                $.ajax(settings);
 
             }
         );
 
 
-        function autocomplete(inp ,arr) {
+        function autocomplete(inp, arr) {
             var a, b, i;
             closeAllLists();
             var currentFocus = -1;
             a = $("<div>", { "id": inp.attr("id") + "autocomplete-list", "class": "autocomplete-items" }).css({
-                "z-index":"99"
+                "z-index": "99"
             });
             inp.parent().append(a);
             for (i = 0; i < arr.length; i++) {
@@ -420,26 +420,26 @@ function loadProductCategories() {
                 b.html(`<strong>${arr[i].substr(0, inp[0].value.length)}</strong>`);
                 b.html(b.html() + arr[i].substr(inp[0].value.length));
                 b.html(`${b.html()}<input type='hidden' value='${arr[i].trim()}'>`);
-                
+
                 b.on("click", function (e) {
-                    
+
                     inp.val($(this).children("input").val());
                     closeAllLists();
                 });
                 b.css({
-                    "padding":"5px 8px"
+                    "padding": "5px 8px"
                 })
-                a.width(inp.width()+10);
+                a.width(inp.width() + 10);
                 a.css({
-                    "margin":"-2px"
+                    "margin": "-2px"
                 })
                 a.append(b);
             }
 
             inp.keydown(function (e) {
-                
+
                 var x = $(`#${$(this).attr("id")}autocomplete-list`);
-                
+
                 if (x) x = $(x).children("div");
                 if (e.keyCode === 40) { //down
                     currentFocus++;
@@ -470,12 +470,12 @@ function loadProductCategories() {
                 x[currentFocus].classList.add("autocomplete-active");
             }
 
-        
+
             /*Removes active class from any active item*/
             function removeActive(x) {
                 /*a function to remove the "active" class from all autocomplete items:*/
                 for (let item = 0; item < x.length; item++) {
-                    
+
                     $($(x)[item]).removeClass("autocomplete-active");
                 }
             }
@@ -500,9 +500,9 @@ function loadProductCategories() {
         }
 
     }
- 
+
     function SignupHelper() {
-        var fileName="";
+        var fileName = "";
 
         $("#btnSignUp").on("click",
             function () {
@@ -522,8 +522,8 @@ function loadProductCategories() {
                     if (!validateEmail(login)) {
                         $("#p").text("You have entered an invalid email address!!");
                         setTimeout(() => {
-                                const elem = $("#p").text("");
-                            },
+                            const elem = $("#p").text("");
+                        },
                             2000);
                         return false;
                     }
@@ -581,7 +581,7 @@ function loadProductCategories() {
                     $.ajax(settings);
                 }
                 else {
-                   
+
                     $("#p").text("Empty Fields!");
                     setTimeout(() => {
                         const elem = $("#p").text("");
@@ -591,12 +591,75 @@ function loadProductCategories() {
 
             });
     }
+
+    function UpdateProfileHelper() {
+
+        $("#updatebtn").click(function () {
+            var name = $("#username").val();
+            var pass = $("#password").val();
+            var login = $("#login").val();
+            var picName = $("#hiddenForImage").text();
+            var files = $("#uploadImage").get(0).files;
+            if (name.length == 0 || pass.length == 0 || login.length == 0) {
+                $("#pid").text("Please Fill in all the fields...!!!");
+                return false;
+            }
+            else if (!validateEmail(login)) {
+                $("#pid").text("You have entered an invalid email address...!!!");
+                return false;
+            }
+            else {
+                var tempData = new FormData();
+                var fileName = "";
+                if (picName.length == 0) {
+                    tempData.append("myProfilePic", files[0]);
+                    fileName = files[0].name;
+                }
+                else {
+                    fileName = picName;
+                }
+                tempData.append("Name", name);
+                tempData.append("Login", login);
+                tempData.append("Password", pass);
+                tempData.append("PictureName", fileName);
+
+                var settings = {
+                    type: "POST",
+                    contentType: false,
+                    processData: false,
+                    url: window.BasePath + "User/UpdateProfile",
+                    data: tempData,
+                    success: function (response) {
+                        if (response.success == 1) {
+                            alert(response.result);
+                            window.location = '/Home/Admin';
+                        }
+                        else if (response.success == 2) {
+                            $("#pid").text(response.result);
+                            $("#password").val("");
+
+                        }
+                        else {
+                            alert(response.result);
+                        }
+                    },
+                    failure: function () {
+                        alert("Update Ajax Call Failed");
+                    }
+                }
+                $.ajax(settings);
+            }
+
+        })
+
+    }
+
     function validateEmail(email) {
         var mailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return mailFormat.test(email);
     }
     return {
-		 addCategory: function () {
+        addCategory: function () {
             $("#btn_submit_Addcategory").click(function () {
                 var categoryName = $("#categoryName").val();
                 var data = new FormData();
@@ -634,36 +697,39 @@ function loadProductCategories() {
         Signup: function () {
             SignupHelper();
         },
+        UpdateProfile: function () {
+            UpdateProfileHelper();
+        },
         Main: function () {
 
             LoadProducts();
 
-            $("#btnSave").click(function() {
+            $("#btnSave").click(function () {
 
                 SaveProduct();
                 return false;
             });
 
-            $("#btnClear").click(function() {
+            $("#btnClear").click(function () {
 
                 Clear();
                 return false;
             });
 
-            $("#btnSend").click(function() {
+            $("#btnSend").click(function () {
                 //Call send email function
                 $("#emailpopup").hide();
                 $("#overlay").hide();
                 return false;
             });
 
-            $("#btnClose").click(function() {
+            $("#btnClose").click(function () {
                 $("#emailpopup").hide();
                 $("#overlay").hide();
                 return false;
             });
 
-            $("#priceDropDown").change(function() {
+            $("#priceDropDown").change(function () {
                 const t = $(this).find(":selected").data("price");
                 const a = t.split(":");
                 const l = parseFloat(a[0]);
@@ -672,7 +738,7 @@ function loadProductCategories() {
                 LoadProducts(l, u);
             });
 
-            $("#newProdBtn").click(function() {
+            $("#newProdBtn").click(function () {
                 $("#addNewProd").slideToggle(700);
             });
 
@@ -692,7 +758,7 @@ function loadProductCategories() {
 
             });
         },
-        AutoComplete: function(selector, data) {
+        AutoComplete: function (selector, data) {
             AutoCompleteHelper(selector, data);
         }
 

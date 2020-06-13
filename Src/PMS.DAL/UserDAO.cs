@@ -104,7 +104,7 @@ namespace PMS.DAL
             }
         }
 
-        public static int Update(UserDTO dto)
+        public static int Update(UserDTO dto,String previousLogin)
         {
             var recAff = 0;
             var sqlQuery =
@@ -115,7 +115,7 @@ namespace PMS.DAL
                 try
                 {
                     recAff =  helper.ExecuteQuery(sqlQuery);
-                    sqlQuery = $"UPDATE dbo.UserPswSalt SET salt='{dto.PswSalt}' WHERE Login='{dto.Login}'";
+                    sqlQuery = $"UPDATE dbo.UserPswSalt SET salt='{dto.PswSalt}' , Login='{dto.Login}' WHERE Login='{previousLogin}'";
                     _ = helper.ExecuteQuery(sqlQuery);
                 }
                 catch (Exception e)
