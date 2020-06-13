@@ -64,8 +64,8 @@ namespace WebPrac.Controllers
         }
         public JsonResult GetProductsByCategory(int id)
         {
-
-            Object products = null;// PMS.BAL.ProductBO.GetProductsByCategory(id, true);
+            
+            Object products = PMS.BAL.ProductBO.GetProductsByCategory(id, true);
             var d = new
             {
                 data = products

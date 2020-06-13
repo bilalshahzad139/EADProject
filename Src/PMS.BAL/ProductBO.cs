@@ -20,7 +20,10 @@ namespace PMS.BAL
         {
             return PMS.DAL.ProductDAO.GetAllProducts(pLoadComments);
         }
-
+        public static List<ProductDTO> GetProductsByCategory(int categoryId, Boolean pLoadComments = false)
+        {
+            return PMS.DAL.ProductDAO.GetProductsByCategory(categoryId, pLoadComments);
+        }
         public static List<ProductDTO> GetPriceRangedProducts(int from, int to, Boolean pLoadComments = false)
         {
             return PMS.DAL.ProductDAO.GetPriceRangedProducts(from, to, pLoadComments);

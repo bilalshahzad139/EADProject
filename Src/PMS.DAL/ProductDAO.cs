@@ -23,7 +23,7 @@ namespace PMS.DAL
                 else
                 {
                     sqlQuery =
-                        $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID) VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1'); Select @@IDENTITY";
+                        $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID) VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},{dto.CategoryID}); Select @@IDENTITY";
 
                     var obj = helper.ExecuteScalar(sqlQuery);
                     sqlQuery =
@@ -78,7 +78,39 @@ namespace PMS.DAL
                 return list;
             }
         }
+        public static List<ProductDTO> GetProductsByCategory(int categoryId, Boolean pLoadComments = false)
+        {
+            string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 and ProductCategoryId= " + categoryId + ";";
 
+            // var query = String.Format("Select * from dbo.Products Where categoryID={0}", categoryId);
+            using (DBHelper helper = new DBHelper())
+            {
+                var reader = helper.ExecuteReader(query);
+                List<ProductDTO> list = new List<ProductDTO>();
+
+                while (reader.Read())
+                {
+                    var dto = FillDTO(reader);
+                    if (dto != null)
+                    {
+                        list.Add(dto);
+                    }
+                }
+                if (pLoadComments == true)
+                {
+                    //var commentsList = CommentDAO.GetAllComments();
+
+                    var commentsList = CommentDAO.GetTopComments(2);
+
+                    foreach (var prod in list)
+                    {
+                        List<CommentDTO> prodComments = commentsList.Where(c => c.ProductID == prod.ProductID).ToList();
+                        prod.Comments = prodComments;
+                    }
+                }
+                return list;
+            }
+        }
         public static List<ProductDTO> GetPriceRangedProducts(int from, int to, bool pLoadComments = false)
         {
             var query = "Select * from dbo.Products Where IsActive = 1 AND (Price Between '" + from + "' AND '" + to + "');";
