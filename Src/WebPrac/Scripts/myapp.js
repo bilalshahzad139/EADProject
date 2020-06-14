@@ -75,6 +75,12 @@ MyApp = (function() {
         var name = $("#txtName").val().trim();
         var price = $("#txtPrice").val().trim();
         const oldPicName = $("#txtPictureName").val();
+        var category = $("#selProdCategory").val();
+        alert(category);
+        if (category == 0) {
+            alert("No category is selected");
+            return;
+        }
         var files = $("#myfile").get(0).files;
         var quantity = $("#txtQuantity").val().trim();
 
@@ -100,7 +106,10 @@ MyApp = (function() {
         data.append("Name", name);
         data.append("Price", price);
         data.append("PictureName", oldPicName);
+
         data.append("Quantity", quantity);
+      data.append("CategoryID", category);
+
 
         if (files.length > 0) {
             data.append("Image", files[0]);
@@ -174,44 +183,44 @@ MyApp = (function() {
                 $("#productsDiv").append(html);
 
 
-                $("#productsDiv .addcomment").click(function () {
+                //$("#productsDiv .addcomment").click(function () {
 
-                    var mainProdContainer = $(this).closest(".prodbox");
-                    var pid = mainProdContainer.attr("pid");
+                //    var mainProdContainer = $(this).closest(".prodbox");
+                //    var pid = mainProdContainer.attr("pid");
 
-                    var comment = $(this).closest(".commentarea").find(".txtComment").val();
+                //    var comment = $(this).closest(".commentarea").find(".txtComment").val();
 
-                    var obj = {
-                        ProductID: pid,
-                        CommentText: comment
-                    }
-
-
-                    MyAppGlobal.MakeAjaxCall("POST", 'Product2/SaveComment', obj, function (resp) {
-
-                        if (resp.success) {
-                            alert("added");
+                //    var obj = {
+                //        ProductID: pid,
+                //        CommentText: comment
+                //    }
 
 
-                            var obj1 = {
-                                PictureName: resp.PictureName,
-                                UserName: resp.UserName,
-                                CommentText: obj.CommentText,
-                                CommentOn: moment(resp.CommentOn).format('DD/MM/YYYY HH:mm:ss')
-                            };
+                //    MyAppGlobal.MakeAjaxCall("POST", 'Product2/SaveComment', obj, function (resp) {
 
-                            var source = $("#commenttemplate").html();
-                            var template = Handlebars.compile(source);
+                //        if (resp.success) {
+                //            alert("added");
 
-                            var html = template(obj1);
-                            mainProdContainer.find(".comments").append(html);
 
-                        }
+                //            var obj1 = {
+                //                PictureName: resp.PictureName,
+                //                UserName: resp.UserName,
+                //                CommentText: obj.CommentText,
+                //                CommentOn: moment(resp.CommentOn).format('DD/MM/YYYY HH:mm:ss')
+                //            };
 
-                    });
+                //            var source = $("#commenttemplate").html();
+                //            var template = Handlebars.compile(source);
 
-                    return false;
-                });
+                //            var html = template(obj1);
+                //            mainProdContainer.find(".comments").append(html);
+
+                //        }
+
+                //    });
+
+                //    return false;
+                //});
 
                 BindEvents();
 
@@ -666,7 +675,7 @@ MyApp = (function() {
         },
         Main: function () {
             LoadProducts();
-           
+          loadProductCategories();
             $("#btnSave").click(function() {
                 SaveProduct();
                 return false;
@@ -694,6 +703,18 @@ MyApp = (function() {
                 // get lower and upper range and load products accordingly.
                 LoadProducts(l, u);
             });
+
+           $("#maindropdown").change(function () {
+                var categoryid = $(this).val();
+                if (categoryid == 0) {
+                    LoadProducts();
+                }
+                else {
+                    LoadProductsByCategory(categoryid);
+                }
+
+            });
+
             $("#newProdBtn").click(function() {
                 $("#addNewProd").slideToggle(700);
             });
