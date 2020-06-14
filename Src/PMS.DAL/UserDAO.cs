@@ -104,18 +104,18 @@ namespace PMS.DAL
             }
         }
 
-        public static int Update(UserDTO dto)
+        public static int Update(UserDTO dto,String previousLogin)
         {
             var recAff = 0;
             var sqlQuery =
-                $"Update dbo.Users Set Password='{dto.Password}' ,  Name='{dto.Name}', Login='{dto.Login}' Where UserID={dto.UserID}";
+                $"Update dbo.Users Set Password='{dto.Password}' , PictureName='{dto.PictureName}' ,  Name='{dto.Name}', Login='{dto.Login}' Where UserID={dto.UserID}";
 
             using (var helper = new DBHelper())
             {
                 try
                 {
                     recAff =  helper.ExecuteQuery(sqlQuery);
-                    sqlQuery = $"UPDATE dbo.UserPswSalt SET salt='{dto.PswSalt}' WHERE Login='{dto.Login}'";
+                    sqlQuery = $"UPDATE dbo.UserPswSalt SET salt='{dto.PswSalt}' , Login='{dto.Login}' WHERE Login='{previousLogin}'";
                     _ = helper.ExecuteQuery(sqlQuery);
                 }
                 catch (Exception e)

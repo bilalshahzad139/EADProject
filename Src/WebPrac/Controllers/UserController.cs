@@ -173,6 +173,7 @@ namespace WebPrac.Controllers
                 var activeUser = (UserDTO)Session["user"];
                 ViewBag.Login = activeUser.Login;
                 ViewBag.Name = activeUser.Name;
+                ViewBag.PictureName = activeUser.PictureName;
                 return View("UpdateProfile");
             }
 
@@ -189,19 +190,53 @@ namespace WebPrac.Controllers
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
 
+            //Server side Email validation
+            string expression = @"^[a-z][a-z|0-9|]*([_][a-z|0-9]+)*([.][a-z|" + @"0-9]+([_][a-z|0-9]+)*)?@[a-z][a-z|0-9|]*\.([a-z]" + @"[a-z|0-9]*(\.[a-z][a-z|0-9]*)?)$";
+            Match match = Regex.Match(userDTO.Login, expression, RegexOptions.IgnoreCase);
+            if (!match.Success)
+            {
+                var data = new { success = 2, result = "You have entered an invalid email address...Please Enter valid email...!!!" };
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+
             var activeUser = (UserDTO)Session["user"];
             if (!UserBO.isAnotherUserExistExceptActivUser(userDTO.Login, activeUser.UserID))
             {
                 userDTO.UserID = activeUser.UserID;
+
+                //Picture handling
+                var uniqueName ="";
+                if (Request.Files["myProfilePic"] != null)
+                {
+                    var file = Request.Files["myProfilePic"];
+                    if (file.FileName != "")
+                    {
+                        Directory.CreateDirectory(Server.MapPath("~/ProfilePictures"));
+                        var ext = Path.GetExtension(file.FileName);
+
+                        //Generate a unique name using Guid
+                        uniqueName = Guid.NewGuid() + ext;
+
+                        //Get physical path of our folder where we want to save images
+                        var rootPath = Server.MapPath("~/ProfilePictures");
+                        var fileSavePath = Path.Combine(rootPath, uniqueName);
+
+                        // Save the uploaded file to "UploadedFiles" folder
+                        file.SaveAs(fileSavePath);
+                        userDTO.PictureName = uniqueName;
+                    }
+                }
                 userDTO.PswSalt = UserPswHashing.CreateSalt();
                 UserPswHashing.GenerateHash(userDTO);
-                var updateResult = UserBO.Update(userDTO);
+                var updateResult = UserBO.Update(userDTO,activeUser.Login);
                 if (updateResult > 0)
                 {
                     activeUser.Name = userDTO.Name;
                     activeUser.Password = userDTO.Password;
                     activeUser.Login = userDTO.Login;
+                    activeUser.PictureName = userDTO.PictureName;
                     Session["user"] = activeUser;
+                    EmailVerifier.SendEmail(userDTO);
                     var data = new { success = 1, result = "Updated Successfully..." };
                     return Json(data, JsonRequestBehavior.AllowGet);
                 }
@@ -211,7 +246,7 @@ namespace WebPrac.Controllers
                     return Json(data, JsonRequestBehavior.AllowGet);
                 }
             }
-
+            else
             {
                 var data = new { success = 2, result = "User ALready Exist...Please Try again with another 'Login'" };
                 return Json(data, JsonRequestBehavior.AllowGet);
