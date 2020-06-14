@@ -18,6 +18,8 @@ namespace PMS.Entities
         public int Quantity { get; set; }
         public int Sold { get; set; }
         public bool LowStockNotification { get; set; }
+        public int CategoryID { get; set; }
+
         public List<CommentDTO> Comments
         {
             get;

@@ -72,7 +72,12 @@
         <input type="hidden" name="PictureName" id="txtPictureName" />
         Name:<input type="text" name="Name" id="txtName" class="form-control" />
         Price: <input type="text" name="Price" id="txtPrice" class="form-control" />
+
         Qunatity: <input type="text" name="Quantity" id="txtQuantity" class="form-control" />
+      Category:<select name="main" id="selProdCategory">
+            <option value="0" class="form-control">Select Category</option>
+        </select> <br />
+
         Image: <input type="file" name="Image" id="myfile" />
         <div class="text-center mt-1">
             <input type="submit" value="Save" id="btnSave" class="btn btn-success mx-1" />
@@ -97,6 +102,10 @@
             <option data-price="20001:25000" value="5"> Rs20,001 - Rs25,000 </option>
             <option data-price="25001:30000" value="6"> Rs25,001 - Rs30,000 </option>
             <option data-price="30001:@Int32.MaxValue" value="7"> Rs30,000 - Max </option>
+        </select>
+        <span class="text-white ml-3">Category Filter:</span>
+        <select name="main" id="maindropdown">
+            <option value="0">  ALL </option>
         </select>
         <div style="display: inline-block">
             <input type="search" id="txtProductName" name="txtProductName" placeholder="Search" />
