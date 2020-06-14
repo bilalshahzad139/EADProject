@@ -15,6 +15,10 @@ namespace PMS.Entities
         public DateTime ModifiedOn { get; set; }
         public int ModifiedBy { get; set; }
         public bool IsActive { get; set; }
+        public int Quantity { get; set; }
+        public int Sold { get; set; }
+        public bool LowStockNotification { get; set; }
+        public int CategoryID { get; set; }
 
         public List<CommentDTO> Comments
         {

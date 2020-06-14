@@ -2,6 +2,64 @@
 
 MyApp = (function () {
 
+    function getLatestProd()
+    {
+        $("#productsDiv").empty();
+        debugger;
+        var action = null;
+        action = "Product2/GetLatestProducts";
+        MyAppGlobal.MakeAjaxCall("GET",
+            action,
+            {},
+            function (resp) {
+                if (resp.data) {
+                    debugger;
+                    for (let k in resp.data) {
+                        const obj = resp.data[k];
+                        obj.CreatedOn = moment(obj.CreatedOn).format("DD/MM/YYYY HH:mm:ss");
+
+                        for (let k2 in obj.Comments) {
+                            const comm = obj.Comments[k2];
+                            comm.CommentOn = moment(comm.CommentOn).format("DD/MM/YYYY HH:mm:ss");
+                        }
+                    }
+                    const source = $("#listtemplate").html();
+                    const template = Handlebars.compile(source);
+                    const html = template(resp);
+                    $("#productsDiv").append(html);
+                    BindEvents();
+                }
+            });
+    }
+    function getTrendingProd()
+    {
+        $("#productsDiv").empty();
+        debugger;
+        var action = null;
+        action = "Product2/getTrendingProducts";
+        MyAppGlobal.MakeAjaxCall("GET",
+            action,
+            {},
+            function (resp) {
+                if (resp.data) {
+                    debugger;
+                    for (let k in resp.data) {
+                        const obj = resp.data[k];
+                        obj.CreatedOn = moment(obj.CreatedOn).format("DD/MM/YYYY HH:mm:ss");
+
+                        for (let k2 in obj.Comments) {
+                            const comm = obj.Comments[k2];
+                            comm.CommentOn = moment(comm.CommentOn).format("DD/MM/YYYY HH:mm:ss");
+                        }
+                    }
+                    const source = $("#listtemplate").html();
+                    const template = Handlebars.compile(source);
+                    const html = template(resp);
+                    $("#productsDiv").append(html);
+                    BindEvents();
+                }
+            });
+    }
 
     function Clear() {
         $("#txtProductID").val(0);
@@ -10,18 +68,23 @@ MyApp = (function () {
         $("#txtPrice").val("");
         $("#prodimg").hide();
     }
-
     function SaveProduct() {
-
         const data = new FormData();
 
         var id = $("#txtProductID").val();
         var name = $("#txtName").val().trim();
         var price = $("#txtPrice").val().trim();
         const oldPicName = $("#txtPictureName").val();
+        var category = $("#selProdCategory").val();
+        alert(category);
+        if (category == 0) {
+            alert("No category is selected");
+            return;
+        }
         var files = $("#myfile").get(0).files;
+        var quantity = $("#txtQuantity").val().trim();
 
-        if (name === "" || price === "") {
+        if (name === "" || price === "" || quantity === "") {
             $("#ErrMsg").text("Empty Fields!");
             setTimeout(() => {
                 const elem = $("#ErrMsg").text("");
@@ -44,6 +107,9 @@ MyApp = (function () {
         data.append("Price", price);
         data.append("PictureName", oldPicName);
 
+        data.append("Quantity", quantity);
+      data.append("CategoryID", category);
+
 
         if (files.length > 0) {
             data.append("Image", files[0]);
@@ -57,38 +123,28 @@ MyApp = (function () {
             data: data,
             success: function (r) {
                 console.log(r);
-
                 const obj = {};
                 obj.data = [];
                 obj.data.push({ ProductID: r.ProductID, Name: name, Price: price, PictureName: r.PictureName });
-
                 const source = $("#listtemplate").html();
                 const template = Handlebars.compile(source);
-
                 const html = template(obj);
-
-
                 if (id > 0) {
                     $(`#productsDiv tr[pid=${id}]`).replaceWith(html);
                 } else {
                     $("#productsDiv").prepend(html);
                 }
-
                 BindEvents();
-
                 Clear();
-
                 alert("record is saved");
             },
             error: function () {
                 alert("error has occurred");
-
             }
         };
 
         $.ajax(settings);
     }
-
     function loadProductCategories() {
 
         var action = "Product2/GetAllCategories"
@@ -128,54 +184,54 @@ MyApp = (function () {
                 $("#productsDiv").append(html);
 
 
-                $("#productsDiv .addcomment").click(function () {
+                //$("#productsDiv .addcomment").click(function () {
 
-                    var mainProdContainer = $(this).closest(".prodbox");
-                    var pid = mainProdContainer.attr("pid");
+                //    var mainProdContainer = $(this).closest(".prodbox");
+                //    var pid = mainProdContainer.attr("pid");
 
-                    var comment = $(this).closest(".commentarea").find(".txtComment").val();
+                //    var comment = $(this).closest(".commentarea").find(".txtComment").val();
 
-                    var obj = {
-                        ProductID: pid,
-                        CommentText: comment
-                    }
-
-
-                    MyAppGlobal.MakeAjaxCall("POST", 'Product2/SaveComment', obj, function (resp) {
-
-                        if (resp.success) {
-                            alert("added");
+                //    var obj = {
+                //        ProductID: pid,
+                //        CommentText: comment
+                //    }
 
 
-                            var obj1 = {
-                                PictureName: resp.PictureName,
-                                UserName: resp.UserName,
-                                CommentText: obj.CommentText,
-                                CommentOn: moment(resp.CommentOn).format('DD/MM/YYYY HH:mm:ss')
-                            };
+                //    MyAppGlobal.MakeAjaxCall("POST", 'Product2/SaveComment', obj, function (resp) {
 
-                            var source = $("#commenttemplate").html();
-                            var template = Handlebars.compile(source);
+                //        if (resp.success) {
+                //            alert("added");
 
-                            var html = template(obj1);
-                            mainProdContainer.find(".comments").append(html);
 
-                        }
+                //            var obj1 = {
+                //                PictureName: resp.PictureName,
+                //                UserName: resp.UserName,
+                //                CommentText: obj.CommentText,
+                //                CommentOn: moment(resp.CommentOn).format('DD/MM/YYYY HH:mm:ss')
+                //            };
 
-                    });
+                //            var source = $("#commenttemplate").html();
+                //            var template = Handlebars.compile(source);
 
-                    return false;
-                });
+                //            var html = template(obj1);
+                //            mainProdContainer.find(".comments").append(html);
+
+                //        }
+
+                //    });
+
+                //    return false;
+                //});
 
                 BindEvents();
 
             }
         });
 
+
     }
 
     function LoadProducts(from, to) {
-
         $("#productsDiv").empty();
         debugger;
         var action = null;
@@ -185,11 +241,11 @@ MyApp = (function () {
             action = `Product2/GetPriceRangedProducts?from=${from}&to=${to}`;
             $("#productsDiv").empty(); // remove previous products before refreshing product list.
         }
-
         MyAppGlobal.MakeAjaxCall("GET",
             action,
             {},
-            function (resp) {
+            function(resp) {
+                console.log(resp.data);
 
                 if (resp.data) {
                     debugger;
@@ -202,24 +258,15 @@ MyApp = (function () {
                             comm.CommentOn = moment(comm.CommentOn).format("DD/MM/YYYY HH:mm:ss");
                         }
                     }
-
-
                     const source = $("#listtemplate").html();
                     const template = Handlebars.compile(source);
-
                     const html = template(resp);
                     $("#productsDiv").append(html);
 
-
-
-
                     BindEvents();
-
                 }
             });
-
     }
-
     function LoadProductsByName(prodName, minPrice, maxPrice, categoryId) {
         $("#productsDiv").empty();
         var action = "Product2/GetProductByName";
@@ -255,7 +302,6 @@ MyApp = (function () {
             });
 
     }
-
     function BindEvents() {
 
         $(".editprod").unbind("click").bind("click",
@@ -372,7 +418,6 @@ MyApp = (function () {
             return false;
         });
     }
-
     function AutoCompleteHelper(selector, urlP) {
 
         let url = urlP.source;
@@ -701,11 +746,9 @@ MyApp = (function () {
             UpdateProfileHelper();
         },
         Main: function () {
-
             LoadProducts();
-
-            $("#btnSave").click(function () {
-
+           loadProductCategories();
+            $("#btnSave").click(function() {
                 SaveProduct();
                 return false;
             });
@@ -717,19 +760,21 @@ MyApp = (function () {
             });
 
             $("#btnSend").click(function () {
+
                 //Call send email function
                 $("#emailpopup").hide();
                 $("#overlay").hide();
                 return false;
             });
 
-            $("#btnClose").click(function () {
+            $("#btnClose").click(function() {
+
                 $("#emailpopup").hide();
                 $("#overlay").hide();
                 return false;
             });
+            $("#priceDropDown").change(function() {
 
-            $("#priceDropDown").change(function () {
                 const t = $(this).find(":selected").data("price");
                 const a = t.split(":");
                 const l = parseFloat(a[0]);
@@ -738,10 +783,21 @@ MyApp = (function () {
                 LoadProducts(l, u);
             });
 
-            $("#newProdBtn").click(function () {
-                $("#addNewProd").slideToggle(700);
+           $("#maindropdown").change(function () {
+                var categoryid = $(this).val();
+                if (categoryid == 0) {
+                    LoadProducts();
+                }
+                else {
+                    LoadProductsByCategory(categoryid);
+                }
+
             });
 
+            $("#newProdBtn").click(function() {
+
+                $("#addNewProd").slideToggle(700);
+            });
             $("#btnSearchProduct").click(function () {
                 var prodName = $("#txtProductName").val();
                 if (prodName == "") {
@@ -754,8 +810,15 @@ MyApp = (function () {
                 const category = 0;
                 //category = $("#maindropdown").val();
                 LoadProductsByName(prodName, l, u, category);
+            });
 
-
+            $("#btnLatestProd").click(function () {
+                getLatestProd();
+                return false;
+            });
+            $("#btnTrendingProd").click(function () {
+                getTrendingProd();
+                return false;
             });
         },
         AutoComplete: function (selector, data) {
