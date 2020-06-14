@@ -72,9 +72,12 @@
         <input type="hidden" name="PictureName" id="txtPictureName" />
         Name:<input type="text" name="Name" id="txtName" class="form-control" />
         Price: <input type="text" name="Price" id="txtPrice" class="form-control" />
-        Category:<select name="main" id="selProdCategory">
+
+        Qunatity: <input type="text" name="Quantity" id="txtQuantity" class="form-control" />
+      Category:<select name="main" id="selProdCategory">
             <option value="0" class="form-control">Select Category</option>
         </select> <br />
+
         Image: <input type="file" name="Image" id="myfile" />
         <div class="text-center mt-1">
             <input type="submit" value="Save" id="btnSave" class="btn btn-success mx-1" />
@@ -108,6 +111,12 @@
             <input type="search" id="txtProductName" name="txtProductName" placeholder="Search" />
             <button id="btnSearchProduct">Search</button>
         </div>
+        <button id="btnLatestProd">
+            Latest Products
+        </button>
+        <button id="btnTrendingProd">
+            Trending Products
+        </button>
         <span class="text-warning ml-5">Other filters go there, remove this text when you add new filters</span>
     </div>
     <div class="row justify-content-center" id="productsDiv">
@@ -148,13 +157,14 @@
 
 <script id="listtemplate" type="text/x-handlebars-template">
     {{#each data}}
-    <div class="col-md-5 p-3 rounded-lg shadow-lg product" pid="{{ProductID}}">
+    <div class="col-md-5 p-3 rounded-lg shadow-lg product" pid="{{ProductID}}" {{#if LowStockNotification}} style="border-style: solid;border-color:red;border-width:medium;" {{/if}}>
+        {{#if LowStockNotification}}
+        <div style="color:red;">Low on Stock</div>
+        {{/if}}
         <div style="float: left">
             <img class="rounded-lg" src="/UploadedFiles/{{PictureName}}" style="width:100px;height:100px;" />
         </div>
-
-        <div style="float:left; padding-left:5px;">
-
+        <div id="t" style="float:left; padding-left:5px;">
             Product Id: {{ProductID}} <br />
             Name: {{Name}} <br />
             Price: {{Price}} <br />
