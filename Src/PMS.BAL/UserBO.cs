@@ -10,9 +10,9 @@ namespace PMS.BAL
         {
             return UserDAO.Save(dto);
         }
-        public static int Update(UserDTO dto)
+        public static int Update(UserDTO dto,string previosLogin)
         {
-            return UserDAO.Update(dto);
+            return UserDAO.Update(dto,previosLogin);
         }
 
         public static bool isUserAlreadyExist(string pLogin)
