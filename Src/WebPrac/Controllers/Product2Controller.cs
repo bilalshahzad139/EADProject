@@ -213,6 +213,17 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult FAQ(string val)
+        {
+            if (string.IsNullOrEmpty(val) || string.IsNullOrWhiteSpace(val))
+                return Json("", JsonRequestBehavior.AllowGet);
+            var data = PMS.BAL.ProductBO.GetRelatedFAQ(val);
+            return Json(data, JsonRequestBehavior.AllowGet);
+
+        }
+
         #region Under Development
 
         public ActionResult Edit(int id)

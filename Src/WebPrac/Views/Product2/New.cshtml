@@ -10,16 +10,15 @@
     <script src="~/Scripts/myapp.js"></script>
 
     <script>
-
         $("document").ready(function () {
             MyApp.Main();
             MyApp.AutoComplete("#txtProductName", {
                 source: "Product2/AutoSuggestion"
             });
+            MyApp.Faq("#faq", {
+                source: "Product2/FAQ"
+            });
         });
-
-
-
     </script>
 }
 @section styles{
@@ -55,10 +54,13 @@
 			color: red;
             text-align: center
 		}
+        #footer{
+            position: fixed;
+            bottom: 0;
+            width: 70%;
+        }
 	</style>
 }
-
-
 <div class="text-center"><h2>Product Management</h2></div>
 <div class="text-center">
     <button class="btn btn-default mb-3" id="newProdBtn">Add New Product</button>
@@ -113,6 +115,9 @@
     <div class="row justify-content-center" id="productsDiv">
 
     </div>
+    <div style="display: inline-block;" id="footer">
+        <input type="search" id="faq" name="faq" placeholder="ask a question" />
+    </div>
 </div>
 
 
@@ -150,7 +155,7 @@
     {{#each data}}
     <div class="col-md-5 p-3 rounded-lg shadow-lg product" pid="{{ProductID}}" {{#if LowStockNotification}} style="border-style: solid;border-color:red;border-width:medium;" {{/if}}>
         {{#if LowStockNotification}}
-        <div style="color:red;">Low on Stock</div>
+        <div style="color: red; ">Low on Stock</div>
         {{/if}}
         <div style="float: left">
             <img class="rounded-lg" src="/UploadedFiles/{{PictureName}}" style="width:100px;height:100px;" />

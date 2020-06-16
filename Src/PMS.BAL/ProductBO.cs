@@ -46,5 +46,9 @@ namespace PMS.BAL
         {
             return PMS.DAL.ProductDAO.getTrendingProducts(pLoadComments);
         }
+        public static List<string> GetRelatedFAQ(string text)
+        {
+            return PMS.DAL.ProductDAO.GetRelatedFAQ(text);
+        }
     }
 }

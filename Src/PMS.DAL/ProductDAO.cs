@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace PMS.DAL
 {
@@ -195,12 +196,61 @@ namespace PMS.DAL
                 return list;
             }
         }
-
         private static Boolean isLowStock(Double stockPercent) 
         {
             if (stockPercent < 50)
                 return true;
             return false;
+        }
+        public static List<string> GetRelatedFAQ(string text)
+        {
+            var s = GetSearchWords(text);
+            var condition = getCondition(s);
+            List<string> faq = new List<string>(); 
+            using (var helper = new DBHelper())
+            {
+                string query = "Select Question, Answer from dbo.FrequentlyAskedQuestion  where " + condition;
+                var reader = helper.ExecuteReader(query);
+                while (reader.Read())
+                {
+                    faq.Add(reader.GetString(reader.GetOrdinal("Question")));
+                    faq.Add(reader.GetString(reader.GetOrdinal("Answer")));
+                }
+            }
+            return faq;
+        }
+        public static string getCondition(string[] keywords)
+        {
+            var condition = "Question like '% " + keywords[0] + "%'";
+            for (int i = 1; i < keywords.Length; i++)
+            {
+                if(!keywords[i].Equals(' ') || keywords[i] != null )
+                    condition =  condition + "or Question like '%" + keywords[i] +"%'" ;
+            }
+            return condition;
+        }
+        public static string[] GetSearchWords(string text)
+        {
+            string pattern = @"\S+";
+            Regex re = new Regex(pattern);
+            int c = 0;
+            MatchCollection matches = re.Matches(text);
+            for (int i = 0; i < matches.Count; i++)
+            {
+                if ((matches[i].Value).ToLower() != "how" && (matches[i].Value).ToLower() != "what" && (matches[i].Value).ToLower() != "when" && (matches[i].Value).ToLower() != "where" && (matches[i].Value).ToLower() != "i" && (matches[i].Value).ToLower() != "my" && (matches[i].Value).ToLower() != "me" && (matches[i].Value).ToLower() != "the" && (matches[i].Value).ToLower() != "is" && (matches[i].Value).ToLower() != "do")
+                    c++;
+            }
+            string[] words = new string[c];
+            int j = 0;
+            for (int i = 0; i < matches.Count; i++)
+            {
+                if ((matches[i].Value).ToLower() != "how" && (matches[i].Value).ToLower() != "what" && (matches[i].Value).ToLower() != "when" && (matches[i].Value).ToLower() != "where" && (matches[i].Value).ToLower() != "i" && (matches[i].Value).ToLower() != "my" && (matches[i].Value).ToLower() != "me" && (matches[i].Value).ToLower() != "the" && (matches[i].Value).ToLower() != "is" && (matches[i].Value).ToLower() != "do")
+                {
+                    words[j] = matches[i].Value.ToLower();
+                    j++;
+                }
+            }
+            return words;
         }
 
        private static ProductDTO FillDTO(SqlDataReader reader)

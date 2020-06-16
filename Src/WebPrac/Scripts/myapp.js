@@ -625,6 +625,127 @@ MyApp = (function() {
         var mailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return mailFormat.test(email);
     }
+
+    function FAQHelper(selector, urlP) {
+        let url = urlP.source;
+        $(`${selector}`).on('propertychange input',
+            function (event) {
+                //debugger;
+                const val = $(`${selector}`).val();
+                $(`${selector}faq-list`).empty();
+                const data = {
+                    "val": val
+                };
+                const settings = {
+                    type: 'Post',
+                    dataType: "json",
+                    url: window.BasePath + url,
+                    data: data,
+                    success: function (resp) {
+                        console.log(resp);
+                        const inp = $(`${selector}`);
+                        Faq(inp, resp);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                };
+                $.ajax(settings);
+
+            }
+        );
+        function Faq(inp, arr) {
+            var a, b, i;
+            closeAllLists();
+            var currentFocus = -1;
+            a = $("<div>", { "id": inp.attr("id") + "faq-list", "class": "faq-items" }).css({
+                "z-index": "99",
+                 "background-color":"grey"
+            });
+            inp.parent().append(a);
+            for (i = 0; i < arr.length; i++) {
+                b = $("<div>");
+                if (i % 2 == 0) {
+                    b.html(`<strong>${arr[i]}</strong>`);
+                }
+                else
+                    b.html(`<i>${arr[i]}</i>`);
+                b.html(`${b.html()}<input type='hidden' value='${arr[i].trim()}'>`);
+                b.on("click", function (e) {
+                   // inp.val($(this).children("input").val());
+                    closeAllLists();
+                });
+                b.css({
+                    "max-height": "300px",
+                    "overflow-y": "auto",
+                    "overflow-x": "hidden",
+                    "padding": "5px 8px"
+                })
+                a.width(inp.width() + 8);
+                a.css({
+                    "margin": "-2px"
+                })
+                a.append(b);
+            }
+            inp.keydown(function (e) {
+                var x = $(`#${$(this).attr("id")}faq-list`);
+
+                if (x) x = $(x).children("div");
+                if (e.keyCode === 40) { //down
+                    currentFocus++;
+                    addActive(x);
+                } else if (e.keyCode === 38) { //up
+                    currentFocus--;
+                    addActive(x);
+                } else if (e.keyCode === 13) {
+                    //enter
+                    e.preventDefault();
+                    if (currentFocus > -1) {
+                        if (x) x[currentFocus].click();
+                    }
+                } else {
+                    return true;
+                }
+            });
+            //Adds active class to current item of list
+            function addActive(x) {
+                /*a function to classify an item as "active":*/
+                if (!x) return false;
+                /*start by removing the "active" class on all items:*/
+                removeActive(x);
+                if (currentFocus >= x.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = (x.length - 1);
+                /*add class "autocomplete-active":*/
+                x[currentFocus].classList.add("faq-active");
+            }
+            /*Removes active class from any active item*/
+            function removeActive(x) {
+                /*a function to remove the "active" class from all autocomplete items:*/
+                for (let item = 0; item < x.length; item++) {
+
+                    $($(x)[item]).removeClass("faq-active");
+                }
+            }
+            // For closing already opened lists
+            document.addEventListener("click", function (e) {
+                closeAllLists(e.target);
+            });
+        }
+        function closeAllLists(elmnt) {
+            let inp = $(`${selector}`).parent();
+            inp = inp[0];
+            /*close all autocomplete lists in the document,
+            except the one passed as an argument:*/
+            var x = document.getElementsByClassName("faq-items");
+            for (var i = 0; i < x.length; i++) {
+                if (elmnt != x[i] && elmnt != inp) {
+                    x[i].parentNode.removeChild(x[i]);
+                }
+            }
+        }
+    }
+
+
     return {
 		 addCategory: function () {
             $("#btn_submit_Addcategory").click(function () {
@@ -710,7 +831,6 @@ MyApp = (function() {
                 //category = $("#maindropdown").val();
                 LoadProductsByName(prodName, l, u, category);
             });
-
             $("#btnLatestProd").click(function () {
                 getLatestProd();
                 return false;
@@ -722,6 +842,10 @@ MyApp = (function() {
         },
         AutoComplete: function(selector, data) {
             AutoCompleteHelper(selector, data);
+        },
+
+        Faq: function (selector, data) {
+            FAQHelper(selector, data);
         }
 
     };
