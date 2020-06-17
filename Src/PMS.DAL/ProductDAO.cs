@@ -22,10 +22,7 @@ namespace PMS.DAL
                 }
                 else
                 {
-                    sqlQuery =
-                       $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID,Quantity,Sold) VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1','{dto.Quantity}','0'); Select @@IDENTITY";
-
-
+                    sqlQuery =   $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID,Quantity,Sold) VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1','{dto.Quantity}','0'); Select @@IDENTITY";
                     var obj = helper.ExecuteScalar(sqlQuery);
                     sqlQuery =
                         $"INSERT INTO dbo.ProductPictureNames(PictureName, ProductID ) Values ('{dto.PictureName}','{Convert.ToInt32(obj)}');";
@@ -79,6 +76,7 @@ namespace PMS.DAL
         }
 
   public static List<ProductDTO> GetProductsByCategory(int categoryId, Boolean pLoadComments = false)
+
         {
             string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 and ProductCategoryId= " + categoryId + ";";
 
@@ -214,7 +212,6 @@ namespace PMS.DAL
             {
                 var reader = helper.ExecuteReader(query);
                 var list = new List<ProductDTO>();
-
                 while (reader.Read())
                 {
                     var dto = FillDTO(reader);

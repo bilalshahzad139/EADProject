@@ -157,7 +157,9 @@ MyApp = (function () {
             $("#maindropdown").append(html);
             $("#selProdCategory").append(html);
         });
+
     }
+
 
     function LoadProductsByCategory(categoryid) {
         var action = "Product2/GetProductsByCategory";
@@ -229,7 +231,9 @@ MyApp = (function () {
         });
 
 
+
     }
+
 
     function LoadProducts(from, to) {
         $("#productsDiv").empty();
@@ -262,6 +266,8 @@ MyApp = (function () {
                     const template = Handlebars.compile(source);
                     const html = template(resp);
                     $("#productsDiv").append(html);
+
+
 
                     BindEvents();
                 }
@@ -546,6 +552,8 @@ MyApp = (function () {
 
     }
 
+
+
     function SignupHelper() {
         var fileName = "";
 
@@ -766,7 +774,6 @@ MyApp = (function () {
                 $("#overlay").hide();
                 return false;
             });
-
             $("#btnClose").click(function() {
 
                 $("#emailpopup").hide();
