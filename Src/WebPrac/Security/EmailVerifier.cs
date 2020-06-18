@@ -1,9 +1,9 @@
-﻿using System;
+﻿using PMS.BAL;
+using PMS.Entities;
+using System;
 using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
-using PMS.BAL;
-using PMS.Entities;
 
 namespace WebPrac.Security
 {

@@ -1,10 +1,15 @@
+<<<<<<< HEAD
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
 using PMS.DAL;
+=======
+﻿using PMS.DAL;
+>>>>>>> 5b477659254eb26bebda44373a0666c181375fa8
 using PMS.Entities;
+using System.Collections.Generic;
 
 namespace PMS.BAL
 {
@@ -14,12 +19,19 @@ namespace PMS.BAL
         {
             return UserDAO.Save(dto);
         }
+        public static int Update(UserDTO dto,string previosLogin)
+        {
+            return UserDAO.Update(dto,previosLogin);
+        }
 
         public static bool isUserAlreadyExist(string pLogin)
         {
             return UserDAO.isUserAlreadyExist(pLogin);
         }
-
+        public static bool isAnotherUserExistExceptActivUser(string pLogin, int UserID)
+        {
+            return UserDAO.isAnotherUserExistExceptActivUser(pLogin, UserID);
+        }
         public static int UpdatePassword(UserDTO dto)
         {
             return UserDAO.UpdatePassword(dto);
@@ -55,6 +67,7 @@ namespace PMS.BAL
             return UserDAO.VerifyEmail(user, code);
         }
 
+<<<<<<< HEAD
         public static int sendVerificationCode(string email)
         {
             
@@ -108,5 +121,11 @@ namespace PMS.BAL
             return UserDAO.isResetPasswordCodeVerified(code);
         }
 
+=======
+        public static string GetSaltForLogin(string login)
+        {
+            return UserDAO.GetSaltForLogin(login);
+        }
+>>>>>>> 5b477659254eb26bebda44373a0666c181375fa8
     }
 }

@@ -13,7 +13,7 @@
 
         $("document").ready(function () {
             MyApp.Main();
-            MyApp.AutoComplete("#ItemSearchBox", {
+            MyApp.AutoComplete("#txtProductName", {
                 source: "Product2/AutoSuggestion"
             });
         });
@@ -59,33 +59,32 @@
 }
 
 
-
-@* this div is for testin auto-suggestion remove it when search box is done *@
-<div>
-    <input type="text" id="ItemSearchBox"/>
-</div>
-
-
 <div class="text-center"><h2>Product Management</h2></div>
 <div class="text-center">
     <button class="btn btn-default mb-3" id="newProdBtn">Add New Product</button>
 </div>
 
 <div class="p-2 mx-4 shadow rounded-lg" id="addNewProd">
-	<div id="newProdContent">
-		<div class="text-center mb-n5"><h4>Add New Product</h4></div>
-		<img src="" style="width:100px;height:100px;display:none" id="prodimg" /> <br />
-		<input type="hidden" name="ProductID" id="txtProductID" value="0" />
-		<input type="hidden" name="PictureName" id="txtPictureName" />
-		Name:<input type="text" name="Name" id="txtName" class="form-control" />
-		Price: <input type="text" name="Price" id="txtPrice" class="form-control" />
-		Image: <input type="file" name="Image" id="myfile" />
-		<div class="text-center mt-1">
-			<input type="submit" value="Save" id="btnSave" class="btn btn-success mx-1" />
-			<input type="button" id="btnClear" value="Clear" class="btn btn-danger" />
-		</div>
-		<p id="ErrMsg">@ViewBag.EmptyFiledsMsg</p>
-	</div>
+    <div id="newProdContent">
+        <div class="text-center mb-n5"><h4>Add New Product</h4></div>
+        <img src="" style="width:100px;height:100px;display:none" id="prodimg" /> <br />
+        <input type="hidden" name="ProductID" id="txtProductID" value="0" />
+        <input type="hidden" name="PictureName" id="txtPictureName" />
+        Name:<input type="text" name="Name" id="txtName" class="form-control" />
+        Price: <input type="text" name="Price" id="txtPrice" class="form-control" />
+
+        Qunatity: <input type="text" name="Quantity" id="txtQuantity" class="form-control" />
+      Category:<select name="main" id="selProdCategory">
+            <option value="0" class="form-control">Select Category</option>
+        </select> <br />
+
+        Image: <input type="file" name="Image" id="myfile" />
+        <div class="text-center mt-1">
+            <input type="submit" value="Save" id="btnSave" class="btn btn-success mx-1" />
+            <input type="button" id="btnClear" value="Clear" class="btn btn-danger" />
+        </div>
+        <p id="ErrMsg">@ViewBag.EmptyFiledsMsg</p>
+    </div>
     
 </div>
 
@@ -104,8 +103,20 @@
             <option data-price="25001:30000" value="6"> Rs25,001 - Rs30,000 </option>
             <option data-price="30001:@Int32.MaxValue" value="7"> Rs30,000 - Max </option>
         </select>
-        <input type="text" id="txtProductName" name="txtProductName" placeholder="Search" />
-        <button id="btnSearchProduct">Search</button>
+        <span class="text-white ml-3">Category Filter:</span>
+        <select name="main" id="maindropdown">
+            <option value="0">  ALL </option>
+        </select>
+        <div style="display: inline-block">
+            <input type="search" id="txtProductName" name="txtProductName" placeholder="Search" />
+            <button id="btnSearchProduct">Search</button>
+        </div>
+        <button id="btnLatestProd">
+            Latest Products
+        </button>
+        <button id="btnTrendingProd">
+            Trending Products
+        </button>
         <span class="text-warning ml-5">Other filters go there, remove this text when you add new filters</span>
     </div>
     <div class="row justify-content-center" id="productsDiv">
@@ -146,13 +157,14 @@
 
 <script id="listtemplate" type="text/x-handlebars-template">
     {{#each data}}
-    <div class="col-md-5 p-3 rounded-lg shadow-lg product" pid="{{ProductID}}">
+    <div class="col-md-5 p-3 rounded-lg shadow-lg product" pid="{{ProductID}}" {{#if LowStockNotification}} style="border-style: solid;border-color:red;border-width:medium;" {{/if}}>
+        {{#if LowStockNotification}}
+        <div style="color:red;">Low on Stock</div>
+        {{/if}}
         <div style="float: left">
             <img class="rounded-lg" src="/UploadedFiles/{{PictureName}}" style="width:100px;height:100px;" />
         </div>
-
-        <div style="float:left; padding-left:5px;">
-
+        <div id="t" style="float:left; padding-left:5px;">
             Product Id: {{ProductID}} <br />
             Name: {{Name}} <br />
             Price: {{Price}} <br />
@@ -214,3 +226,10 @@
     <br />
     <div style="clear:both"></div>
 </script>
+<script id="dropdowntemplate" type="text/x-handlebars-template">
+
+        {{#each data}}
+        <option value='{{ProductCategoryID}}' >{{ProductCategoryName}}</option>
+        {{/each}}
+
+    </script>

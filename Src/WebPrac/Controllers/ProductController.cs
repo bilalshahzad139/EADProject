@@ -1,10 +1,4 @@
-﻿using PMS.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using WebPrac.Security;
+﻿using System.Web.Mvc;
 
 namespace WebPrac.Controllers
 {
@@ -63,7 +57,7 @@ namespace WebPrac.Controllers
         //    }
 
         //    return redVal;
-            
+
         //}
         //public ActionResult Edit2(int ProductID)
         //{
