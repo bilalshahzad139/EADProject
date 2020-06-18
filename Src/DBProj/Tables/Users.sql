@@ -6,6 +6,7 @@
     [PictureName] VARCHAR (50) NOT NULL,
     [IsAdmin]     BIT          NOT NULL,
     [IsActive]    BIT          NOT NULL,
+    [PwdRecoveryCode] VARCHAR(50) NULL, 
     CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ([UserID] ASC)
 );
 

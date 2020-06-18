@@ -176,5 +176,16 @@ namespace PMS.DAL
                 return "";
             }
         }
+        public static int storePasswordRecoveryCode(int code,string email)
+        {
+            string sqlQuery = String.Format("update dbo.Users set PwdRecoveryCode='{0}'  WHERE Login='{1}';",code,email);
+            using (DBHelper dbhelper=new DBHelper())
+            {
+                var rows = dbhelper.ExecuteQuery(sqlQuery);
+                return rows;
+            }
+            return -1;
+        }
+        
     }
 }

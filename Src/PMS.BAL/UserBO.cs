@@ -55,13 +55,13 @@ namespace PMS.BAL
             return UserDAO.VerifyEmail(user, code);
         }
 
-        public static int sendVerificationCode(string username)
+        public static int sendVerificationCode(string email)
         {
             
 
             Random rnd = new Random();
             int passwordResetCode = rnd.Next(1000, 10000);  // creates a number between 1000 and 10000
-            String userEmail = UserDAO.GetUserEmail(username);
+            String userEmail = email;
             if (userEmail != "")
             {
                 try
@@ -92,7 +92,8 @@ namespace PMS.BAL
                     {
                         smtp.Send(message);
                     }
-                    return passwordResetCode;
+                    return UserDAO.storePasswordRecoveryCode(passwordResetCode, userEmail);
+                    
                 }
                 catch (Exception ex)
                 {

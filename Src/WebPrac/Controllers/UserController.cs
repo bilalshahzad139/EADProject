@@ -178,16 +178,18 @@ namespace WebPrac.Controllers
 		{
 			return View();
 		}
+		
 		[HttpPost]
-		public JsonResult ResetPassword(string userName)
+		public JsonResult ResetPassword(string email)
 		{
 			
-			if(UserBO.isUserAlreadyExist(userName))
+			if(UserBO.isUserAlreadyExist(email))
 			{
 
-				int code = UserBO.sendVerificationCode(userName);
-				if(code!=0)//Code as been sent.
+				int code = UserBO.sendVerificationCode(email);
+				if(code!=0)//Code has been sent.
 				{
+					
 					var h = new
 					{
 						statusbit = 1,
