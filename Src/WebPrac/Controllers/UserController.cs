@@ -180,7 +180,7 @@ namespace WebPrac.Controllers
 		}
 		
 		[HttpPost]
-		public JsonResult ResetPassword(string email)
+		public JsonResult SendVerificationCode(string email)
 		{
 			
 			if(UserBO.isUserAlreadyExist(email))
@@ -200,7 +200,7 @@ namespace WebPrac.Controllers
 				}
 				 var b = new
 				{
-					statusbit = 0,
+					statusbit = -1,
 					msg = "Error Sending Code",
 					data = code
 				};
@@ -215,6 +215,33 @@ namespace WebPrac.Controllers
 			return Json(k, JsonRequestBehavior.AllowGet);
 		}
 
+
+		[HttpPost]
+		public JsonResult VerifyCode(string verificationCode)
+		{
+			{
+
+				bool isVerified = UserBO.isResetPasswordCodeVerified(verificationCode);
+				if (isVerified)//Code has been sent.
+				{
+
+					var h = new
+					{
+						statusbit = 1,
+						msg = "Code Verified Successfully.",
+						data = verificationCode
+					};
+					return Json(h, JsonRequestBehavior.AllowGet);
+				}
+				var b = new
+				{
+					statusbit = -1,
+					msg = "Code Not Verified",
+					data = verificationCode
+				};
+				return Json(b, JsonRequestBehavior.AllowGet);
+			}
+		}
 		//[HttpGet]
 		//public ActionResult Login2()
 		//{

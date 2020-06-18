@@ -186,6 +186,19 @@ namespace PMS.DAL
             }
             return -1;
         }
-        
+        public static bool isResetPasswordCodeVerified(string code)
+        {
+            string sqlQuery = String.Format("select * from dbo.Users where PwdRecoveryCode='{0}'", code);
+            
+            using (DBHelper dbhelper = new DBHelper())
+            {
+                var data = dbhelper.ExecuteReader(sqlQuery);
+                if (data !=null)
+                    return true;
+                return false;
+            }
+            return false;
+        }
+
     }
 }

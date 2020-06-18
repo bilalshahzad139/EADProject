@@ -103,5 +103,10 @@ namespace PMS.BAL
             else
                 return 0;//Email not Found.
         }
+        public static bool isResetPasswordCodeVerified(string code)
+        {
+            return UserDAO.isResetPasswordCodeVerified(code);
+        }
+
     }
 }
