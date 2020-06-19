@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DBPractice
 {
@@ -12,12 +8,13 @@ namespace DBPractice
         {
             //var dto = new PMS.Entities.ProductDTO();
             //dto.ProductID = 0;
-            //dto.Name = "Mobile 2";
-            //dto.Price = 200;
-            //dto.PictureName = "abc.jpg";
+            //dto.Name = "test3";
+            //dto.Price = 5000;
+            //dto.PictureName = "qwe.jpg";
             //dto.CreatedOn = DateTime.Now;
             //dto.CreatedBy = 1;
-
+            //dto.Quantity = 100;
+            //dto.Sold = 0;
             //PMS.BAL.ProductBO.Save(dto);
 
 
@@ -31,6 +28,8 @@ namespace DBPractice
             //var user = PMS.BAL.UserBO.ValidateUser("admin", "admin");
 
             //var user2 = PMS.BAL.UserBO.ValidateUser("admin", "admin12");
+            // var user2 = PMS.BAL.ProductBO.AddToWishlist(2, 16);
+
 
             //System.Console.ReadKey();
 

@@ -1,7 +1,65 @@
 ﻿var MyApp = {};
 
-MyApp = (function() {
+MyApp = (function () {
 
+    function getLatestProd()
+    {
+        $("#productsDiv").empty();
+        debugger;
+        var action = null;
+        action = "Product2/GetLatestProducts";
+        MyAppGlobal.MakeAjaxCall("GET",
+            action,
+            {},
+            function (resp) {
+                if (resp.data) {
+                    debugger;
+                    for (let k in resp.data) {
+                        const obj = resp.data[k];
+                        obj.CreatedOn = moment(obj.CreatedOn).format("DD/MM/YYYY HH:mm:ss");
+
+                        for (let k2 in obj.Comments) {
+                            const comm = obj.Comments[k2];
+                            comm.CommentOn = moment(comm.CommentOn).format("DD/MM/YYYY HH:mm:ss");
+                        }
+                    }
+                    const source = $("#listtemplate").html();
+                    const template = Handlebars.compile(source);
+                    const html = template(resp);
+                    $("#productsDiv").append(html);
+                    BindEvents();
+                }
+            });
+    }
+    function getTrendingProd()
+    {
+        $("#productsDiv").empty();
+        debugger;
+        var action = null;
+        action = "Product2/getTrendingProducts";
+        MyAppGlobal.MakeAjaxCall("GET",
+            action,
+            {},
+            function (resp) {
+                if (resp.data) {
+                    debugger;
+                    for (let k in resp.data) {
+                        const obj = resp.data[k];
+                        obj.CreatedOn = moment(obj.CreatedOn).format("DD/MM/YYYY HH:mm:ss");
+
+                        for (let k2 in obj.Comments) {
+                            const comm = obj.Comments[k2];
+                            comm.CommentOn = moment(comm.CommentOn).format("DD/MM/YYYY HH:mm:ss");
+                        }
+                    }
+                    const source = $("#listtemplate").html();
+                    const template = Handlebars.compile(source);
+                    const html = template(resp);
+                    $("#productsDiv").append(html);
+                    BindEvents();
+                }
+            });
+    }
 
     function Clear() {
         $("#txtProductID").val(0);
@@ -10,30 +68,35 @@ MyApp = (function() {
         $("#txtPrice").val("");
         $("#prodimg").hide();
     }
-
     function SaveProduct() {
-
         const data = new FormData();
 
         var id = $("#txtProductID").val();
         var name = $("#txtName").val().trim();
         var price = $("#txtPrice").val().trim();
         const oldPicName = $("#txtPictureName").val();
+        var category = $("#selProdCategory").val();
+        alert(category);
+        if (category == 0) {
+            alert("No category is selected");
+            return;
+        }
         var files = $("#myfile").get(0).files;
+        var quantity = $("#txtQuantity").val().trim();
 
-        if (name === "" || price === "") {
+        if (name === "" || price === "" || quantity === "") {
             $("#ErrMsg").text("Empty Fields!");
             setTimeout(() => {
-                    const elem = $("#ErrMsg").text("");
-                },
+                const elem = $("#ErrMsg").text("");
+            },
                 3000);
             return false;
         }
         if (oldPicName === "" && files.length === 0) {
             $("#ErrMsg").text("Click on Choose File to upload Picture of Product!");
             setTimeout(() => {
-                    const elem = $("#ErrMsg").text("");
-                },
+                const elem = $("#ErrMsg").text("");
+            },
                 3000);
             return false;
         }
@@ -43,6 +106,9 @@ MyApp = (function() {
         data.append("Name", name);
         data.append("Price", price);
         data.append("PictureName", oldPicName);
+
+        data.append("Quantity", quantity);
+      data.append("CategoryID", category);
 
 
         if (files.length > 0) {
@@ -55,42 +121,121 @@ MyApp = (function() {
             contentType: false,
             processData: false,
             data: data,
-            success: function(r) {
+            success: function (r) {
                 console.log(r);
-
                 const obj = {};
                 obj.data = [];
                 obj.data.push({ ProductID: r.ProductID, Name: name, Price: price, PictureName: r.PictureName });
-
                 const source = $("#listtemplate").html();
                 const template = Handlebars.compile(source);
-
                 const html = template(obj);
-
-
                 if (id > 0) {
                     $(`#productsDiv tr[pid=${id}]`).replaceWith(html);
                 } else {
                     $("#productsDiv").prepend(html);
                 }
-
                 BindEvents();
-
                 Clear();
-
                 alert("record is saved");
             },
-            error: function() {
+            error: function () {
                 alert("error has occurred");
-
             }
         };
 
         $.ajax(settings);
     }
+    function loadProductCategories() {
+
+        var action = "Product2/GetAllCategories"
+        MyAppGlobal.MakeAjaxCall("GET", action, {}, function (resp) {
+
+            var source = $("#dropdowntemplate").html();
+            var template = Handlebars.compile(source);
+
+            var html = template(resp);
+            $("#maindropdown").append(html);
+            $("#selProdCategory").append(html);
+        });
+
+    }
+
+
+    function LoadProductsByCategory(categoryid) {
+        var action = "Product2/GetProductsByCategory";
+        $('#productsDiv').empty();
+        MyAppGlobal.MakeAjaxCall("GET", action, { "id": categoryid }, function (resp) {
+
+            if (resp.data) {
+
+                for (var k in resp.data) {
+                    var obj = resp.data[k];
+                    obj.CreatedOn = moment(obj.CreatedOn).format('DD/MM/YYYY HH:mm:ss');
+
+                    for (var k2 in obj.Comments) {
+                        var comm = obj.Comments[k2];
+                        comm.CommentOn = moment(comm.CommentOn).format('DD/MM/YYYY HH:mm:ss');
+                    }
+                }
+
+
+                var source = $("#listtemplate").html();
+                var template = Handlebars.compile(source);
+
+                var html = template(resp);
+                $("#productsDiv").append(html);
+
+
+                //$("#productsDiv .addcomment").click(function () {
+
+                //    var mainProdContainer = $(this).closest(".prodbox");
+                //    var pid = mainProdContainer.attr("pid");
+
+                //    var comment = $(this).closest(".commentarea").find(".txtComment").val();
+
+                //    var obj = {
+                //        ProductID: pid,
+                //        CommentText: comment
+                //    }
+
+
+                //    MyAppGlobal.MakeAjaxCall("POST", 'Product2/SaveComment', obj, function (resp) {
+
+                //        if (resp.success) {
+                //            alert("added");
+
+
+                //            var obj1 = {
+                //                PictureName: resp.PictureName,
+                //                UserName: resp.UserName,
+                //                CommentText: obj.CommentText,
+                //                CommentOn: moment(resp.CommentOn).format('DD/MM/YYYY HH:mm:ss')
+                //            };
+
+                //            var source = $("#commenttemplate").html();
+                //            var template = Handlebars.compile(source);
+
+                //            var html = template(obj1);
+                //            mainProdContainer.find(".comments").append(html);
+
+                //        }
+
+                //    });
+
+                //    return false;
+                //});
+
+                BindEvents();
+
+            }
+        });
+
+
+
+    }
+
 
     function LoadProducts(from, to) {
-
         $("#productsDiv").empty();
         debugger;
         var action = null;
@@ -100,11 +245,11 @@ MyApp = (function() {
             action = `Product2/GetPriceRangedProducts?from=${from}&to=${to}`;
             $("#productsDiv").empty(); // remove previous products before refreshing product list.
         }
-
         MyAppGlobal.MakeAjaxCall("GET",
             action,
             {},
             function(resp) {
+                console.log(resp.data);
 
                 if (resp.data) {
                     debugger;
@@ -117,24 +262,17 @@ MyApp = (function() {
                             comm.CommentOn = moment(comm.CommentOn).format("DD/MM/YYYY HH:mm:ss");
                         }
                     }
-
-
                     const source = $("#listtemplate").html();
                     const template = Handlebars.compile(source);
-
                     const html = template(resp);
                     $("#productsDiv").append(html);
 
 
-                    
 
                     BindEvents();
-
                 }
             });
-
     }
-
     function LoadProductsByName(prodName, minPrice, maxPrice, categoryId) {
         $("#productsDiv").empty();
         var action = "Product2/GetProductByName";
@@ -170,11 +308,10 @@ MyApp = (function() {
             });
 
     }
-
     function BindEvents() {
 
         $(".editprod").unbind("click").bind("click",
-            function() {
+            function () {
                 const $tr = $(this).closest("tr");
                 const pid = $tr.attr("pid");
 
@@ -183,7 +320,7 @@ MyApp = (function() {
                 MyAppGlobal.MakeAjaxCall("GET",
                     "Product2/GetProductById",
                     d,
-                    function(resp) {
+                    function (resp) {
                         $("#txtProductID").val(resp.data.ProductID);
                         $("#txtPictureName").val(resp.data.PictureName);
                         $("#txtName").val(resp.data.Name);
@@ -196,7 +333,7 @@ MyApp = (function() {
             });
 
         $(".deleteprod").unbind("click").bind("click",
-            function() {
+            function () {
 
                 if (!confirm("Do you want to continue?")) {
                     return;
@@ -209,7 +346,7 @@ MyApp = (function() {
                 MyAppGlobal.MakeAjaxCall("POST",
                     "Product2/DeleteProduct",
                     d,
-                    function(resp) {
+                    function (resp) {
 
                         $tr.remove();
                     });
@@ -219,7 +356,7 @@ MyApp = (function() {
             });
 
         $(".emailprod").unbind("click").bind("click",
-            function() {
+            function () {
                 const $tr = $(this).closest("tr");
                 const pid = $tr.attr("pid");
 
@@ -228,7 +365,7 @@ MyApp = (function() {
                 MyAppGlobal.MakeAjaxCall("GET",
                     "Product2/GetProductById",
                     d,
-                    function(resp) {
+                    function (resp) {
 
                         $("#popupname").text(resp.data.Name);
 
@@ -241,7 +378,7 @@ MyApp = (function() {
                 return false;
             });
 
-        $("#productsDiv .addcomment").on("click", function() {
+        $("#productsDiv .addcomment").on("click", function () {
 
             var mainProdContainer = $(this).closest(".product");
             console.log(mainProdContainer);
@@ -258,7 +395,7 @@ MyApp = (function() {
             MyAppGlobal.MakeAjaxCall("POST",
                 "Product2/SaveComment",
                 obj1,
-                function(resp1) {
+                function (resp1) {
 
                     if (resp1.success) {
                         alert("added");
@@ -287,47 +424,46 @@ MyApp = (function() {
             return false;
         });
     }
-
     function AutoCompleteHelper(selector, urlP) {
 
         let url = urlP.source;
         $(`${selector}`).on('propertychange input',
             function (event) {
 
-            //debugger;
-            const val = $(`${selector}`).val();
-            $(`${selector}autocomplete-list`).empty();
-            const data = {
-                "val":val
-            };
+                //debugger;
+                const val = $(`${selector}`).val();
+                $(`${selector}autocomplete-list`).empty();
+                const data = {
+                    "val": val
+                };
 
-            const settings = {
-                type: 'Post',
-                dataType: "json",
-                url: window.BasePath + url,
-                data: data,
-                success: function (resp) {
-                    console.log(resp);
-                    const inp = $(`${selector}`);
-                    autocomplete(inp , resp);
-                },
-                error: function (error) {
-                   console.log(error);
-                }
-            };
+                const settings = {
+                    type: 'Post',
+                    dataType: "json",
+                    url: window.BasePath + url,
+                    data: data,
+                    success: function (resp) {
+                        console.log(resp);
+                        const inp = $(`${selector}`);
+                        autocomplete(inp, resp);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                };
 
-            $.ajax(settings);
+                $.ajax(settings);
 
             }
         );
 
 
-        function autocomplete(inp ,arr) {
+        function autocomplete(inp, arr) {
             var a, b, i;
             closeAllLists();
             var currentFocus = -1;
             a = $("<div>", { "id": inp.attr("id") + "autocomplete-list", "class": "autocomplete-items" }).css({
-                "z-index":"99"
+                "z-index": "99"
             });
             inp.parent().append(a);
             for (i = 0; i < arr.length; i++) {
@@ -335,26 +471,26 @@ MyApp = (function() {
                 b.html(`<strong>${arr[i].substr(0, inp[0].value.length)}</strong>`);
                 b.html(b.html() + arr[i].substr(inp[0].value.length));
                 b.html(`${b.html()}<input type='hidden' value='${arr[i].trim()}'>`);
-                
+
                 b.on("click", function (e) {
-                    
+
                     inp.val($(this).children("input").val());
                     closeAllLists();
                 });
                 b.css({
-                    "padding":"5px 8px"
+                    "padding": "5px 8px"
                 })
-                a.width(inp.width()+10);
+                a.width(inp.width() + 10);
                 a.css({
-                    "margin":"-2px"
+                    "margin": "-2px"
                 })
                 a.append(b);
             }
 
             inp.keydown(function (e) {
-                
+
                 var x = $(`#${$(this).attr("id")}autocomplete-list`);
-                
+
                 if (x) x = $(x).children("div");
                 if (e.keyCode === 40) { //down
                     currentFocus++;
@@ -385,12 +521,12 @@ MyApp = (function() {
                 x[currentFocus].classList.add("autocomplete-active");
             }
 
-        
+
             /*Removes active class from any active item*/
             function removeActive(x) {
                 /*a function to remove the "active" class from all autocomplete items:*/
                 for (let item = 0; item < x.length; item++) {
-                    
+
                     $($(x)[item]).removeClass("autocomplete-active");
                 }
             }
@@ -415,9 +551,11 @@ MyApp = (function() {
         }
 
     }
- 
+
+
+
     function SignupHelper() {
-        var fileName="";
+        var fileName = "";
 
         $("#btnSignUp").on("click",
             function () {
@@ -433,6 +571,15 @@ MyApp = (function() {
                 let password = $("#password").val().trim();
                 let cpassword = $("#cpassword").val().trim();
                 if (login !== "" && password !== "" && name !== "" && cpassword !== "") {
+                    //client side validation of Email address
+                    if (!validateEmail(login)) {
+                        $("#p").text("You have entered an invalid email address!!");
+                        setTimeout(() => {
+                            const elem = $("#p").text("");
+                        },
+                            2000);
+                        return false;
+                    }
                     if (password !== cpassword) {
                         $("#cpassword").val("");
                         $("#password").val("");
@@ -475,6 +622,7 @@ MyApp = (function() {
                                 return false;
                             }
                             else {
+                                alert("An Email is send to you for verification of your Email address.");
                                 window.location.href = window.BasePath + "User/Login";
                             }
                         },
@@ -486,7 +634,7 @@ MyApp = (function() {
                     $.ajax(settings);
                 }
                 else {
-                   
+
                     $("#p").text("Empty Fields!");
                     setTimeout(() => {
                         const elem = $("#p").text("");
@@ -497,41 +645,143 @@ MyApp = (function() {
             });
     }
 
+    function UpdateProfileHelper() {
+
+        $("#updatebtn").click(function () {
+            var name = $("#username").val();
+            var pass = $("#password").val();
+            var login = $("#login").val();
+            var picName = $("#hiddenForImage").text();
+            var files = $("#uploadImage").get(0).files;
+            if (name.length == 0 || pass.length == 0 || login.length == 0) {
+                $("#pid").text("Please Fill in all the fields...!!!");
+                return false;
+            }
+            else if (!validateEmail(login)) {
+                $("#pid").text("You have entered an invalid email address...!!!");
+                return false;
+            }
+            else {
+                var tempData = new FormData();
+                var fileName = "";
+                if (picName.length == 0) {
+                    tempData.append("myProfilePic", files[0]);
+                    fileName = files[0].name;
+                }
+                else {
+                    fileName = picName;
+                }
+                tempData.append("Name", name);
+                tempData.append("Login", login);
+                tempData.append("Password", pass);
+                tempData.append("PictureName", fileName);
+
+                var settings = {
+                    type: "POST",
+                    contentType: false,
+                    processData: false,
+                    url: window.BasePath + "User/UpdateProfile",
+                    data: tempData,
+                    success: function (response) {
+                        if (response.success == 1) {
+                            alert(response.result);
+                            window.location = '/Home/Admin';
+                        }
+                        else if (response.success == 2) {
+                            $("#pid").text(response.result);
+                            $("#password").val("");
+
+                        }
+                        else {
+                            alert(response.result);
+                        }
+                    },
+                    failure: function () {
+                        alert("Update Ajax Call Failed");
+                    }
+                }
+                $.ajax(settings);
+            }
+
+        })
+
+    }
+
+    function validateEmail(email) {
+        var mailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return mailFormat.test(email);
+    }
     return {
+        addCategory: function () {
+            $("#btn_submit_Addcategory").click(function () {
+                var categoryName = $("#categoryName").val();
+                var data = new FormData();
+                data.append("Cat_name", categoryName);
+                var d = { "Cat_name": categoryName };
+
+                if (categoryName == "") {
+                    alert("empty");
+
+                }
+                else {
+
+                    var settings = {
+                        type: "GET",
+                        dataType: "json",
+                        url: window.BasePath + 'Product2/AddCategoryinDatabase',
+                        data: d,
+                        success: function (resp) {
+                            //response.data contains whatever is sent from server
+
+                            alert("suceess")
+
+                        },
+                        error: function (err, type, httpStatus) {
+                            alert('error has occured222');
+                        }
+                    }
+
+                    $.ajax(settings);
+                }
+
+            });
+        },
 
         Signup: function () {
             SignupHelper();
         },
+        UpdateProfile: function () {
+            UpdateProfileHelper();
+        },
         Main: function () {
-
             LoadProducts();
-
+           loadProductCategories();
             $("#btnSave").click(function() {
-
                 SaveProduct();
                 return false;
             });
 
-            $("#btnClear").click(function() {
+            $("#btnClear").click(function () {
 
                 Clear();
                 return false;
             });
 
-            $("#btnSend").click(function() {
+            $("#btnSend").click(function () {
+
                 //Call send email function
                 $("#emailpopup").hide();
                 $("#overlay").hide();
                 return false;
             });
-
             $("#btnClose").click(function() {
+
                 $("#emailpopup").hide();
                 $("#overlay").hide();
                 return false;
             });
-
             $("#priceDropDown").change(function() {
+
                 const t = $(this).find(":selected").data("price");
                 const a = t.split(":");
                 const l = parseFloat(a[0]);
@@ -540,10 +790,21 @@ MyApp = (function() {
                 LoadProducts(l, u);
             });
 
-            $("#newProdBtn").click(function() {
-                $("#addNewProd").slideToggle(700);
+           $("#maindropdown").change(function () {
+                var categoryid = $(this).val();
+                if (categoryid == 0) {
+                    LoadProducts();
+                }
+                else {
+                    LoadProductsByCategory(categoryid);
+                }
+
             });
 
+            $("#newProdBtn").click(function() {
+
+                $("#addNewProd").slideToggle(700);
+            });
             $("#btnSearchProduct").click(function () {
                 var prodName = $("#txtProductName").val();
                 if (prodName == "") {
@@ -556,11 +817,18 @@ MyApp = (function() {
                 const category = 0;
                 //category = $("#maindropdown").val();
                 LoadProductsByName(prodName, l, u, category);
+            });
 
-
+            $("#btnLatestProd").click(function () {
+                getLatestProd();
+                return false;
+            });
+            $("#btnTrendingProd").click(function () {
+                getTrendingProd();
+                return false;
             });
         },
-        AutoComplete: function(selector, data) {
+        AutoComplete: function (selector, data) {
             AutoCompleteHelper(selector, data);
         }
 

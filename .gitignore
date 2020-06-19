@@ -15,3 +15,7 @@
 /Src/DBProj/DBProj.jfm
 /Src/DBProj/DBProj.dbmdl
 /Src/.vs
+/.vs
+/Src/PMS.BAL/PMS.BAL.csproj.user
+/Src/PMS.DAL/PMS.DAL.csproj.user
+/Src/PMS.Entities/PMS.Entities.csproj.user

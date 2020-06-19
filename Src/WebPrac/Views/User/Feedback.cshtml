@@ -17,22 +17,12 @@
 			<form role="form" class="col-md-9 go-right" method="post" action="~/User/Feedback">
 				<h2 style="font-weight:bold;color:darkblue; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Feedback Form</h2>
 				<p>We welcome for your feedback and we will try to implement it into our website.</p>
+				<!--only get feedback message other information driven from "session management"-->
 				<div class="form-group">
-					<input id="name" name="name" type="text" class="form-control" required>
-					<label for="name">Your Name</label>
-				</div>
-				<div class="form-group">
-					<input id="email" name="email" type="email" class="form-control" required>
-					<label for="email">Email Address</label>
-				</div>
-				<div class="form-group">
-					<input id="phone" name="pNo" type="tel" class="form-control" required>
-					<label for="phone">Primary Phone</label>
-				</div>
-				<div class="form-group">
-					<textarea id="message" name="message" class="form-control" style="height: 150px" required></textarea>
+					<textarea id="message" name="msg" class="form-control" style="height: 150px" required></textarea>
 					<label for="message">Message</label>
 				</div>
+
 				<div class="form-group">
 					<button type="submit" class="btn btn-primary">Submit</button>
 					<button id="btnCancel" class="btn btn-danger">Cancel</button>

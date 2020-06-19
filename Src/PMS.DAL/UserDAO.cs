@@ -3,22 +3,26 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
-
 namespace PMS.DAL
 {
     public static class UserDAO
     {
         public static int Save(UserDTO dto)
         {
+            int count = 0, count2 = 0;
             var sqlQuery = "";
             sqlQuery = dto.UserID > 0
                 ? $"Update dbo.Users Set Name='{dto.Name}', PictureName='{dto.PictureName}' Where UserID={dto.UserID}"
-                : $"INSERT INTO dbo.Users(Name, Login,Password, PictureName, IsAdmin,IsActive) VALUES('{dto.Name}','{dto.Login}','{dto.Password}','{dto.PictureName}',{0},'{dto.IsActive}')";
+                : $"INSERT INTO dbo.Users(Name, Login,Password, PictureName, IsAdmin,IsActive) VALUES('{dto.Name}','{dto.Login}','{dto.Password}','{dto.PictureName}',{0},'{dto.IsActive}');";
 
             using (var helper = new DBHelper())
             {
-                return helper.ExecuteQuery(sqlQuery);
+                count = helper.ExecuteQuery(sqlQuery);
+                sqlQuery = $"INSERT INTO dbo.UserPswSalt (Login, salt) VALUES('{dto.Login}','{dto.PswSalt}')";
+                count2 = helper.ExecuteQuery(sqlQuery);
             }
+
+            return count;
         }
 
         public static bool VerifyEmail(UserDTO user, string code)
@@ -49,7 +53,7 @@ namespace PMS.DAL
             {
                 var query =
                     $"SELECT COUNT(*) FROM dbo.EmailVerifyingCodes WHERE email = '{user.Login}' AND expired = 'false'";
-                var read = (int) dbh.ExecuteScalar(query);
+                var read = (int)dbh.ExecuteScalar(query);
                 query = read == 0
                     ? $"INSERT INTO dbo.EmailVerifyingCodes VALUES('{user.Login}','{code}','false')"
                     : $"UPDATE dbo.EmailVerifyingCodes SET verification_code = '{code}' WHERE email = '{user.Login}'";
@@ -75,6 +79,19 @@ namespace PMS.DAL
             }
         }
 
+        public static bool isAnotherUserExistExceptActivUser(string pLogin, int UserID)
+        {
+            var mySQLQuery = string.Format(@"SELECT count(*) FROM dbo.Users WHERE login = '{0}' and UserID!='{1}'",
+                pLogin, UserID);
+            using (var dbh = new DBHelper())
+            {
+                var result = Convert.ToInt32(dbh.ExecuteScalar(mySQLQuery));
+                if (result != 0)
+                    return true;
+                return false;
+            }
+        }
+
         public static int UpdatePassword(UserDTO dto)
         {
             var sqlQuery = "";
@@ -85,6 +102,29 @@ namespace PMS.DAL
             {
                 return helper.ExecuteQuery(sqlQuery);
             }
+        }
+
+        public static int Update(UserDTO dto,String previousLogin)
+        {
+            var recAff = 0;
+            var sqlQuery =
+                $"Update dbo.Users Set Password='{dto.Password}' , PictureName='{dto.PictureName}' ,  Name='{dto.Name}', Login='{dto.Login}' Where UserID={dto.UserID}";
+
+            using (var helper = new DBHelper())
+            {
+                try
+                {
+                    recAff =  helper.ExecuteQuery(sqlQuery);
+                    sqlQuery = $"UPDATE dbo.UserPswSalt SET salt='{dto.PswSalt}' , Login='{dto.Login}' WHERE Login='{previousLogin}'";
+                    _ = helper.ExecuteQuery(sqlQuery);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+
+            return recAff;
         }
 
         public static UserDTO ValidateUser(string pLogin, string pPassword)
@@ -175,6 +215,21 @@ namespace PMS.DAL
                 }
                 return "";
             }
+        }
+
+        public static string GetSaltForLogin(string login)
+        {
+            string salt = null;
+            var selectQuery = $"SELECT salt FROM dbo.UserPswSalt WHERE Login = '{login}'";
+            using (var helper = new DBHelper())
+            {
+                var reader = helper.ExecuteReader(selectQuery);
+                if (reader.Read())
+                {
+                    salt = reader.GetString(reader.GetOrdinal("salt"));
+                }
+            }
+            return salt;
         }
         public static int storePasswordRecoveryCode(int code,string email)
         {
