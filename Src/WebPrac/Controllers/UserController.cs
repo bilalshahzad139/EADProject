@@ -149,22 +149,165 @@ namespace WebPrac.Controllers
             return View("VerifyEmail");
         }
 
+
+		[HttpGet]
+
+		//feedback view will be open without an active user so
+		//So i Changed session manager possion
+		public ActionResult Logout()
+		{
+			UserDTO u = (UserDTO)Session["user"];
+			if (u.IsAdmin == true)
+			{
+				//if user is admin, session will be cleared and feedback page will not open
+				SessionManager.ClearSession();
+				return RedirectToAction("Login");
+			}
+			else
+				return RedirectToAction("Feedback");
+		}
+
+		[HttpPost]
+		public ActionResult Feedback(feedbackDTO sos)
+		{
+			
+			feedbackBO.saveFeedBack(sos);
+			SessionManager.ClearSession();
+			return RedirectToAction("Login");
+		}
+
+		[HttpGet]
+		public ActionResult Feedback()
+		{
+			//if user is regularUser session contain something, hence feedback view opened
+			if(Session["user"]!=null)
+			{
+				return View("Feedback");
+			}
+			return RedirectToAction("Login");
+		}
+		[HttpGet]
+		public ActionResult ForgotPassword()
+		{
+			return View();
+		}
+		
+		[HttpPost]
+		public JsonResult SendVerificationCode(string email)
+		{
+			
+			if(UserBO.IsUserAlreadyExist(email))
+			{
+
+				int code = UserBO.SendVerificationCode(email);
+				if(code!=0)//Code has been sent.
+				{
+					
+					var h = new
+					{
+						statusbit = 1,
+						msg = "Success",
+						data = code
+					};
+					return Json(h, JsonRequestBehavior.AllowGet);
+				}
+				 var b = new
+				{
+					statusbit = -1,
+					msg = "Error Sending Code",
+					data = code
+				};
+				return Json(b, JsonRequestBehavior.AllowGet);
+			}
+
+			 var k = new
+			{
+				statusbit = 0,
+				msg = "User Doesnt Exist",
+			};
+			return Json(k, JsonRequestBehavior.AllowGet);
+		}
+
+
+		[HttpPost]
+		public JsonResult VerifyCode(string verificationCode)
+		{
+			{
+
+				bool isVerified = UserBO.IsResetPasswordCodeVerified(verificationCode);
+				if (isVerified)//Code has been sent.
+				{
+
+					var h = new
+					{
+						statusbit = 1,
+						msg = "Code Verified Successfully.",
+						data = verificationCode
+					};
+					return Json(h, JsonRequestBehavior.AllowGet);
+				}
+				var b = new
+				{
+					statusbit = -1,
+					msg = "Code Not Verified",
+					data = verificationCode
+				};
+				return Json(b, JsonRequestBehavior.AllowGet);
+			}
+		}
+		//[HttpGet]
+		//public ActionResult Login2()
+		//{
+		//    return View();
+		//}
+
+		//[HttpPost]
+		//public JsonResult ValidateUser(String login, String password)
+		//{
+
+		//    Object data = null;
+
+		//    try
+		//    {
+		//        var url = "";
+		//        var flag = false;
+
+		//        var obj = PMS.BAL.UserBO.ValidateUser(login, password);
+		//        if (obj != null)
+		//        {
+		//            flag = true;
+		//            SessionManager.User = obj;
+
+		//            if (obj.IsAdmin == true)
+		//                url = Url.Content("~/Home/Admin");
+		//            else
+		//                url = Url.Content("~/Home/NormalUser");
+		//        }
+
+		//        data = new
+		//        {
+		//            valid = flag,
+		//            urlToRedirect = url
+		//        };
+		//    }
+		//    catch (Exception)
+		//    {
+		//        data = new
+		//        {
+		//            valid = false,
+		//            urlToRedirect = ""
+		//        };
+		//    }
+
+		//    return Json(data, JsonRequestBehavior.AllowGet);
+		//}
+	
+
         [HttpGet]
 
         //feedback view will be open without an active user so
         //So i Changed session manager possion
-        public ActionResult Logout()
-        {
-            var u = (UserDTO)Session["user"];
-            if (u.IsAdmin)
-            {
-                //if user is admin, session will be cleared and feedback page will not open
-                SessionManager.ClearSession();
-                return RedirectToAction("Login");
-            }
-
-            return RedirectToAction("Feedback");
-        }
+        
 
         public ActionResult UpdateProfile()
         {
@@ -176,8 +319,13 @@ namespace WebPrac.Controllers
                 ViewBag.PictureName = activeUser.PictureName;
                 return View("UpdateProfile");
             }
+
             return RedirectToAction($"Login");
         }
+
+
+
+
 
 
         [HttpPost]
@@ -205,7 +353,9 @@ namespace WebPrac.Controllers
                 userDTO.UserID = activeUser.UserID;
 
                 //Picture handling
-                var uniqueName = "";
+
+                var uniqueName ="";
+
                 if (Request.Files["myProfilePic"] != null)
                 {
                     var file = Request.Files["myProfilePic"];
@@ -228,7 +378,9 @@ namespace WebPrac.Controllers
                 }
                 userDTO.PswSalt = UserPswHashing.CreateSalt();
                 UserPswHashing.GenerateHash(userDTO);
-                var updateResult = UserBO.Update(userDTO, activeUser.Login);
+
+                var updateResult = UserBO.Update(userDTO,activeUser.Login);
+
                 if (updateResult > 0)
                 {
                     activeUser.Name = userDTO.Name;
@@ -252,69 +404,20 @@ namespace WebPrac.Controllers
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+
+
         [HttpPost]
         public ActionResult Feedback(string msg)
         {
             var n = (UserDTO)Session["user"];
-            feedbackBO.saveFeedBack(msg, n.Name);
+            feedbackBO.saveFeedBack(msg,n.Name);
+
             SessionManager.ClearSession();
             return RedirectToAction("Login");
         }
 
-        [HttpGet]
-        public ActionResult Feedback()
-        {
-            //if user is regularUser session contain something, hence feedback view opened
-            if (Session["user"] != null)
-            {
-                return View("Feedback");
-            }
-            return RedirectToAction("Login");
-        }
-        [HttpGet]
-        public ActionResult ForgotPassword()
-        {
-            return View();
-        }
-        [HttpPost]
-        public JsonResult SendVerificationCode(string email)
-        {
-
-            if (UserBO.IsUserAlreadyExist(email))
-            {
-
-                int code = UserBO.SendVerificationCode(email);
-                if (code != 0)//Code has been sent.
-                {
-
-                    var h = new
-                    {
-                        statusbit = 1,
-                        msg = "Success",
-                        data = code
-                    };
-                    return Json(h, JsonRequestBehavior.AllowGet);
-                }
-                var b = new
-                {
-                    statusbit = -1,
-                    msg = "Error Sending Code",
-                    data = code
-                };
-                return Json(b, JsonRequestBehavior.AllowGet);
-                var k = new
-                {
-                    statusbit = 0,
-                    msg = "User Doesnt Exist",
-                };
-                return Json(k, JsonRequestBehavior.AllowGet);
-            }
-            var j = new
-            {
-                statusbit = 0,
-                msg="Invalid User",
-            };
-            return Json(j, JsonRequestBehavior.AllowGet);
-        }
     }
 }
+

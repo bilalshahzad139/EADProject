@@ -1,9 +1,13 @@
+
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
 using PMS.DAL;
+
+﻿using PMS.DAL;
+
 using PMS.Entities;
 using System.Collections.Generic;
 
@@ -63,6 +67,8 @@ namespace PMS.BAL
             return UserDAO.VerifyEmail(user, code);
         }
 
+
+
         public static int SendVerificationCode(string email)
         {
             
@@ -115,6 +121,7 @@ namespace PMS.BAL
         {
             return UserDAO.isResetPasswordCodeVerified(code);
         }
+
         public static string GetSaltForLogin(string login)
         {
             return UserDAO.GetSaltForLogin(login);
