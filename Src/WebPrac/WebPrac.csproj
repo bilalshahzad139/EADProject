@@ -295,6 +295,7 @@
     <Content Include="Views\User\Feedback.cshtml" />
     <Content Include="Views\User\VerifyEmail.cshtml" />
     <Content Include="Views\User\ForgotPassword.cshtml" />
+    <Content Include="Views\User\ResetPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PMS.BAL\PMS.BAL.csproj">

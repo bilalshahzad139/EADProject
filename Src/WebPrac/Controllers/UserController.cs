@@ -171,7 +171,7 @@ namespace WebPrac.Controllers
 		public ActionResult Feedback(feedbackDTO sos)
 		{
 			
-			feedbackBO.saveFeedBack(sos);
+			feedbackBO.saveFeedBack(sos.name,sos.message);
 			SessionManager.ClearSession();
 			return RedirectToAction("Login");
 		}
@@ -207,7 +207,7 @@ namespace WebPrac.Controllers
 					{
 						statusbit = 1,
 						msg = "Success",
-						data = code
+						data = email
 					};
 					return Json(h, JsonRequestBehavior.AllowGet);
 				}
@@ -255,6 +255,24 @@ namespace WebPrac.Controllers
 				return Json(b, JsonRequestBehavior.AllowGet);
 			}
 		}
+        [HttpGet]
+        public ActionResult ResetPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public JsonResult ResetPassword(string email)
+        {
+            System.Console.WriteLine(email);
+            var b = new
+            {
+                statusbit = -1,
+                msg = "Code Not Verified",
+                data = email
+            };
+            return Json(b, JsonRequestBehavior.AllowGet);
+
+        }
 		//[HttpGet]
 		//public ActionResult Login2()
 		//{
