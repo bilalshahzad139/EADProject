@@ -1,4 +1,5 @@
-﻿using PMS.Entities;
+﻿using Microsoft.SqlServer.Server;
+using PMS.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -253,6 +254,16 @@ namespace PMS.DAL
                 return false;
             }
             return false;
+        }
+        public static int ResetPasswordForUser(string email, string password)
+        {
+            string sqlQuery = String.Format("Update dbo.Users Set Password='{0}' where Login='{1}'", password, email);
+            using (DBHelper dbhelper = new DBHelper())
+            {
+                var rows = dbhelper.ExecuteQuery(sqlQuery);
+                return rows;
+            }
+            return -1;
         }
         
     }

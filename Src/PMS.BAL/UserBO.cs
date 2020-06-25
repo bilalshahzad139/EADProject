@@ -126,5 +126,11 @@ namespace PMS.BAL
         {
             return UserDAO.GetSaltForLogin(login);
         }
+
+        public static int ResetPassword(string email,string password)
+        {
+            return UserDAO.ResetPasswordForUser(email, password);
+        }
+
     }
 }

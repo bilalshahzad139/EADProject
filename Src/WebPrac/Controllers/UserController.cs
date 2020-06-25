@@ -3,6 +3,7 @@ using PMS.BAL;
 using PMS.Entities;
 using System;
 using System.IO;
+using System.Net.Configuration;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using WebPrac.Security;
@@ -206,7 +207,7 @@ namespace WebPrac.Controllers
 					var h = new
 					{
 						statusbit = 1,
-						msg = "Success",
+						msg = "Code successfully sent to the email",
 						data = email
 					};
 					return Json(h, JsonRequestBehavior.AllowGet);
@@ -261,17 +262,28 @@ namespace WebPrac.Controllers
             return View();
         }
         [HttpPost]
-        public JsonResult ResetPassword(string email)
+        public JsonResult ResetPassword(string email,string newPassword)
         {
-            System.Console.WriteLine(email);
+            int isChanged = UserBO.ResetPassword(email, newPassword);
+            if (isChanged == 1)
+            {
+                var h = new
+                {
+                    statusbit = 1,
+                    msg = "Password Changed Succeccfull",
+                    data = email
+                };
+                ViewBag.MSG = "Password Successfully changed for " + email;
+                return Json(h, JsonRequestBehavior.AllowGet);
+            }
             var b = new
             {
                 statusbit = -1,
-                msg = "Code Not Verified",
+                msg = "Password NOT CHANGED.",
                 data = email
             };
+            ViewBag.MSG = "Error in changing password for " + email;
             return Json(b, JsonRequestBehavior.AllowGet);
-
         }
 		//[HttpGet]
 		//public ActionResult Login2()
