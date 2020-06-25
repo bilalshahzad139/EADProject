@@ -1,7 +1,7 @@
 ﻿SET IDENTITY_INSERT  dbo.Users ON;  
 MERGE INTO dbo.Users AS Target 
 USING (
-	Select 1, N'Admin','admin','admin','',1,1 UNION ALL
+	Select 1, N'Admin','admin@gmail.com','admin','',1,1 UNION ALL
 	Select 2, N'User','user','user','',0,1 
 ) 
 AS Source (UserID, Name, Login, Password, PictureName, IsAdmin, IsActive) 
