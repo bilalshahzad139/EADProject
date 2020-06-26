@@ -1,0 +1,92 @@
+﻿
+@{
+    ViewBag.Title = "Distributors";
+    Layout = "~/Views/Shared/_MyProductLayout.cshtml";
+}
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            var dataToSend = {};
+            var settings = {
+                type: "POST",
+                dataType: "json",
+                url: "/Home/displayDistributors",
+                data: dataToSend,
+                success: myMainFunction,
+                error: OnError
+            }
+            $.ajax(settings);
+            console.log("sent to load");
+            return false;
+        });
+         function OnError() {
+            console.log("err");
+            alert("error occured during loading");
+        }
+        function myMainFunction(r) {
+            if (r) {
+                for (var i = 0; i < r.length; i++) {
+                    var obj = r[i];
+
+                    var div = $("<div></div>").addClass('allContact');
+
+                    $(".cellContact").append(div);
+                    var div1 = $("<div></div>").addClass('myCountry').text(obj.Dcountry);
+                    var div2 = $("<div></div>").addClass('myContact').text(obj.Daddress);
+                    var div3 = $("<div></div>").addClass('myContact').text(obj.Dphone);
+                    var div4 = $("<div></div>").addClass('myContact').text(obj.Dwebsite);
+                    $(".cellCountry").append(div1);
+                    $(".allContact").append(div2);
+                    $(".allContact").append(div3);
+                    $(".allContact").append(div4);
+                    $(".cellContact").append($(".allContact"));
+                }
+
+            }
+            else {
+                alert("exception");
+            }
+        }
+    </script>
+    }
+    <style>
+        #heading{
+           text-align:center;
+           font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size:36px;
+        }
+        .distContainer {
+            margin-top: 2px;
+            border: 2px solid darkslateblue;
+            background-color: aliceblue;
+        }
+        .cellCountry{
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            padding:20px;
+            font-size:20px;
+        }
+        .cellContact{
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            padding:20px;
+            font-size:20px;
+        }
+     </style>
+    <h2 id="heading">Distributors</h2>
+    <div style="padding-left:15%; padding-right:15%; padding-top:5%">
+        
+        <div class="distContainer" >
+            <table>
+
+                <tr>
+                    <th style="padding:20px ; font-size:30px">Country </th>
+                    <th style="padding:20px; font-size:30px"> Contact </th>
+                </tr>
+                <tr class='distRows'>
+                    <td class='cellCountry' ></td>
+                    <td class='cellContact'></td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
