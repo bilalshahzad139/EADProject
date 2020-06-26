@@ -215,5 +215,33 @@ namespace PMS.DAL
             }
             return salt;
         }
+        public static List<DistributorDTO> GetDistributors()
+        {
+            try
+            {
+                List<DistributorDTO> arr = new List<DistributorDTO>();
+                using (var helper = new DBHelper())
+                {
+                    String sqlQuery = $"Select * from dbo.Distributors";
+                    var reader = helper.ExecuteReader(sqlQuery);
+                    DistributorDTO dto;
+                    while (reader.Read())
+                    {
+                        dto = new DistributorDTO();
+                        dto.Did = reader.GetInt32(reader.GetOrdinal("Id"));
+                        dto.Dcountry = reader.GetString(reader.GetOrdinal("Country"));
+                        dto.Daddress = reader.GetString(reader.GetOrdinal("Address"));
+                        dto.Dphone = reader.GetString(reader.GetOrdinal("Phone"));
+                        dto.Dwebsite = reader.GetString(reader.GetOrdinal("Website"));
+                        arr.Add(dto);
+                    }
+                    return arr;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }

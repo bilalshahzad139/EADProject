@@ -1,4 +1,7 @@
-﻿using System.Web.Mvc;
+﻿using PMS.BAL;
+using PMS.Entities;
+using System.Collections.Generic;
+using System.Web.Mvc;
 using WebPrac.Security;
 
 namespace WebPrac.Controllers
@@ -43,5 +46,23 @@ namespace WebPrac.Controllers
                 return Redirect("~/User/Login");
             }
         }
+        public ActionResult Distributors()
+        {
+            if (SessionManager.IsValidUser)
+            {
+                return View();
+            }
+            else
+            {
+                return Redirect("~/User/Login");
+            }
+        }
+        [HttpPost]
+        public JsonResult displayDistributors()
+        {
+            List<DistributorDTO> data = UserBO.GetDistributors();
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
