@@ -121,19 +121,20 @@
 
         <div class="menu">
 
-
-
+           
             @if (WebPrac.Security.SessionManager.User.IsAdmin)
             {
                 <a href="/Home/Admin">Home</a>
                 <a href="/Product2/New">Products</a>
                 <a href="/Product2/AddCategory">Add New Category</a>
             }
-            else
+            else    
+             
             {
                 <a href="/Home/NormalUser">Home</a>
                 <a href="/Product2/New">Products</a>
             }
+            <a href="/Home/Distributors">Distributors</a>
             <a href="/User/UpdateProfile">Update Profile</a>
             <a href="/User/Logout">Logout</a>
         </div>

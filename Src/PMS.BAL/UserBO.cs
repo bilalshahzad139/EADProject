@@ -10,9 +10,9 @@ namespace PMS.BAL
         {
             return UserDAO.Save(dto);
         }
-        public static int Update(UserDTO dto,string previosLogin)
+        public static int Update(UserDTO dto, string previosLogin)
         {
-            return UserDAO.Update(dto,previosLogin);
+            return UserDAO.Update(dto, previosLogin);
         }
 
         public static bool isUserAlreadyExist(string pLogin)
@@ -61,6 +61,14 @@ namespace PMS.BAL
         public static string GetSaltForLogin(string login)
         {
             return UserDAO.GetSaltForLogin(login);
+        }
+        public static List<DistributorDTO> GetDistributors()
+        {
+            return UserDAO.GetDistributors();
+        }
+        public static int InsertNewDistributor(DistributorDTO dto)
+        {
+            return UserDAO.InsertNewDistributor(dto);
         }
     }
 }

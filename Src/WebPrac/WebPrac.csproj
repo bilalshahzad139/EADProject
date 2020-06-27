@@ -294,6 +294,8 @@
     <Content Include="Views\Shared\_MyLayout.cshtml" />
     <Content Include="Views\User\Feedback.cshtml" />
     <Content Include="Views\User\VerifyEmail.cshtml" />
+    <Content Include="Views\Home\Distributors.cshtml" />
+    <Content Include="Views\Home\InsertDistributors.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PMS.BAL\PMS.BAL.csproj">
