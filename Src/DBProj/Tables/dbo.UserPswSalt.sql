@@ -1,6 +1,0 @@
-﻿CREATE TABLE [dbo].[UserPswSalt]
-(
-	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
-    [Login] VARCHAR(50) NOT NULL, 
-    [salt] VARCHAR(50) NOT NULL
-)

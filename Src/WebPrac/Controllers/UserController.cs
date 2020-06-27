@@ -2,6 +2,7 @@
 using PMS.BAL;
 using PMS.Entities;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
@@ -11,7 +12,31 @@ namespace WebPrac.Controllers
 {
     public class UserController : Controller
     {
-        
+        [HttpGet]
+        public ActionResult ShowUsers()
+        {
+            return View();
+        }
+        [HttpPost]
+        public JsonResult GetAllUsers()
+        {
+            List<UserDTO> l1 = new List<UserDTO>();
+            l1 = PMS.BAL.UserBO.GetAllUsers();
+            return Json(l1, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult GetUserByID(int ID)
+        {
+            UserDTO d1 = new UserDTO();
+            d1 = PMS.BAL.UserBO.GetUserById(ID);
+            return Json(d1, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult Update(UserDTO dto,string previosLogin)
+        {
+            int recAff = PMS.BAL.UserBO.Update(dto, previosLogin);
+            return Json(recAff, JsonRequestBehavior.AllowGet);
+        }
         [HttpGet]
         public ActionResult Login()
         {
