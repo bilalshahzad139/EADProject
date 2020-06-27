@@ -1,0 +1,263 @@
+﻿@{
+    Layout = "~/Views/Shared/_MyProductLayout.cshtml";
+}
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Button used to open the contact form - fixed at the bottom of the page */
+        /*.open-button {
+                background-color: #555;
+                color: white;
+                padding: 16px 20px;
+                border: none;
+                cursor: pointer;
+                opacity: 0.8;
+                position: fixed;
+                bottom: 23px;
+                right: 28px;
+                width: 280px;
+            }*/
+
+        /* The popup form - hidden by default */
+        .form-popup {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            right: 15px;
+            border: 3px solid #f1f1f1;
+            z-index: 9;
+        }
+
+        /* Add styles to the form container */
+        .form-container {
+            max-width: 600px;
+            padding: 10px;
+            background-color: white;
+        }
+
+            /* Full-width input fields */
+            .form-container input[type=text], .form-container input[type=password] {
+                width: 100%;
+                padding: 15px;
+                margin: 5px 0 5px 0;
+                border: none;
+                background: #f1f1f1;
+            }
+
+                /* When the inputs get focus, do something */
+                .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+                    background-color: #ddd;
+                    outline: none;
+                }
+
+            /* Set a style for the submit/login button */
+            .form-container .btn {
+                background-color: darkslategrey;
+                color: white;
+                padding: 16px 20px;
+                border: none;
+                cursor: pointer;
+                width: 100%;
+                margin-bottom: 10px;
+                opacity: 0.8;
+            }
+
+            /* Add a red background color to the cancel button */
+            .form-container .cancel {
+                background-color: darkslategrey;
+            }
+
+            /* Add some hover effects to buttons */
+            .form-container .btn:hover, .open-button:hover {
+                opacity: 1;
+            }
+            .flex {
+                    display: flex;
+            }
+
+        img {
+            border-radius: 8px;
+        }
+    </style>
+
+</head>
+<body>
+    <h2>All Users</h2>
+    <p>Refresh to see changes!!!</p>
+    <div id="d1">
+        <table id="t1">
+        </table>
+    </div>
+    <div class="form-popup" id="myForm">
+
+        <div class="form-container">
+            <div class="flex">
+
+                <div>
+                    <label style="color:rosybrown">Name </label>
+                    <input type="text" id="name" placeholder="Your name.." required>
+                    <br />
+                    <label style="color:rosybrown">Login</label>
+                    <input type="text" id="login" placeholder="Your last name.." required>
+                    <br />
+                    <label style="color:rosybrown">Password</label>
+                    <input type="text" id="password" placeholder="Your last name.." required>
+                    <br />
+                    <label style="color:rosybrown">Is Admin?</label>
+                    <input type="checkbox" id="isAdmin" />
+                    <label style="color:rosybrown">Is Active?</label>
+                    <input type="checkbox" id="isActive" />
+                    <br />
+                    
+                </div>
+                <div>
+                    <img src="https://i.ytimg.com/vi/_UR-l3QI2nE/maxresdefault.jpg" id="image" alt="Paris" width="150" height="150">
+                    <button type="submit" id="update" class="btn" onclick="Update()">Update</button>
+                    <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            var d = {};
+            var settings = {
+                type: "POST",
+                dataType: "json",
+                url: '@Url.Content("~/User/GetAllUsers")',
+                data: d,
+                success: ShowAllUsers,
+                error: OnError
+            };
+            $.ajax(settings);
+            function ShowAllUsers(users) {
+                console.log(users);
+                var length=users.length
+                var table = document.getElementById("t1");
+                for (var i = 0; i < length; i = i + 1) {
+                    var row = document.createElement("tr");
+                    var id = document.createElement("td");
+                    id.innerText = users[i].UserID;
+                    row.appendChild(id);
+                    var name = document.createElement("td");
+                    name.innerText = users[i].Name;
+                    row.appendChild(name);
+                    var login = document.createElement("td");
+                    login.innerText = users[i].Login;
+                    row.appendChild(login);
+                    var password = document.createElement("td");
+                    password.innerText = users[i].Password;
+                    row.appendChild(password);
+                    var admin = document.createElement("td");
+                    admin.innerText = users[i].IsAdmin;
+                    row.appendChild(admin);
+                    var active = document.createElement("td");
+                    active.innerText = users[i].IsActive;
+                    row.appendChild(active);
+                    var btn1 = document.createElement("button");
+                    btn1.type = "button";
+                    btn1.id = users[i].UserID;
+                    btn1.innerText = "Edit";
+                    btn1.addEventListener("click", function edit1() { openForm(this.id); });
+                    var btnCell = document.createElement("td");
+                    btnCell.appendChild(btn1);
+                    row.appendChild(btnCell);
+                    t1.appendChild(row);
+                }
+            }
+            function OnError()
+            {
+                console.log("Some Error has occured!!!");
+            }
+    </script>
+    <script>
+            var prevLogin;
+        var currentId;
+        var picName;
+            function openForm(id) {
+                //var login1 = document.getElementById("login");
+                //login1.value = id;
+                var d = { ID: id };
+            var settings = {
+                type: "POST",
+                dataType: "json",
+                url: '@Url.Content("~/User/GetUserById")',
+                data: d,
+                success: FillData,
+                error: OnError
+            };
+                $.ajax(settings);
+                function FillData(user) {
+                    currentId = user.UserID;
+                    picName = user.PictureName;
+                    document.getElementById("image").src = "https://i.ytimg.com/vi/_UR-l3QI2nE/maxresdefault.jpg";
+                    document.getElementById("name").value = user.Name;
+                    document.getElementById("login").value = user.Login;
+                    prevLogin = user.Login;
+                    document.getElementById("password").value = user.Password;
+                    document.getElementById("isAdmin").checked = user.IsAdmin;
+                    document.getElementById("isActive").checked = user.IsActive;
+                }
+                document.getElementById("myForm").style.display = "block";
+            }
+        function Update() {
+            //debugger;
+                console.log(prevLogin);
+                console.log(currentId);
+                var id = currentId;
+                var name = document.getElementById("name").value;
+                var login = document.getElementById("login").value;
+                var password = document.getElementById("password").value;
+                var isAdmin = document.getElementById("isAdmin").checked;
+            var isActive = document.getElementById("isActive").checked;
+           // var dto1 = { UserID: id, Name: name, Login: login, Password: password, PictureName:picName, IsAdmin: isAdmin, IsActive: isActive ,PswSalt:1};
+                var d = { UserID: id, Name: name, Login: login, Password: password, PictureName:picName, IsAdmin: isAdmin, IsActive: isActive ,PswSalt:1, previosLogin: prevLogin };
+                var settings = {
+                type: "POST",
+                dataType: "json",
+                url: '@Url.Content("~/User/Update")',
+                data: d,
+                success: f1,
+                error: OnError
+            };
+                $.ajax(settings);
+                function f1(obj) {
+                    console.log("updated");
+                    console.log(obj);
+                    closeForm();
+                }
+            }
+            function closeForm() {
+                document.getElementById("myForm").style.display = "none";
+            }
+    </script>
+
+
+</body>
