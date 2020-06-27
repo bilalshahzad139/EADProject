@@ -66,5 +66,9 @@ namespace PMS.BAL
         {
             return UserDAO.GetDistributors();
         }
+        public static int InsertNewDistributor(DistributorDTO dto)
+        {
+            return UserDAO.InsertNewDistributor(dto);
+        }
     }
 }

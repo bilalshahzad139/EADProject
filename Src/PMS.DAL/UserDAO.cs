@@ -201,7 +201,8 @@ namespace PMS.DAL
             return dto;
         }
 
-        public static string GetSaltForLogin(string login)
+        
+            public static string GetSaltForLogin(string login)
         {
             string salt = null;
             var selectQuery = $"SELECT salt FROM dbo.UserPswSalt WHERE Login = '{login}'";
@@ -222,13 +223,13 @@ namespace PMS.DAL
                 List<DistributorDTO> arr = new List<DistributorDTO>();
                 using (var helper = new DBHelper())
                 {
-                    String sqlQuery = $"Select * from dbo.Distributors";
+                    String sqlQuery = $"Select Country,Address,Phone,Website from dbo.Distributors group by Country,Address,Phone,Website";
                     var reader = helper.ExecuteReader(sqlQuery);
                     DistributorDTO dto;
                     while (reader.Read())
                     {
                         dto = new DistributorDTO();
-                        dto.Did = reader.GetInt32(reader.GetOrdinal("Id"));
+                        dto.Did = 0;
                         dto.Dcountry = reader.GetString(reader.GetOrdinal("Country"));
                         dto.Daddress = reader.GetString(reader.GetOrdinal("Address"));
                         dto.Dphone = reader.GetString(reader.GetOrdinal("Phone"));
@@ -242,6 +243,16 @@ namespace PMS.DAL
             {
                 return null;
             }
+        }
+        public static int InsertNewDistributor(DistributorDTO dto)
+        {
+            int res=-1;
+            using (var helper = new DBHelper())
+            {
+                String sqlQuery = $"INSERT INTO dbo.Distributors(Country, Address,Phone, Website) VALUES('{dto.Dcountry}','{dto.Daddress}','{dto.Dphone}','{dto.Dwebsite}');";
+                res = helper.ExecuteQuery(sqlQuery);
+            }
+            return res;
         }
     }
 }

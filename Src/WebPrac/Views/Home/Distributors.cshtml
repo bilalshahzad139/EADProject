@@ -19,6 +19,7 @@
             $.ajax(settings);
             console.log("sent to load");
             return false;
+
         });
         function OnError() {
             console.log("err");
@@ -36,9 +37,30 @@
                     tr.append(td2);
                     $(".MyTable").append(tr);
                 }
+                var dataToSend = {};
+                var settings = {
+                    type: "GET",
+                    dataType: "json",
+                    url: "/Home/IsAdmin",
+                    data: dataToSend,
+                    success: myFunction,
+                    error: OnError
+                }
+                 $.ajax(settings);
+                console.log("sent for isAdmin");
             }
             else {
                 alert("exception");
+            }
+        }
+        function myFunction(r) {
+            if (r.admin == true) {
+                var btn = $("<button></button>").addClass('myBtn').text("Add New Distributor");
+                $(".distContainer").append(btn);
+                $('.myBtn').click(function () {
+                    location.href = "@Url.Content("~/Home/InsertDistributors")";
+                    console.log("sent for insertion");
+                });
             }
         }
     </script>
@@ -48,15 +70,18 @@
            text-align:center;
            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
             font-size:36px;
-            margin-top:3px;
+            margin-top:6px;
         }
         .distContainer {
+            
             margin-top: 2px;
             border: 2px solid darkslateblue;
             background-color: aliceblue;
         }
-        .MyTable{
-         
+        .MyTable {
+            margin-left: auto;
+            margin-right: auto;
+
         }
         .cellCountry{
             font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -68,6 +93,24 @@
             padding:20px;
             font-size:20px;
         }
+        .Myrow {
+            
+            border-bottom: 2px outset darkslateblue;
+            border-spacing: 5px;
+        }
+        .myBtn {
+            background-color: cadetblue;
+            border: 2px solid darkslateblue;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-left:auto;
+            margin-right:auto;
+            float: right;
+        }
      </style>
     <h2 id="heading">Distributors</h2>
     <div style="padding-left:15%; padding-right:15%; padding-top:5%">
@@ -75,12 +118,13 @@
         <div class="distContainer" >
             <table class="MyTable">
 
-                <tr>
-                    <th style="padding:20px ; font-size:30px">Country </th>
-                    <th style="padding:20px; font-size:30px"> Contact </th>
+                <tr class="Myrow">
+                    <th   style="padding:20px ; font-size:30px">Country </th>
+                    <th   style="padding:20px; font-size:30px"> Contact </th>
                 </tr>
                 
 
             </table>
+            
         </div>
     </div>
