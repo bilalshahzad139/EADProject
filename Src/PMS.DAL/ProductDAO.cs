@@ -17,7 +17,7 @@ namespace PMS.DAL
                 if (dto.ProductID > 0)
                 {
                     sqlQuery =
-                        $"Update dbo.Products Set Name='{dto.Name}',Price='{dto.Price}',ModifiedOn='{dto.ModifiedOn}',ModifiedBy='{dto.ModifiedBy}' Where ProductID={dto.ProductID}; Update dbo.ProductPictureNames Set PictureName = '{dto.PictureName}' where ProductID = '{dto.ProductID}'";
+                        $"Update dbo.Products Set Name='{dto.Name}',Price='{dto.Price}',ModifiedOn='{dto.ModifiedOn}',ModifiedBy='{dto.ModifiedBy}',Description='{dto.ProductDescription}' Where ProductID={dto.ProductID}; Update dbo.ProductPictureNames Set PictureName = '{dto.PictureName}' where ProductID = '{dto.ProductID}'";
                     helper.ExecuteQuery(sqlQuery);
                     return dto.ProductID;
                 }
@@ -291,11 +291,20 @@ namespace PMS.DAL
             var dto = new ProductDTO();
             dto.ProductID = reader.GetInt32(reader.GetOrdinal("ProductID"));
             dto.Name = reader.GetString(reader.GetOrdinal("Name"));
-            dto.ProductDescription = reader.GetString(reader.GetOrdinal("Description"));
+            var isNoDescription = reader.IsDBNull(reader.GetOrdinal("Description"));
+            if (isNoDescription)
+            {
+                dto.ProductDescription="No Description Addded";
+            }
+            else
+            {
+                dto.ProductDescription = reader.GetString(reader.GetOrdinal("Description"));
+
+            }
             dto.Price = reader.GetDouble(reader.GetOrdinal("Price"));
             dto.Quantity = reader.GetInt32(reader.GetOrdinal("Quantity"));
             dto.Sold = reader.GetInt32(reader.GetOrdinal("Sold"));
-          //  dto.PictureName = reader.GetString(reader.GetOrdinal("PictureName"));
+            dto.PictureName = reader.GetString(reader.GetOrdinal("PictureName"));
             dto.CreatedOn = reader.GetDateTime(reader.GetOrdinal("CreatedOn"));
             dto.CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy"));
 

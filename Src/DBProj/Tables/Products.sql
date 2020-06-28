@@ -12,7 +12,7 @@
     [Sold] INT NOT NULL, 
     [Description] VARCHAR(100) NULL, 
     CONSTRAINT [PK_Products] PRIMARY KEY CLUSTERED ([ProductID] ASC),
-   /* FOREIGN KEY (ProductCategoryID) REFERENCES ProductCategory(ProductCategoryID)*/
+    FOREIGN KEY (ProductCategoryID) REFERENCES ProductCategory(ProductCategoryID)
 );
 
 
