@@ -73,10 +73,10 @@ MyApp = (function () {
     }
     function SaveProduct() {
         const data = new FormData();
-
         var id = $("#txtProductID").val();
         var name = $("#txtName").val().trim();
         var price = $("#txtPrice").val().trim();
+        var productDescription = $("#txtDescription").val().trim();
         const oldPicName = $("#txtPictureName").val();
         var category = $("#selProdCategory").val();
         alert(category);
@@ -109,9 +109,10 @@ MyApp = (function () {
         data.append("Name", name);
         data.append("Price", price);
         data.append("PictureName", oldPicName);
+        data.append("ProductDescription",productDescription);
 
         data.append("Quantity", quantity);
-      data.append("CategoryID", category);
+        data.append("CategoryID", category);
 
 
         if (files.length > 0) {
@@ -128,7 +129,7 @@ MyApp = (function () {
                 console.log(r);
                 const obj = {};
                 obj.data = [];
-                obj.data.push({ ProductID: r.ProductID, Name: name, Price: price, PictureName: r.PictureName });
+                obj.data.push({ ProductID: r.ProductID, Name: name, Price: price, PictureName: r.PictureName, ProductDescription: productDescription });
                 const source = $("#listtemplate").html();
                 const template = Handlebars.compile(source);
                 const html = template(obj);
@@ -240,7 +241,7 @@ MyApp = (function () {
 
     function LoadProducts(from, to) {
         $("#productsDiv").empty();
-        debugger;
+        //debugger;
         var action = null;
         if (to == null && from == null) // in case of all products, range will be null.
             action = "Product2/GetAllProducts";

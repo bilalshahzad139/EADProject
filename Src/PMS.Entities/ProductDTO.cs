@@ -8,6 +8,8 @@ namespace PMS.Entities
         public int ProductID { get; set; }
         public string Name { get; set; }
 
+        public string ProductDescription { get; set; }
+
         public double Price { get; set; }
         public string PictureName { get; set; }
         public DateTime CreatedOn { get; set; }
