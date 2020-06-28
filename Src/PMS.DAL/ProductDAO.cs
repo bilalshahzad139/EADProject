@@ -17,13 +17,13 @@ namespace PMS.DAL
                 if (dto.ProductID > 0)
                 {
                     sqlQuery =
-                        $"Update dbo.Products Set Name='{dto.Name}',Price='{dto.Price}',ModifiedOn='{dto.ModifiedOn}',ModifiedBy='{dto.ModifiedBy}' Where ProductID={dto.ProductID}; Update dbo.ProductPictureNames Set PictureName = '{dto.PictureName}' where ProductID = '{dto.ProductID}'";
+                        $"Update dbo.Products Set Name='{dto.Name}',Price='{dto.Price}',ModifiedOn='{dto.ModifiedOn}',ModifiedBy='{dto.ModifiedBy}',Description='{dto.ProductDescription}' Where ProductID={dto.ProductID}; Update dbo.ProductPictureNames Set PictureName = '{dto.PictureName}' where ProductID = '{dto.ProductID}'";
                     helper.ExecuteQuery(sqlQuery);
                     return dto.ProductID;
                 }
                 else
                 {
-                    sqlQuery =   $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID,Quantity,Sold) VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1','{dto.Quantity}','0'); Select @@IDENTITY";
+                    sqlQuery =   $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID,Quantity,Sold,Description) VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1','{dto.Quantity}','0','{dto.ProductDescription}'); Select @@IDENTITY";
                     var obj = helper.ExecuteScalar(sqlQuery);
                     sqlQuery =
                         $"INSERT INTO dbo.ProductPictureNames(PictureName, ProductID ) Values ('{dto.PictureName}','{Convert.ToInt32(obj)}');";
@@ -34,7 +34,7 @@ namespace PMS.DAL
         }
         public static ProductDTO GetProductById(int pid)
         {
-            var query = $"Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.ProductID='{pid}'";
+            var query = $"Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive,a.Description, b.PictureName, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.ProductID='{pid}'";
             ;
 
             using (var helper = new DBHelper())
@@ -50,7 +50,7 @@ namespace PMS.DAL
         }
         public static List<ProductDTO> GetAllProducts(bool pLoadComments = false)
         {
-            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName, a.Quantity, a.Sold, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 ;";
+            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive,a.Description, b.PictureName, a.Quantity, a.Sold, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 ;";
             using (var helper = new DBHelper())
             {
                 var reader = helper.ExecuteReader(query);
@@ -79,7 +79,7 @@ namespace PMS.DAL
   public static List<ProductDTO> GetProductsByCategory(int categoryId, Boolean pLoadComments = false)
 
         {
-            string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 and ProductCategoryId= " + categoryId + ";";
+            string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn,a.Description, a.ProductCategoryID, a.IsActive, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 and ProductCategoryId= " + categoryId + ";";
 
             // var query = String.Format("Select * from dbo.Products Where categoryID={0}", categoryId);
             using (DBHelper helper = new DBHelper())
@@ -113,7 +113,7 @@ namespace PMS.DAL
 
         public static List<ProductDTO> GetPriceRangedProducts(int from, int to, bool pLoadComments = false)
         {
-            var query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName, a.Quantity, a.Sold, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID Where a.IsActive = 1 AND (a.Price Between '" + from + "' AND '" + to + "');";
+            var query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName, a.Quantity,a.Description, a.Sold, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID Where a.IsActive = 1 AND (a.Price Between '" + from + "' AND '" + to + "');";
             using (var helper = new DBHelper())
             {
                 var reader = helper.ExecuteReader(query);
@@ -182,7 +182,7 @@ namespace PMS.DAL
         }
         public static List<ProductDTO> GetLatestProducts(bool pLoadComments = false)
         {
-            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive,  a.Quantity, a.Sold, b.PictureName, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 Order BY CreatedOn desc;";
+            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive,  a.Quantity, a.Sold,a.Description, b.PictureName, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 Order BY CreatedOn desc;";
 
             using (var helper = new DBHelper())
             {
@@ -207,7 +207,7 @@ namespace PMS.DAL
         }
         public static List<ProductDTO> getTrendingProducts(bool pLoadComments = false)
         {
-            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive,  a.Quantity, a.Sold, (a.Quantity-a.Sold) remaining, b.PictureName, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 Order BY remaining;";
+            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive,  a.Quantity, a.Sold,a.Description, (a.Quantity-a.Sold) remaining, b.PictureName, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 Order BY remaining;";
 
             using (var helper = new DBHelper())
             {
@@ -291,6 +291,16 @@ namespace PMS.DAL
             var dto = new ProductDTO();
             dto.ProductID = reader.GetInt32(reader.GetOrdinal("ProductID"));
             dto.Name = reader.GetString(reader.GetOrdinal("Name"));
+            var isNoDescription = reader.IsDBNull(reader.GetOrdinal("Description"));
+            if (isNoDescription)
+            {
+                dto.ProductDescription="No Description Addded";
+            }
+            else
+            {
+                dto.ProductDescription = reader.GetString(reader.GetOrdinal("Description"));
+
+            }
             dto.Price = reader.GetDouble(reader.GetOrdinal("Price"));
             dto.Quantity = reader.GetInt32(reader.GetOrdinal("Quantity"));
             dto.Sold = reader.GetInt32(reader.GetOrdinal("Sold"));

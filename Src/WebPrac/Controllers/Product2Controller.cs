@@ -113,6 +113,7 @@ namespace WebPrac.Controllers
         [HttpPost]
         public ActionResult Save(ProductDTO dto)
         {
+         
             if (dto.Name.IsEmpty() || Convert.ToString(dto.Price, CultureInfo.InvariantCulture).IsEmpty() || Convert.ToString(dto.Quantity, CultureInfo.InvariantCulture).IsEmpty())
             {
                 ViewBag.EmptyFiledsMsg = "Empty Fields!";
