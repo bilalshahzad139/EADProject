@@ -66,6 +66,9 @@ MyApp = (function () {
         $("#txtPictureName").val("");
         $("#txtName").val("");
         $("#txtPrice").val("");
+        $("#txtQuantity").val("");
+        $("#txtDescription").val("");
+
         $("#prodimg").hide();
     }
     function SaveProduct() {
