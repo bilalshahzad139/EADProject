@@ -24,7 +24,7 @@ namespace PMS.DAL
                 else
                 {
                     sqlQuery = $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID,Quantity,Sold,Description) " +
-                        $"VALUES('{dto.Name}','{dto.Price}','2020 - 06 - 29 22:11:32.027','{dto.CreatedBy}',{1},'1','{dto.Quantity}','0','{dto.ProductDescription}'); Select @@IDENTITY";
+                        $"VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1','{dto.Quantity}','0','{dto.ProductDescription}'); Select @@IDENTITY";
                     var obj = helper.ExecuteScalar(sqlQuery);
                     sqlQuery =
                         $"INSERT INTO dbo.ProductPictureNames(PictureName, ProductID ) Values ('{dto.PictureName}','{Convert.ToInt32(obj)}');";
@@ -243,7 +243,7 @@ namespace PMS.DAL
                     result = 0;
                     return result;
                 }
-
+                
             }
         }
         public static int DeleteFromWishlist(int uid, int pid)
