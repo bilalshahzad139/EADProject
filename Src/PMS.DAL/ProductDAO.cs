@@ -23,10 +23,10 @@ namespace PMS.DAL
                 }
                 else
                 {
-                    sqlQuery = $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID,Quantity,Sold,Description) VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1','{dto.Quantity}','0','{dto.ProductDescription}'); Select @@IDENTITY";
+                    sqlQuery = $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID,Quantity,Sold,Description)" +
+                        $" VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn.ToString("MM/dd/yyyy HH:MM")}','{dto.CreatedBy}',{1},'{dto.CategoryID}','{dto.Quantity}','{dto.Sold}','{dto.ProductDescription}'); Select @@IDENTITY";
                     var obj = helper.ExecuteScalar(sqlQuery);
-                    sqlQuery =
-                        $"INSERT INTO dbo.ProductPictureNames(PictureName, ProductID ) Values ('{dto.PictureName}','{Convert.ToInt32(obj)}');";
+                    sqlQuery =$"INSERT INTO dbo.ProductPictureNames(PictureName, ProductID ) Values ('{dto.PictureName}','{Convert.ToInt32(obj)}');";
                     helper.ExecuteQuery(sqlQuery);
                     return Convert.ToInt32(obj);
                 }
