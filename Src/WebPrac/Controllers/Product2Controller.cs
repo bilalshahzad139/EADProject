@@ -27,6 +27,29 @@ namespace WebPrac.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public JsonResult AddLikes(int ProductID)
+        {
+            var activeUser = (UserDTO)Session["user"];
+            var result = PMS.BAL.ProductBO.AddLikesAndGetCount(ProductID, activeUser.UserID);
+            var d = new
+            {
+                data = result
+            };
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult AddDisLikes(int ProductID)
+        {
+            var activeUser = (UserDTO)Session["user"];
+            var result = PMS.BAL.ProductBO.AddDisLikesAndGetCount(ProductID, activeUser.UserID);
+            var d = new
+            {
+                data = result
+            };
+            return Json(d, JsonRequestBehavior.AllowGet);
+        }
+ 
         public JsonResult AddCategoryinDatabase(String Cat_name)
         {
 

@@ -13,7 +13,7 @@ namespace PMS.DAL
         {
             using (var helper = new DBHelper())
             {
-                var sqlQuery = "" ;
+                var sqlQuery = "";
                 if (dto.ProductID > 0)
                 {
                     sqlQuery =
@@ -23,7 +23,7 @@ namespace PMS.DAL
                 }
                 else
                 {
-                    sqlQuery =   $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID,Quantity,Sold,Description) VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1','{dto.Quantity}','0','{dto.ProductDescription}'); Select @@IDENTITY";
+                    sqlQuery = $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID,Quantity,Sold,Description) VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1','{dto.Quantity}','0','{dto.ProductDescription}'); Select @@IDENTITY";
                     var obj = helper.ExecuteScalar(sqlQuery);
                     sqlQuery =
                         $"INSERT INTO dbo.ProductPictureNames(PictureName, ProductID ) Values ('{dto.PictureName}','{Convert.ToInt32(obj)}');";
@@ -48,6 +48,71 @@ namespace PMS.DAL
                 return dto;
             }
         }
+        public static int AddLikesAndGetCount(int ProductID, int UserID)
+        {
+            var query = $"Select a.likes from dbo.LikesDislikes a  join dbo.Products b on a.ProductID = b.ProductID join  dbo.Users c on a.UserID=c.UserID where a.ProductID='{ProductID}' and a.UserID='{UserID}'";
+            var sqlQuery = "";
+
+            using (var helper = new DBHelper())
+            {
+                var reader = helper.ExecuteReader(query);
+                if (reader.Read())
+                {
+                    int res;
+                    if (reader.GetInt32(reader.GetOrdinal("Likes")) == 1)
+                        res = 0;
+                    else
+                        res = 1;
+                    sqlQuery= $"Update  dbo.LikesDislikes set Likes={res} where UserID={UserID} and ProductID={ProductID}";
+                }
+                else
+                {
+                    sqlQuery = $"INSERT INTO dbo.LikesDislikes(UserID,ProductID,Likes) Values ('{UserID}','{ProductID}','1')";
+
+                }
+            }
+            using (var helpr = new DBHelper())
+            {
+                helpr.ExecuteQuery(sqlQuery);
+            }
+
+            return getLikesCount(ProductID);
+
+
+        }
+
+        public static int AddDisLikesAndGetCount(int ProductID, int UserID)
+        {
+            var query = $"Select a.Dislikes from dbo.LikesDislikes a  join dbo.Products b on a.ProductID = b.ProductID join  dbo.Users c on a.UserID=c.UserID where a.ProductID='{ProductID}' and a.UserID='{UserID}'";
+            var sqlQuery = "";
+
+            using (var helper = new DBHelper())
+            {
+                var reader = helper.ExecuteReader(query);
+                if (reader.Read())
+                {
+                    int res;
+                    if (reader.GetInt32(reader.GetOrdinal("Dislikes")) == 1)
+                        res = 0;
+                    else
+                        res = 1;
+                    sqlQuery = $"Update  dbo.LikesDislikes set Dislikes={res} where UserID={UserID} and ProductID={ProductID}";
+                }
+                else
+                {
+                    sqlQuery = $"INSERT INTO dbo.LikesDislikes(UserID,ProductID,Dislikes) Values ('{UserID}','{ProductID}','1')";
+
+                }
+            }
+            using (var helpr = new DBHelper())
+            {
+                helpr.ExecuteQuery(sqlQuery);
+            }
+
+            return getDisLikesCount(ProductID);
+
+        }
+
         public static List<ProductDTO> GetAllProducts(bool pLoadComments = false)
         {
             const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive,a.Description, b.PictureName, a.Quantity, a.Sold, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 ;";
@@ -76,7 +141,7 @@ namespace PMS.DAL
             }
         }
 
-  public static List<ProductDTO> GetProductsByCategory(int categoryId, Boolean pLoadComments = false)
+        public static List<ProductDTO> GetProductsByCategory(int categoryId, Boolean pLoadComments = false)
 
         {
             string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn,a.Description, a.ProductCategoryID, a.IsActive, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 and ProductCategoryId= " + categoryId + ";";
@@ -229,7 +294,7 @@ namespace PMS.DAL
                 return list;
             }
         }
-        private static Boolean isLowStock(Double stockPercent) 
+        private static Boolean isLowStock(Double stockPercent)
         {
             if (stockPercent < 50)
                 return true;
@@ -239,7 +304,7 @@ namespace PMS.DAL
         {
             var s = GetSearchWords(text);
             var condition = getCondition(s);
-            List<string> faq = new List<string>(); 
+            List<string> faq = new List<string>();
             using (var helper = new DBHelper())
             {
                 string query = "Select Question, Answer from dbo.FrequentlyAskedQuestion  where " + condition;
@@ -257,8 +322,8 @@ namespace PMS.DAL
             var condition = "Question like '% " + keywords[0] + "%'";
             for (int i = 1; i < keywords.Length; i++)
             {
-                if(!keywords[i].Equals(' ') || keywords[i] != null )
-                    condition =  condition + "or Question like '%" + keywords[i] +"%'" ;
+                if (!keywords[i].Equals(' ') || keywords[i] != null)
+                    condition = condition + "or Question like '%" + keywords[i] + "%'";
             }
             return condition;
         }
@@ -286,7 +351,29 @@ namespace PMS.DAL
             return words;
         }
 
-       private static ProductDTO FillDTO(SqlDataReader reader)
+        private static int getLikesCount(int ProductID)
+        {
+            using (var helpr = new DBHelper())
+            {
+                var sqlQuery = $"Select Count(Likes) from dbo.LikesDislikes where Likes=1 and ProductID={ProductID}";
+                int recordCount = (int)(helpr.ExecuteScalar(sqlQuery));
+                return recordCount;
+            }
+
+        }
+
+        private static int getDisLikesCount(int ProductID)
+        {
+            using (var helpr = new DBHelper())
+            {
+                var sqlQuery = $"Select Count(Dislikes) from dbo.LikesDislikes where Dislikes=1 and ProductID={ProductID}";
+                int recordCount = (int)(helpr.ExecuteScalar(sqlQuery));
+                return recordCount;
+            }
+
+        }
+
+        private static ProductDTO FillDTO(SqlDataReader reader)
         {
             var dto = new ProductDTO();
             dto.ProductID = reader.GetInt32(reader.GetOrdinal("ProductID"));
@@ -294,7 +381,7 @@ namespace PMS.DAL
             var isNoDescription = reader.IsDBNull(reader.GetOrdinal("Description"));
             if (isNoDescription)
             {
-                dto.ProductDescription="No Description Addded";
+                dto.ProductDescription = "No Description Addded";
             }
             else
             {
@@ -304,7 +391,7 @@ namespace PMS.DAL
             dto.Price = reader.GetDouble(reader.GetOrdinal("Price"));
             dto.Quantity = reader.GetInt32(reader.GetOrdinal("Quantity"));
             dto.Sold = reader.GetInt32(reader.GetOrdinal("Sold"));
-          //  dto.PictureName = reader.GetString(reader.GetOrdinal("PictureName"));
+            //  dto.PictureName = reader.GetString(reader.GetOrdinal("PictureName"));
             dto.CreatedOn = reader.GetDateTime(reader.GetOrdinal("CreatedOn"));
             dto.CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy"));
 
@@ -316,6 +403,8 @@ namespace PMS.DAL
                 dto.ModifiedBy = reader.GetInt32(reader.GetOrdinal("ModifiedBy"));
 
             dto.IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"));
+            dto.Likes = getLikesCount(dto.ProductID);
+            dto.DisLikes = getDisLikesCount(dto.ProductID);
             return dto;
         }
     }

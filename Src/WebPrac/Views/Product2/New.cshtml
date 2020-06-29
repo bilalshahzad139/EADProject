@@ -31,7 +31,7 @@
         .dot {
             height: 35px;
             width: 35px;
-            background-color: antiquewhite;
+            background-color: lightgray;
             border-radius: 50%;
             display: inline-block;
         }
@@ -195,8 +195,10 @@
         <div style="clear:both">
             @if (!WebPrac.Security.SessionManager.User.IsAdmin)
             {
-                <i onclick="productLikeFunction({{ ProductID }})" class="fa fa-thumbs-up dot" style="margin-left:120px;padding:10px;color:gray; cursor:pointer;"></i>
-                <i onclick="productDisLikeFunction(this)" class="fa fa-thumbs-down dot" style="margin-left:10px;padding:10px;color:gray;cursor:pointer;"></i>
+                <i onclick="productLikeFunction({{ ProductID }},this)" class="fa fa-thumbs-up dot" style="margin-left:120px;padding:10px;color:gray; cursor:pointer;"></i>
+                <span id={{ProductID}}>{{Likes}}</span>
+                <i onclick="productDisLikeFunction({{ ProductID }},this)" class="fa fa-thumbs-down dot" style="margin-left:10px;padding:10px;color:gray;cursor:pointer;"></i>
+                <span class={{ProductID}}>{{DisLikes}}</span>
 
 
             }
@@ -269,11 +271,58 @@
 </script>
 
 <script>
-    function productLikeFunction(temp) {
+
+    function productLikeFunction(ProductID,currentIcon) {
         alert("in like function");
-        alert(temp);
+        var previousLikes = $("#" + ProductID).text();
+        var color = "";
+          var settings = {
+                type: "POST",
+                dataType: "json",
+              url: "AddLikes",
+              data: { "ProductID": ProductID },
+              success: function (response) {
+                  $("#" + ProductID).text(response.data);
+                  if (response.data > previousLikes) {
+                      color = "dodgerblue";
+                  }
+                  else {
+                      color = "antiquewhite";
+                  }
+                  $(currentIcon).css("background-color", color);
+                },
+                error: function () {
+                    alert("Failure  !!!");
+                }
+            }
+        $.ajax(settings);
+
     }
-     function productDisLikeFunction() {
+
+
+     function productDisLikeFunction(ProductID,currentIcon) {
         alert("in dislike function");
+         var previousDisLikes = $("." + ProductID).text();
+        var color = "";
+          var settings = {
+                type: "POST",
+                dataType: "json",
+              url: "AddDisLikes",
+              data: { "ProductID": ProductID },
+              success: function (response) {
+                  $("." + ProductID).text(response.data);
+                  if (response.data > previousDisLikes) {
+                      color = "dodgerblue";
+                  }
+                  else {
+                      color = "antiquewhite";
+                  }
+                  $(currentIcon).css("background-color", color);
+                },
+                error: function () {
+                    alert("Failure  !!!");
+                }
+            }
+        $.ajax(settings);
     }
 </script>

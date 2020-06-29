@@ -9,6 +9,9 @@ namespace PMS.Entities
         public string Name { get; set; }
 
         public string ProductDescription { get; set; }
+        public int Likes { get; set; }
+        public int DisLikes { get; set; }
+
 
         public double Price { get; set; }
         public string PictureName { get; set; }
