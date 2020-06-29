@@ -1,4 +1,5 @@
-﻿using PMS.Entities;
+﻿using Microsoft.SqlServer.Server;
+using PMS.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -200,6 +201,22 @@ namespace PMS.DAL
 
             return dto;
         }
+        public static string GetUserEmail(string userLogin)
+        {
+            string sqlQuery = String.Format("select email from dbo.EmailVerifyingCodes where userLogin=" +
+                "(Select Login from Users where Login='{0}')",userLogin);
+            using (DBHelper dbhelper = new DBHelper())
+            {
+                
+                var reader = dbhelper.ExecuteReader(sqlQuery);
+                if(reader!=null)
+                {
+                    string userEmail = reader.ToString();
+                    return userEmail;
+                }
+                return "";
+            }
+        }
 
         
             public static string GetSaltForLogin(string login)
@@ -216,6 +233,40 @@ namespace PMS.DAL
             }
             return salt;
         }
+        public static int storePasswordRecoveryCode(int code,string email)
+        {
+            string sqlQuery = String.Format("update dbo.Users set PwdRecoveryCode='{0}'  WHERE Login='{1}';",code,email);
+            using (DBHelper dbhelper=new DBHelper())
+            {
+                var rows = dbhelper.ExecuteQuery(sqlQuery);
+                return rows;
+            }
+            return -1;
+        }
+        public static bool isResetPasswordCodeVerified(string code)
+        {
+            string sqlQuery = String.Format("select * from dbo.Users where PwdRecoveryCode='{0}'", code);
+            
+            using (DBHelper dbhelper = new DBHelper())
+            {
+                var data = dbhelper.ExecuteReader(sqlQuery);
+                if (data !=null)
+                    return true;
+                return false;
+            }
+            return false;
+        }
+        public static int ResetPasswordForUser(string email, string password)
+        {
+            string sqlQuery = String.Format("Update dbo.Users Set Password='{0}' where Login='{1}'", password, email);
+            using (DBHelper dbhelper = new DBHelper())
+            {
+                var rows = dbhelper.ExecuteQuery(sqlQuery);
+                return rows;
+            }
+            return -1;
+        }
+        
         public static List<DistributorDTO> GetDistributors()
         {
             try
