@@ -296,6 +296,7 @@
     <Content Include="Views\User\VerifyEmail.cshtml" />
     <Content Include="Views\Home\Distributors.cshtml" />
     <Content Include="Views\Home\InsertDistributors.cshtml" />
+    <Content Include="Views\User\ShowUsers.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PMS.BAL\PMS.BAL.csproj">
