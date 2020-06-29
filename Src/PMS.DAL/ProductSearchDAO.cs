@@ -34,8 +34,10 @@ namespace PMS.DAL
             dto.IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"));
             dto.Likes = getLikesCount(dto.ProductID);
             dto.DisLikes = getDisLikesCount(dto.ProductID);
+            dto.IsInWishlist = getWishlistProducts(dto.ProductID);
             return dto;
         }
+
         private static int getLikesCount(int ProductID)
         {
             using (var helpr = new DBHelper())
@@ -94,5 +96,26 @@ namespace PMS.DAL
                 return list;
             }
         }
-    }
+        public static bool getWishlistProducts(int product_id)
+        {
+            var uid = (UserDTO)System.Web.HttpContext.Current.Session["user"];
+
+
+            String sqlQuery = String.Format("select IsInList from dbo.Wishlist where UserID={0} and ProductID={1}", uid.UserID, product_id);
+            using (DBHelper helper = new DBHelper())
+            {
+                var res = helper.ExecuteScalar(sqlQuery);
+                if (res == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+
+            }
+
+        }
+        }
 }

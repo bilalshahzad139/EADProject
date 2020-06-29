@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-
 namespace PMS.DAL
 {
     internal class DBHelper : IDisposable

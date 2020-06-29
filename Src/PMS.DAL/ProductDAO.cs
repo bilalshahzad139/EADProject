@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
-
+using System.Web;
 namespace PMS.DAL
 {
     public static class ProductDAO
@@ -23,7 +23,8 @@ namespace PMS.DAL
                 }
                 else
                 {
-                    sqlQuery = $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID,Quantity,Sold,Description) VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn}','{dto.CreatedBy}',{1},'1','{dto.Quantity}','0','{dto.ProductDescription}'); Select @@IDENTITY";
+                    sqlQuery = $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID,Quantity,Sold,Description) " +
+                        $"VALUES('{dto.Name}','{dto.Price}','2020 - 06 - 29 22:11:32.027','{dto.CreatedBy}',{1},'1','{dto.Quantity}','0','{dto.ProductDescription}'); Select @@IDENTITY";
                     var obj = helper.ExecuteScalar(sqlQuery);
                     sqlQuery =
                         $"INSERT INTO dbo.ProductPictureNames(PictureName, ProductID ) Values ('{dto.PictureName}','{Convert.ToInt32(obj)}');";
@@ -245,6 +246,29 @@ namespace PMS.DAL
 
             }
         }
+        public static int DeleteFromWishlist(int uid, int pid)
+        {
+            String sqlQuery = String.Format("select count(*) from dbo.Wishlist where UserID={0} and ProductID={1} and IsInList={2}", uid, pid,1);
+            using (DBHelper helper = new DBHelper())
+            {
+                int result;
+                int res =Convert.ToInt32(helper.ExecuteScalar(sqlQuery));
+                if (res != 0)
+                {
+                    //if the product is in wishlist then delete it
+                    String delQuery = String.Format("Delete from dbo.Wishlist where UserID='{0}' and  ProductID='{1}'", uid, pid);
+                    result = helper.ExecuteQuery(delQuery);
+                    return result;
+                }
+                else
+                {
+                    //if the product is not in wishlist 
+                    result = 0;
+                    return result;
+                }
+
+            }
+        }
         public static List<ProductDTO> GetLatestProducts(bool pLoadComments = false)
         {
             const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive,  a.Quantity, a.Sold,a.Description, b.PictureName, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 Order BY CreatedOn desc;";
@@ -405,7 +429,29 @@ namespace PMS.DAL
             dto.IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"));
             dto.Likes = getLikesCount(dto.ProductID);
             dto.DisLikes = getDisLikesCount(dto.ProductID);
+            dto.IsInWishlist = getWishlistProducts(dto.ProductID);
             return dto;
         }
+        public static bool getWishlistProducts(int product_id)
+        {
+            var uid = (UserDTO)System.Web.HttpContext.Current.Session["user"];
+
+
+            String sqlQuery = String.Format("select IsInList from dbo.Wishlist where UserID={0} and ProductID={1}", uid.UserID, product_id);
+            using (DBHelper helper = new DBHelper())
+            {
+                var res = helper.ExecuteScalar(sqlQuery);
+                if (res == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+
+            }
+        }
+
     }
 }
