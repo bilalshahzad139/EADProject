@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace DBPractice
 {
@@ -6,6 +8,12 @@ namespace DBPractice
     {
         static void Main(string[] args)
         {
+
+           // List<string> matchingQuestions =
+            //PMS.BAL.ProductBO.GetRelatedFAQ("  WHaT is the return policy");
+            
+            //var s =  PMS.BAL.ProductBO.GetSearchWords("    WHaT is the return policy");
+
             //var dto = new PMS.Entities.ProductDTO();
             //dto.ProductID = 0;
             //dto.Name = "test3";

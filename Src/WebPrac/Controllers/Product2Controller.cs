@@ -113,6 +113,7 @@ namespace WebPrac.Controllers
         [HttpPost]
         public ActionResult Save(ProductDTO dto)
         {
+         
             if (dto.Name.IsEmpty() || Convert.ToString(dto.Price, CultureInfo.InvariantCulture).IsEmpty() || Convert.ToString(dto.Quantity, CultureInfo.InvariantCulture).IsEmpty())
             {
                 ViewBag.EmptyFiledsMsg = "Empty Fields!";
@@ -213,6 +214,17 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult FAQ(string val)
+        {
+            if (string.IsNullOrEmpty(val) || string.IsNullOrWhiteSpace(val))
+                return Json("", JsonRequestBehavior.AllowGet);
+            var data = PMS.BAL.ProductBO.GetRelatedFAQ(val);
+            return Json(data, JsonRequestBehavior.AllowGet);
+
+        }
+
         #region Under Development
 
         public ActionResult Edit(int id)

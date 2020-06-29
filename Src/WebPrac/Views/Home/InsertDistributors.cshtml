@@ -1,0 +1,84 @@
+﻿
+@{
+    ViewBag.Title = "Add a Distributor";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <title>AddDistributor</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9 go-right">
+                <h2 style="font-weight:bold;color:darkblue; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Add Distributor</h2>
+                <div class="form-group">
+
+                    <label for="country">Country Name: </label>
+                    <input id="dist_country" name="country" class="form-control" value="" required />
+                    <label for="address">Address: </label>
+                    <input id="dist_address" name="address" class="form-control" value="" required />
+                    <label for="phone">Phone no: </label>
+                    <input id="dist_phone" name="phone" class="form-control" value="" required />
+                    <label for="website">Website: </label>
+                    <input id="dist_website" name="website" class="form-control" value="" required />
+                </div>
+
+                <div class="form-group">
+                    <button id="btnInsert" class="btn btn-primary">Submit</button>
+                    <button id="btnCancel" class="btn btn-danger">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        $("#btnCancel").on("click",
+            function (e) {
+                location.href = '@Url.Content("~")' + "Home/Distributors";
+            });
+        $("#btnInsert").on("click",
+            function (e) {
+                
+                let a = $("#dist_country").val();
+                alert(a);
+                let b = $("#dist_address").val();
+                let c = $("#dist_phone").val();
+                let d = $("#dist_website").val();
+                var dataToSend = {"country": a, "address": b, "phone":c ,"website": d};
+                var settings = {
+                    type: "POST",
+                    dataType: "json",
+                    url: "/Home/InsertDist",
+                    data: dataToSend,
+                    success: myFunction,
+                    error: OnError
+                }
+                $.ajax(settings);
+                console.log("sent to insert controller");
+                return false;
+            });
+            function myFunction(r) {
+            if (r.exception == false) {
+                alert("Successfully Inserted");
+                location.href = r.urlToRedirect;
+            }
+            else {
+                alert("error during insertion in db")
+            }
+        }
+        function OnError() {
+            console.log("err");
+            alert("error occured during sending for inserting");
+        }
+    </script>
+
+</body>
+</html>

@@ -5,60 +5,67 @@
 
 @section scripts {
 
-	<script src="~/Scripts/handlebars.js"></script>
-	<script src="~/Scripts/jquery-3.5.0.js"></script>
+    <script src="~/Scripts/handlebars.js"></script>
+    <script src="~/Scripts/jquery-3.5.0.js"></script>
     <script src="~/Scripts/myapp.js"></script>
 
     <script>
-
         $("document").ready(function () {
             MyApp.Main();
             MyApp.AutoComplete("#txtProductName", {
                 source: "Product2/AutoSuggestion"
             });
+            MyApp.Faq("#faq", {
+                source: "Product2/FAQ"
+            });
         });
-
-
-
     </script>
 }
 @section styles{
-	<style>
-		#productsDiv {
-			margin: auto;
-			margin-bottom: 30px;
-		}
+    <style>
+        #productsDiv {
+            margin: auto;
+            margin-bottom: 30px;
+        }
 
-		#addNewProd {
-			display: none;
+        #addNewProd {
+            display: none;
+        }
 
-		}
-		.product {
-			margin: 3% 2% 0 2%;
-			border: 1px solid #ddd;
-		}
-		#newProdContent {
-			width: 300px;
-			margin: auto;
-		}
-		#pFilter {
-			height: auto;
-			padding: 5px 0 5px 0;
-			background-color: darkslategray;
-		}
-		#priceDropDown {
-			width: 200px;
-			height: 30px;
-			border-radius: 5px;
-		}
-		#ErrMsg {
-			color: red;
+        .product {
+            margin: 3% 2% 0 2%;
+            border: 1px solid #ddd;
+        }
+
+        #newProdContent {
+            width: 300px;
+            margin: auto;
+        }
+
+        #pFilter {
+            height: auto;
+            padding: 5px 0 5px 0;
+            background-color: darkslategray;
+        }
+
+        #priceDropDown {
+            width: 200px;
+            height: 30px;
+            border-radius: 5px;
+        }
+
+        #ErrMsg {
+            color: red;
             text-align: center
-		}
-	</style>
+        }
+
+        #footer {
+            position: fixed;
+            bottom: 0;
+            width: 70%;
+        }
+    </style>
 }
-
-
 <div class="text-center"><h2>Product Management</h2></div>
 <div class="text-center">
     <button class="btn btn-default mb-3" id="newProdBtn">Add New Product</button>
@@ -74,7 +81,9 @@
         Price: <input type="text" name="Price" id="txtPrice" class="form-control" />
 
         Qunatity: <input type="text" name="Quantity" id="txtQuantity" class="form-control" />
-      Category:<select name="main" id="selProdCategory">
+        Product Description [optional]: <input type="text" name="description" id="txtDescription" class="form-control" maxlength="100" />
+
+        Category:<select name="main" id="selProdCategory">
             <option value="0" class="form-control">Select Category</option>
         </select> <br />
 
@@ -85,7 +94,7 @@
         </div>
         <p id="ErrMsg">@ViewBag.EmptyFiledsMsg</p>
     </div>
-    
+
 </div>
 
 
@@ -121,6 +130,9 @@
     </div>
     <div class="row justify-content-center" id="productsDiv">
 
+    </div>
+    <div style="display: inline-block;" id="footer">
+        <input type="search" id="faq" name="faq" placeholder="ask a question" />
     </div>
 </div>
 
@@ -159,17 +171,17 @@
     {{#each data}}
     <div class="col-md-5 p-3 rounded-lg shadow-lg product" pid="{{ProductID}}" {{#if LowStockNotification}} style="border-style: solid;border-color:red;border-width:medium;" {{/if}}>
         {{#if LowStockNotification}}
-        <div style="color:red;">Low on Stock</div>
+        <div style="color: red; ">Low on Stock</div>
         {{/if}}
         <div style="float: left">
-            <img class="rounded-lg" src="/UploadedFiles/{{PictureName}}" style="width:100px;height:100px;" />
+            <img class="rounded-lg" src="/UploadedFiles/{{PictureName}}" style="width:100px;height:135px; margin-right:10px" />
         </div>
-        <div id="t" style="float:left; padding-left:5px;">
+        <div id="t" style="padding-left:5px;">
             Product Id: {{ProductID}} <br />
             Name: {{Name}} <br />
             Price: {{Price}} <br />
-            Created On {{CreatedOn}} <b>By</b> {{CreatedBy}}
-
+            Created On {{CreatedOn}} <b>By</b> {{CreatedBy}}<br />
+            Description : {{ProductDescription}}<br/>
         </div>
         <div style="clear:both">
             @if (WebPrac.Security.SessionManager.User.IsAdmin)
@@ -207,8 +219,11 @@
             <div style="clear:both"></div>
             {{/each}}
         </div>
+
     </div>
     {{/each}}
+
+
 </script>
 
 <script id="commenttemplate" type="text/x-handlebars-template">
@@ -228,8 +243,10 @@
 </script>
 <script id="dropdowntemplate" type="text/x-handlebars-template">
 
-        {{#each data}}
-        <option value='{{ProductCategoryID}}' >{{ProductCategoryName}}</option>
-        {{/each}}
+    {{#each data}}
+    <option value='{{ProductCategoryID}}'>{{ProductCategoryName}}</option>
+    {{/each}}
 
-    </script>
+</script>
+
+
