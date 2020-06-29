@@ -164,6 +164,8 @@ namespace WebPrac.Controllers
                     dto.PictureName = uniqueName;
                 }
             }
+            dto.CreatedOn = DateTime.Now;
+
             var pid = PMS.BAL.ProductBO.Save(dto);
             var data = new
             {
