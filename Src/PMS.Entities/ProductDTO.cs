@@ -25,6 +25,8 @@ namespace PMS.Entities
         public bool LowStockNotification { get; set; }
         public int CategoryID { get; set; }
 
+        public Boolean IsInWishlist { get; set; }
+
 
         public List<CommentDTO> Comments
         {

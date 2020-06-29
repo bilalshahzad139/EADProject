@@ -248,6 +248,26 @@ namespace WebPrac.Controllers
 
         }
 
+        [HttpGet]
+        public JsonResult DeleteFromWishlist(ProductDTO dto)
+        {
+            var user_id = SessionManager.User.UserID;
+            var data = PMS.BAL.ProductBO.DeleteFromWishlist(user_id, dto.ProductID);
+            return Json(data, JsonRequestBehavior.AllowGet);
+
+
+        }
+        public JsonResult AddToWishlist(ProductDTO dto)
+        {
+            var user_id = SessionManager.User.UserID;
+            var data = PMS.BAL.ProductBO.AddToWishlist(user_id, dto.ProductID);
+            return Json(data, JsonRequestBehavior.AllowGet);
+
+
+        }
+
+
+
         #region Under Development
 
         public ActionResult Edit(int id)
