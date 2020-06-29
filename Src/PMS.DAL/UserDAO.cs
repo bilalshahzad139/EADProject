@@ -109,7 +109,7 @@ namespace PMS.DAL
         {
             var recAff = 0;
             var sqlQuery =
-                $"Update dbo.Users Set Password='{dto.Password}' , PictureName='{dto.PictureName}' ,  Name='{dto.Name}', Login='{dto.Login}' Where UserID={dto.UserID}";
+                $"Update dbo.Users Set Password='{dto.Password}' , PictureName='{dto.PictureName}' ,  Name='{dto.Name}', Login='{dto.Login}',IsAdmin='{dto.IsAdmin}',IsActive='{dto.IsActive}' Where UserID={dto.UserID}";
 
             using (var helper = new DBHelper())
             {

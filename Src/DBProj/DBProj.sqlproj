@@ -81,6 +81,7 @@
     <Build Include="Tables\dbo.UserPswSalt.sql" />
     <Build Include="Tables\dbo.Distributors.sql" />
     <Build Include="Tables\FAQ.sql" />
+    <Build Include="Tables\dbo.LikesDislikes.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Users.sql" />
