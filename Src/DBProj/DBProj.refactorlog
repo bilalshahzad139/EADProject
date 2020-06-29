@@ -77,4 +77,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Description" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="3742513c-2dcd-48a7-9d45-68ccec1ec4bd" ChangeDateTime="06/29/2020 07:08:03">
+    <Property Name="ElementName" Value="[dbo].[LikesDislikes].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[LikesDislikes]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UserID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="342a49e8-ee8f-4cb7-a47e-9a19a02ddc0e" ChangeDateTime="06/29/2020 07:36:33">
+    <Property Name="ElementName" Value="[dbo].[LikesDislikes].[Like]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[LikesDislikes]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Likes" />
+  </Operation>
 </Operations>

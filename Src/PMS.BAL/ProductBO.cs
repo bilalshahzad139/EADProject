@@ -14,6 +14,17 @@ namespace PMS.BAL
         {
             return PMS.DAL.ProductDAO.GetProductById(pid);
         }
+
+        public static int AddLikesAndGetCount(int ProductID,int UserID)
+        {
+            return PMS.DAL.ProductDAO.AddLikesAndGetCount(ProductID, UserID);
+
+        }
+        public static int AddDisLikesAndGetCount(int ProductID, int UserID)
+        {
+            return PMS.DAL.ProductDAO.AddDisLikesAndGetCount(ProductID, UserID);
+
+        }
         public static List<ProductDTO> GetAllProducts(Boolean pLoadComments = false)
         {
             return PMS.DAL.ProductDAO.GetAllProducts(pLoadComments);

@@ -32,8 +32,32 @@ namespace PMS.DAL
             if (reader.GetValue(reader.GetOrdinal("ModifiedBy")) != DBNull.Value)
                 dto.ModifiedBy = reader.GetInt32(reader.GetOrdinal("ModifiedBy"));
             dto.IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"));
+            dto.Likes = getLikesCount(dto.ProductID);
+            dto.DisLikes = getDisLikesCount(dto.ProductID);
             return dto;
         }
+        private static int getLikesCount(int ProductID)
+        {
+            using (var helpr = new DBHelper())
+            {
+                var sqlQuery = $"Select Count(Likes) from dbo.LikesDislikes where Likes=1 and ProductID={ProductID}";
+                int recordCount = (int)(helpr.ExecuteScalar(sqlQuery));
+                return recordCount;
+            }
+
+        }
+
+        private static int getDisLikesCount(int ProductID)
+        {
+            using (var helpr = new DBHelper())
+            {
+                var sqlQuery = $"Select Count(Dislikes) from dbo.LikesDislikes where Dislikes=1 and ProductID={ProductID}";
+                int recordCount = (int)(helpr.ExecuteScalar(sqlQuery));
+                return recordCount;
+            }
+
+        }
+
         public static List<ProductDTO> GetProductByName(ProductSearchDTO dt) //function for getting product
         {
             var query = "SP_Product_SearchByName";
