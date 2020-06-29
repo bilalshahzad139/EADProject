@@ -23,6 +23,17 @@
 }
 @section styles{
     <style>
+        .fa-heart-o {
+          color: red;
+          cursor: pointer;
+        }
+
+        .fa-heart {
+          color: red;
+          cursor: pointer;
+        }
+
+
         #productsDiv {
             margin: auto;
             margin-bottom: 30px;
@@ -184,6 +195,24 @@
         <div style="float: left">
             <img class="rounded-lg" src="/UploadedFiles/{{PictureName}}" style="width:100px;height:135px; margin-right:10px" />
         </div>
+        <div style="float:right">
+            {{#if IsInWishlist}}
+            @if (!WebPrac.Security.SessionManager.User.IsAdmin)
+            {
+                <span class="heart liked" id="heart_{{ProductID}}"><i class="fa fa-heart" aria-hidden="true"></i> </span>
+            }
+            {{else}}
+            @if (!WebPrac.Security.SessionManager.User.IsAdmin)
+            {
+                <span class="heart" id="heart_{{ProductID}}"><i class="fa fa-heart-o" aria-hidden="true"></i> </span>
+            }
+            {{/if}}
+
+
+
+
+
+        </div>
         <div id="t" style="padding-left:5px;">
             Product Id: {{ProductID}} <br />
             Name: {{Name}} <br />
@@ -203,6 +232,7 @@
 
             }
         </div>
+
 
         <div style="clear:both">
             @if (WebPrac.Security.SessionManager.User.IsAdmin)
@@ -271,6 +301,8 @@
 </script>
 
 <script>
+    
+    
 
     function productLikeFunction(ProductID,currentIcon) {
         alert("in like function");
