@@ -304,7 +304,7 @@ namespace PMS.DAL
             dto.Price = reader.GetDouble(reader.GetOrdinal("Price"));
             dto.Quantity = reader.GetInt32(reader.GetOrdinal("Quantity"));
             dto.Sold = reader.GetInt32(reader.GetOrdinal("Sold"));
-            dto.PictureName = reader.GetString(reader.GetOrdinal("PictureName"));
+          //  dto.PictureName = reader.GetString(reader.GetOrdinal("PictureName"));
             dto.CreatedOn = reader.GetDateTime(reader.GetOrdinal("CreatedOn"));
             dto.CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy"));
 

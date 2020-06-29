@@ -28,6 +28,14 @@
             margin-bottom: 30px;
         }
 
+        .dot {
+            height: 35px;
+            width: 35px;
+            background-color: antiquewhite;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
         #addNewProd {
             display: none;
         }
@@ -181,8 +189,19 @@
             Name: {{Name}} <br />
             Price: {{Price}} <br />
             Created On {{CreatedOn}} <b>By</b> {{CreatedBy}}<br />
-            Description : {{ProductDescription}}<br/>
+            Description : {{ProductDescription}}<br />
         </div>
+
+        <div style="clear:both">
+            @if (!WebPrac.Security.SessionManager.User.IsAdmin)
+            {
+                <i onclick="productLikeFunction({{ ProductID }})" class="fa fa-thumbs-up dot" style="margin-left:120px;padding:10px;color:gray; cursor:pointer;"></i>
+                <i onclick="productDisLikeFunction(this)" class="fa fa-thumbs-down dot" style="margin-left:10px;padding:10px;color:gray;cursor:pointer;"></i>
+
+
+            }
+        </div>
+
         <div style="clear:both">
             @if (WebPrac.Security.SessionManager.User.IsAdmin)
             {
@@ -249,4 +268,12 @@
 
 </script>
 
-
+<script>
+    function productLikeFunction(temp) {
+        alert("in like function");
+        alert(temp);
+    }
+     function productDisLikeFunction() {
+        alert("in dislike function");
+    }
+</script>
