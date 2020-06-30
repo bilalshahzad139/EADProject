@@ -49,27 +49,34 @@ namespace PMS.DAL
             }
         }
 
-        public static object GetSoldProductsInfo(DateTime currentDate)
+        public static object GetSoldProductsInfo(DateTime currentDate,int month)
         {
-            int month = currentDate.Month;
             int year = currentDate.Year;
             var sqlQuery = $"Select Sum(SoldQuantity) from dbo.ProductSoldInfo where Year(SoldDate)={year} and Month(SoldDate)={month} ";
             int sum=0;
             double price = 0;
-            using (var helper = new DBHelper())
+            try
             {
-                sum = (int)(helper.ExecuteScalar(sqlQuery));
-                if (sum < 0)
-                    sum = 0;
-            }
-            using (var helper = new DBHelper())
-            {
-                sqlQuery = $"Select ROUND(Sum(a.SoldQuantity*b.Price),2) from dbo.ProductSoldInfo a join Products b on a.ProductID=b.ProductID  where Year(a.SoldDate)={year} and Month(a.SoldDate)={month} ";
-                price = (double)(helper.ExecuteScalar(sqlQuery));
-                if (price < 0)
-                    price = 0;
-            }
+                using (var helper = new DBHelper())
+                {
+                    sum = (int)(helper.ExecuteScalar(sqlQuery));
 
+                    if (sum < 0)
+                        sum = 0;
+                }
+                using (var helper = new DBHelper())
+                {
+                    sqlQuery = $"Select ROUND(Sum(a.SoldQuantity*b.Price),2) from dbo.ProductSoldInfo a join Products b on a.ProductID=b.ProductID  where Year(a.SoldDate)={year} and Month(a.SoldDate)={month} ";
+                    price = (double)(helper.ExecuteScalar(sqlQuery));
+                    if (price < 0)
+                        price = 0;
+                }
+            }
+            catch (Exception excp)
+            {
+                sum = 0;
+                price = 0;
+            }
             var result = new
             {
                 soldProducts = sum,

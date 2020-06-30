@@ -20,9 +20,9 @@ namespace PMS.BAL
             return PMS.DAL.ProductDAO.AddLikesAndGetCount(ProductID, UserID);
 
         }
-        public static object GetSoldProductsInfo(DateTime currentDate)
+        public static object GetSoldProductsInfo(DateTime currentDate,int month)
         {
-            return PMS.DAL.ProductDAO.GetSoldProductsInfo(currentDate);
+            return PMS.DAL.ProductDAO.GetSoldProductsInfo(currentDate,month);
 
         }
         public static int AddDisLikesAndGetCount(int ProductID, int UserID)
