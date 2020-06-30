@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[Products] (
     [ProductID]   INT          IDENTITY (1, 1) NOT NULL,
     [Name]        VARCHAR (50) NOT NULL,
-    [Price]       FLOAT (53)   NOT NULL,
+    [Price]       FLOAT   NOT NULL,
     [CreatedOn]   DATETIME     NOT NULL,
     [CreatedBy]   INT          NOT NULL,
     [ModifiedOn]  DATETIME     NULL,

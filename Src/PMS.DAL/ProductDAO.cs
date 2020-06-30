@@ -48,6 +48,36 @@ namespace PMS.DAL
                 return dto;
             }
         }
+
+        public static object GetSoldProductsInfo(DateTime currentDate)
+        {
+            int month = currentDate.Month;
+            int year = currentDate.Year;
+            var sqlQuery = $"Select Sum(SoldQuantity) from dbo.ProductSoldInfo where Year(SoldDate)={year} and Month(SoldDate)={month} ";
+            int sum=0;
+            double price = 0;
+            using (var helper = new DBHelper())
+            {
+                sum = (int)(helper.ExecuteScalar(sqlQuery));
+                if (sum < 0)
+                    sum = 0;
+            }
+            using (var helper = new DBHelper())
+            {
+                sqlQuery = $"Select ROUND(Sum(a.SoldQuantity*b.Price),2) from dbo.ProductSoldInfo a join Products b on a.ProductID=b.ProductID  where Year(a.SoldDate)={year} and Month(a.SoldDate)={month} ";
+                price = (double)(helper.ExecuteScalar(sqlQuery));
+                if (price < 0)
+                    price = 0;
+            }
+
+            var result = new
+            {
+                soldProducts = sum,
+                soldProductsPrice = price
+            };
+            return result;
+
+        }
         public static int AddLikesAndGetCount(int ProductID, int UserID)
         {
             var query = $"Select a.likes from dbo.LikesDislikes a  join dbo.Products b on a.ProductID = b.ProductID join  dbo.Users c on a.UserID=c.UserID where a.ProductID='{ProductID}' and a.UserID='{UserID}'";

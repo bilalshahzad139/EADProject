@@ -24,13 +24,13 @@
 @section styles{
     <style>
         .fa-heart-o {
-          color: red;
-          cursor: pointer;
+            color: red;
+            cursor: pointer;
         }
 
         .fa-heart {
-          color: red;
-          cursor: pointer;
+            color: red;
+            cursor: pointer;
         }
 
 
@@ -117,6 +117,40 @@
 </div>
 
 
+<div class="text-center">
+    <button class="btn btn-default mb-3" id="currentMonthReport" onclick="monthlyReportFunction()" data-toggle="modal" data-target="#myModal" >Current Month Report</button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog ">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="text-align:center">
+                <h4 class="modal-title"> Current Month Report</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body row">
+                <div class="form-group col-sm-10">
+                    <h6 id="soldProducts">Sold Products in this Month are : </h6>
+                    <h6 id="soldProductsPrice">Price of this month sold products is : </h6>
+
+
+                </div>
+
+            </div>
+            <div class="modal-footer ">
+
+                <button type="button" class="btn btn-default btn-lg" data-dismiss="modal" id="close">Close</button>
+
+
+
+            </div>
+        </div>
+
+    </div>
+</div>
 <div class="container-fluid">
     <div class="text-center"><h2>Products</h2></div>
     <div id="pFilter" class="rounded-lg ">
@@ -240,6 +274,7 @@
                 <a href="/Product/Edit/{{ProductID}}" class="btn btn-primary">Edit</a>
                 <a href="/Product/Delete/{{ProductID}}" class="btn btn-primary">Delete</a>
                 <input type="submit" value="Edit" class="editbutton btn btn-primary" pid="{{ProductID}}" />
+
             }
         </div>
         <div class="commentarea">
@@ -301,60 +336,73 @@
 </script>
 
 <script>
-    
-    
 
-    function productLikeFunction(ProductID,currentIcon) {
-        alert("in like function");
+
+    function monthlyReportFunction() {
+        alert("in monthly report function");
+        var settings = {
+            type: "POST",
+            dataType: "json",
+            url: "GetSoldProductsInfo",
+            success: function (response) {
+                $("#soldProducts").text("Sold Products in this Month are :"+response["soldProducts"]);
+                $("#soldProductsPrice").text("Price of this month sold products is : "+response["soldProductsPrice"]);
+            },
+            error: function () {
+                alert("Failure  !!!");
+            }
+        }
+        $.ajax(settings);
+    }
+    function productLikeFunction(ProductID, currentIcon) {
         var previousLikes = $("#" + ProductID).text();
         var color = "";
-          var settings = {
-                type: "POST",
-                dataType: "json",
-              url: "AddLikes",
-              data: { "ProductID": ProductID },
-              success: function (response) {
-                  $("#" + ProductID).text(response.data);
-                  if (response.data > previousLikes) {
-                      color = "dodgerblue";
-                  }
-                  else {
-                      color = "antiquewhite";
-                  }
-                  $(currentIcon).css("background-color", color);
-                },
-                error: function () {
-                    alert("Failure  !!!");
+        var settings = {
+            type: "POST",
+            dataType: "json",
+            url: "AddLikes",
+            data: { "ProductID": ProductID },
+            success: function (response) {
+                $("#" + ProductID).text(response.data);
+                if (response.data > previousLikes) {
+                    color = "dodgerblue";
                 }
+                else {
+                    color = "antiquewhite";
+                }
+                $(currentIcon).css("background-color", color);
+            },
+            error: function () {
+                alert("Failure  !!!");
             }
+        }
         $.ajax(settings);
 
     }
 
 
-     function productDisLikeFunction(ProductID,currentIcon) {
-        alert("in dislike function");
-         var previousDisLikes = $("." + ProductID).text();
+    function productDisLikeFunction(ProductID, currentIcon) {
+        var previousDisLikes = $("." + ProductID).text();
         var color = "";
-          var settings = {
-                type: "POST",
-                dataType: "json",
-              url: "AddDisLikes",
-              data: { "ProductID": ProductID },
-              success: function (response) {
-                  $("." + ProductID).text(response.data);
-                  if (response.data > previousDisLikes) {
-                      color = "dodgerblue";
-                  }
-                  else {
-                      color = "antiquewhite";
-                  }
-                  $(currentIcon).css("background-color", color);
-                },
-                error: function () {
-                    alert("Failure  !!!");
+        var settings = {
+            type: "POST",
+            dataType: "json",
+            url: "AddDisLikes",
+            data: { "ProductID": ProductID },
+            success: function (response) {
+                $("." + ProductID).text(response.data);
+                if (response.data > previousDisLikes) {
+                    color = "dodgerblue";
                 }
+                else {
+                    color = "antiquewhite";
+                }
+                $(currentIcon).css("background-color", color);
+            },
+            error: function () {
+                alert("Failure  !!!");
             }
+        }
         $.ajax(settings);
     }
 </script>

@@ -256,7 +256,7 @@ MyApp = (function () {
                 console.log(resp.data);
 
                 if (resp.data) {
-                    debugger;
+                    //debugger;
                     for (let k in resp.data) {
                         const obj = resp.data[k];
                         obj.CreatedOn = moment(obj.CreatedOn).format("DD/MM/YYYY HH:mm:ss");
