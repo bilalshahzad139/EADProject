@@ -230,6 +230,10 @@ namespace WebPrac.Controllers
         [HttpGet]
         public JsonResult GetProductByName(ProductSearchDTO dt)
         {
+            if (dt.productName == null)
+            {
+                dt.productName = "";
+            }
             var products = ProductSearchBO.GetProductByName(dt);
 
             var d = new

@@ -1037,15 +1037,19 @@ MyApp = (function () {
             });
             $("#btnSearchProduct").click(function () {
                 var prodName = $("#txtProductName").val();
-                if (prodName == "") {
-                    return;
-                }
+
                 const t = $("#priceDropDown").find(":selected").data("price");
                 const a = t.split(":");
                 const l = parseFloat(a[0]);
-                const u = parseFloat(a[1]);
-                const category = 0;
-                //category = $("#maindropdown").val();
+                var u = parseFloat(a[1]);
+                var category = 0;
+                category = $("#maindropdown").val();
+                //if (prodName == "" && category==0 && ) {
+                //    return;
+                //}
+                if (u == 2147483647) {
+                    u = 0;
+                }
                 LoadProductsByName(prodName, l, u, category);
             });
             $("#btnLatestProd").click(function () {
