@@ -82,6 +82,7 @@
     <Build Include="Tables\dbo.Distributors.sql" />
     <Build Include="Tables\FAQ.sql" />
     <Build Include="Tables\dbo.LikesDislikes.sql" />
+    <Build Include="Tables\dbo.ProductSoldInfo.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Users.sql" />

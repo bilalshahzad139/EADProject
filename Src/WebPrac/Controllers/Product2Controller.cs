@@ -23,6 +23,11 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetSoldProductsInfo()
+        {
+            Object productsInfo = PMS.BAL.ProductBO.GetSoldProductsInfo(DateTime.Now);
+            return Json(productsInfo, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult AddCategory()
         {
             return View();
@@ -49,7 +54,7 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
- 
+
         public JsonResult AddCategoryinDatabase(String Cat_name)
         {
 
@@ -84,7 +89,7 @@ namespace WebPrac.Controllers
         }
         public JsonResult GetProductsByCategory(int id)
         {
-            
+
             Object products = PMS.BAL.ProductBO.GetProductsByCategory(id, true);
             var d = new
             {
@@ -136,7 +141,7 @@ namespace WebPrac.Controllers
         [HttpPost]
         public ActionResult Save(ProductDTO dto)
         {
-         
+
             if (dto.Name.IsEmpty() || Convert.ToString(dto.Price, CultureInfo.InvariantCulture).IsEmpty() || Convert.ToString(dto.Quantity, CultureInfo.InvariantCulture).IsEmpty())
             {
                 ViewBag.EmptyFiledsMsg = "Empty Fields!";
@@ -149,7 +154,7 @@ namespace WebPrac.Controllers
             }
             if (Request.Files["Image"] != null)
             {
-               
+
                 var file = Request.Files["Image"];
                 if (file.FileName != "")
                 {
