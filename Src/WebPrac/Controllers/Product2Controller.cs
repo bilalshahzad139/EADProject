@@ -23,9 +23,9 @@ namespace WebPrac.Controllers
             };
             return Json(d, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult GetSoldProductsInfo()
+        public JsonResult GetSoldProductsInfo(int month)
         {
-            Object productsInfo = PMS.BAL.ProductBO.GetSoldProductsInfo(DateTime.Now);
+            Object productsInfo = PMS.BAL.ProductBO.GetSoldProductsInfo(DateTime.Now,month);
             return Json(productsInfo, JsonRequestBehavior.AllowGet);
         }
         public ActionResult AddCategory()
