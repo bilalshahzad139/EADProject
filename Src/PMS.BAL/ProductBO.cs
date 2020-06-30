@@ -71,5 +71,14 @@ namespace PMS.BAL
         {
             return PMS.DAL.ProductDAO.GetRelatedFAQ(text);
         }
+
+        public static int DeleteFromWishlist(int user_id, int product_id)
+        {
+            return PMS.DAL.ProductDAO.DeleteFromWishlist(user_id, product_id);
+        }
+        public static int AddtoWishlist(int user_id, int product_id)
+        {
+            return PMS.DAL.ProductDAO.AddToWishlist(user_id, product_id);
+        }
     }
 }

@@ -165,7 +165,6 @@ namespace WebPrac.Controllers
                 }
             }
             dto.CreatedOn = DateTime.Now;
-
             var pid = PMS.BAL.ProductBO.Save(dto);
             var data = new
             {
@@ -269,6 +268,26 @@ namespace WebPrac.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
 
         }
+
+        [HttpGet]
+        public JsonResult DeleteFromWishlist(ProductDTO dto)
+        {
+            var user_id = SessionManager.User.UserID;
+            var data = PMS.BAL.ProductBO.DeleteFromWishlist(user_id, dto.ProductID);
+            return Json(data, JsonRequestBehavior.AllowGet);
+
+
+        }
+        public JsonResult AddToWishlist(ProductDTO dto)
+        {
+            var user_id = SessionManager.User.UserID;
+            var data = PMS.BAL.ProductBO.AddToWishlist(user_id, dto.ProductID);
+            return Json(data, JsonRequestBehavior.AllowGet);
+
+
+        }
+
+
 
         #region Under Development
 

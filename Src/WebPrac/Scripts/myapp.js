@@ -614,7 +614,41 @@ MyApp = (function () {
         }
 
     }
+    $(document).on('click', '.heart', function () {
+        var id = $(this).attr('id');
+      
+        var product_id = id.split('heart_');
+        var action = "Product2/";
+        product_id = product_id[1];
+        //var item = $(this).find("i").hasClass('liked');
+        if ($("#" + id).hasClass("liked")) {
+            action = action + 'DeleteFromWishlist';
+        }
+        else {
+            action = action + 'AddtoWishlist';
+        }
+        var d = { ProductID: product_id };
+        MyAppGlobal.MakeAjaxCall("Get",
+            action,
+            d,
+            function (resp) {
+                if (resp != 0) {
+                    if ($("#" + id).hasClass("liked")) {
+                        $("#" + id).html('<i class="fa fa-heart-o" aria-hidden="true"></i>');
+                        $("#" + id).removeClass("liked");
+                    }
+                    else {
+                        $("#" + id).html('<i class="fa fa-heart" aria-hidden="true"></i>');
+                        $("#" + id).addClass("liked");
+                    }
 
+                }
+
+
+            });
+        BindEvents();
+       
+    });
 
 
     function SignupHelper() {
@@ -1026,6 +1060,8 @@ MyApp = (function () {
                 getTrendingProd();
                 return false;
             });
+            
+
         },
         AutoComplete: function (selector, data) {
             AutoCompleteHelper(selector, data);

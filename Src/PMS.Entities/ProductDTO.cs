@@ -28,6 +28,8 @@ namespace PMS.Entities
         public int percentageDiscount { get; set; }
         public string saleDescription { get; set; }
 
+        public Boolean IsInWishlist { get; set; }
+
 
         public List<CommentDTO> Comments
         {
