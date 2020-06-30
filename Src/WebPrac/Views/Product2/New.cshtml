@@ -118,7 +118,7 @@
 
 
 <div class="text-center">
-    <button class="btn btn-default mb-3" id="currentMonthReport"  data-toggle="modal" data-target="#myModal" >Current Month Report</button>
+    <button class="btn btn-default mb-3" id="currentMonthReport" data-toggle="modal" data-target="#myModal">Generate Monthly Report</button>
 </div>
 
 <!-- Modal -->
@@ -128,13 +128,13 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header" style="text-align:center">
-                <h4 class="modal-title"> Current Month Report</h4>
+                <h4 class="modal-title"> Monthly Report</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body row">
                 <div class="form-group col-sm-10">
                     <span >Select a Month:</span>
-                    <select class="monthDropDown">
+                    <select class="monthDropDown" id="monthlyDropDown">
                         <option value="0">Select a Month </option>
                         <option value="1">January </option>
                         <option value="2"> February</option>
@@ -163,7 +163,7 @@
             </div>
             <div class="modal-footer ">
 
-                <button type="button" class="btn btn-default btn-lg" data-dismiss="modal" id="close">Close</button>
+                <button type="button" class="btn btn-default btn-lg" data-dismiss="modal" id="close" >Close</button>
 
 
 
