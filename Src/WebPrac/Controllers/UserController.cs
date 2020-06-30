@@ -49,12 +49,12 @@ namespace WebPrac.Controllers
         [HttpPost]
         public ActionResult Login(string login, string password)
         {
-            var user = new UserDTO { Login = login, Password = password, PswSalt = UserBO.GetSaltForLogin(login) };
+            var user = new UserDTO { Login = login, Password = password };
             if (user.Login != "admin@gmail.com")
             {
-                if (!string.IsNullOrEmpty(user.PswSalt))
+               // if (!string.IsNullOrEmpty(user.PswSalt))
                 {
-                    UserPswHashing.GenerateHash(user);
+                   // UserPswHashing.GenerateHash(user);
                     var obj = UserBO.ValidateUser(user.Login, user.Password);
 
                     if (obj != null)

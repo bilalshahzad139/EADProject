@@ -1,67 +1,61 @@
-﻿Create Procedure [dbo].[SP_Product_SearchByName]
+﻿CREATE Procedure [dbo].[SP_Product_SearchByName]
 @product_name varchar(50),
 @minPrice  decimal(18,2),
 @maxPrice  decimal(18, 2),
 @categoryId int
 As
+DECLARE @priceConstraint varchar(max)='';
+DECLARE @nameConstraint varchar(max)='';
+DECLARE @categoryConstraint varchar(max)='';
+DECLARE @query varchar(max)='';
 begin
-		if(@categoryId=0 AND @maxPrice=0)
+	if(@product_name!='')
+	begin
+		 SET @nameConstraint=' CHARINDEX (''' + @product_name + ''',Name)>0 '; 
+	end
+	if(@categoryId!=0)
+	begin
+		if(@product_name!='')
 		begin
-			
-			Select 
-				tbl1.ProductID,
-				Name,
-				Price,
-				ProductCategoryID,
-				IsActive,
-				CreatedOn,
-				CreatedBy,
-				ModifiedOn,
-				ModifiedBy,
-				tbl2.PictureName
-			from dbo.Products tbl1
-			JOIN dbo.ProductPictureNames tbl2
-			on tbl1.ProductID=tbl2.ProductID
-			where CHARINDEX(@product_name,Name)>0
-			AND Price>= @minPrice;
+			SET @categoryConstraint=' AND '; 
 		end
-		else if(@categoryId=0)
+		SET @categoryConstraint=@categoryConstraint+' ProductCategoryID= '+CAST(@categoryId as varchar);
+	end
+	if(@maxPrice!=0)
+	begin
+		if(@product_name!='' OR @categoryConstraint!='')
 		begin
-			Select 
-				tbl1.ProductID,
-				Name,
-				Price,
-				ProductCategoryID,
-				IsActive,
-				CreatedOn,
-				CreatedBy,
-				ModifiedOn,
-				ModifiedBy,
-				tbl2.PictureName
-			from dbo.Products tbl1
-			JOIN dbo.ProductPictureNames tbl2
-			on tbl1.ProductID=tbl2.ProductID
-			where CHARINDEX(@product_name,Name)>0
-			AND Price between @minPrice AND @maxPrice
+			SET @priceConstraint=' AND '; 
 		end
-		else if(@maxPrice=0) 
+		SET @priceConstraint=@priceConstraint+' Price between '+CAST( @minPrice as varchar)+' AND '+CAST(@maxPrice as varchar);
+	end
+	else if(@maxPrice=0)
+	begin
+	if(@product_name!='' OR @categoryConstraint!='')
 		begin
-			Select 
-				tbl1.ProductID,
-				Name,
-				Price,
-				ProductCategoryID,
-				IsActive,
-				CreatedOn,
-				CreatedBy,
-				ModifiedOn,
-				ModifiedBy,
-				tbl2.PictureName
-			from dbo.Products tbl1
-			JOIN dbo.ProductPictureNames tbl2
-			on tbl1.ProductID=tbl2.ProductID
-			where CHARINDEX(@product_name,Name)>0
-			AND Price>= @minPrice 	
-			AND ProductCategoryID=@categoryId
+			SET @priceConstraint=' AND '; 
 		end
+		SET @priceConstraint=@priceConstraint+' Price>= '+CAST(@minPrice as varchar);
+	end
+	
+	SET @query='Select 
+			tbl1.ProductID,
+			Name,
+			Price,
+			Description,
+			Quantity,
+			Sold,
+			ProductCategoryID,
+			IsActive,
+			CreatedOn,
+			CreatedBy,
+			ModifiedOn,
+			ModifiedBy,
+			tbl2.PictureName
+		from dbo.Products tbl1
+		JOIN dbo.ProductPictureNames tbl2
+		on tbl1.ProductID=tbl2.ProductID
+		where' +@nameConstraint + @categoryConstraint +
+		@priceConstraint;
+	EXEC(@query);
 end

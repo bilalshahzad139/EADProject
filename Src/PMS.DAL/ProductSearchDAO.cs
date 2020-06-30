@@ -11,30 +11,33 @@ namespace PMS.DAL
         private static ProductDTO FillDTO(SqlDataReader reader)
         {
             var dto = new ProductDTO();
-            dto.ProductID = reader.GetInt32(reader.GetOrdinal("ProductID"));
-            dto.Name = reader.GetString(reader.GetOrdinal("Name"));
-            dto.Price = reader.GetDouble(reader.GetOrdinal("Price"));
-            var isNoDescription = reader.IsDBNull(reader.GetOrdinal("Description"));
-            if (isNoDescription)
+            if (reader != null)
             {
-                dto.ProductDescription = "No Description Addded";
-            }
-            else
-            {
-                dto.ProductDescription = reader.GetString(reader.GetOrdinal("Description"));
+                dto.ProductID = reader.GetInt32(reader.GetOrdinal("ProductID"));
+                dto.Name = reader.GetString(reader.GetOrdinal("Name"));
+                dto.Price = reader.GetDouble(reader.GetOrdinal("Price"));
+                var isNoDescription = reader.IsDBNull(reader.GetOrdinal("Description"));
+                if (isNoDescription)
+                {
+                    dto.ProductDescription = "No Description Addded";
+                }
+                else
+                {
+                    dto.ProductDescription = reader.GetString(reader.GetOrdinal("Description"));
 
+                }
+                dto.PictureName = reader.GetString(reader.GetOrdinal("PictureName"));
+                dto.CreatedOn = reader.GetDateTime(reader.GetOrdinal("CreatedOn"));
+                dto.CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy"));
+                if (reader.GetValue(reader.GetOrdinal("ModifiedOn")) != DBNull.Value)
+                    dto.ModifiedOn = reader.GetDateTime(reader.GetOrdinal("ModifiedOn"));
+                if (reader.GetValue(reader.GetOrdinal("ModifiedBy")) != DBNull.Value)
+                    dto.ModifiedBy = reader.GetInt32(reader.GetOrdinal("ModifiedBy"));
+                dto.IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"));
+                dto.Likes = getLikesCount(dto.ProductID);
+                dto.DisLikes = getDisLikesCount(dto.ProductID);
+                dto.IsInWishlist = getWishlistProducts(dto.ProductID);
             }
-            dto.PictureName = reader.GetString(reader.GetOrdinal("PictureName"));
-            dto.CreatedOn = reader.GetDateTime(reader.GetOrdinal("CreatedOn"));
-            dto.CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy"));
-            if (reader.GetValue(reader.GetOrdinal("ModifiedOn")) != DBNull.Value)
-                dto.ModifiedOn = reader.GetDateTime(reader.GetOrdinal("ModifiedOn"));
-            if (reader.GetValue(reader.GetOrdinal("ModifiedBy")) != DBNull.Value)
-                dto.ModifiedBy = reader.GetInt32(reader.GetOrdinal("ModifiedBy"));
-            dto.IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"));
-            dto.Likes = getLikesCount(dto.ProductID);
-            dto.DisLikes = getDisLikesCount(dto.ProductID);
-            dto.IsInWishlist = getWishlistProducts(dto.ProductID);
             return dto;
         }
 
