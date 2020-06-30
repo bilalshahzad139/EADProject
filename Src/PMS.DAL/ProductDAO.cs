@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
-
+using System.Web;
 namespace PMS.DAL
 {
     public static class ProductDAO
@@ -25,10 +25,8 @@ namespace PMS.DAL
                 {
                     sqlQuery = $"INSERT INTO dbo.Products(Name, Price, CreatedOn, CreatedBy,IsActive,ProductCategoryID,Quantity,Sold,Description)" +
                         $" VALUES('{dto.Name}','{dto.Price}','{dto.CreatedOn.ToString("MM/dd/yyyy HH:MM")}','{dto.CreatedBy}',{1},'{dto.CategoryID}','{dto.Quantity}','{dto.Sold}','{dto.ProductDescription}'); Select @@IDENTITY";
-                    var ali = 123;
                     var obj = helper.ExecuteScalar(sqlQuery);
-                    sqlQuery =
-                        $"INSERT INTO dbo.ProductPictureNames(PictureName, ProductID ) Values ('{dto.PictureName}','{Convert.ToInt32(obj)}');";
+                    sqlQuery =$"INSERT INTO dbo.ProductPictureNames(PictureName, ProductID ) Values ('{dto.PictureName}','{Convert.ToInt32(obj)}');";
                     helper.ExecuteQuery(sqlQuery);
                     return Convert.ToInt32(obj);
                 }
@@ -258,6 +256,29 @@ namespace PMS.DAL
                     result = 0;
                     return result;
                 }
+                
+            }
+        }
+        public static int DeleteFromWishlist(int uid, int pid)
+        {
+            String sqlQuery = String.Format("select count(*) from dbo.Wishlist where UserID={0} and ProductID={1} and IsInList={2}", uid, pid,1);
+            using (DBHelper helper = new DBHelper())
+            {
+                int result;
+                int res =Convert.ToInt32(helper.ExecuteScalar(sqlQuery));
+                if (res != 0)
+                {
+                    //if the product is in wishlist then delete it
+                    String delQuery = String.Format("Delete from dbo.Wishlist where UserID='{0}' and  ProductID='{1}'", uid, pid);
+                    result = helper.ExecuteQuery(delQuery);
+                    return result;
+                }
+                else
+                {
+                    //if the product is not in wishlist 
+                    result = 0;
+                    return result;
+                }
 
             }
         }
@@ -433,7 +454,29 @@ namespace PMS.DAL
             dto.IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"));
             dto.Likes = getLikesCount(dto.ProductID);
             dto.DisLikes = getDisLikesCount(dto.ProductID);
+            dto.IsInWishlist = getWishlistProducts(dto.ProductID);
             return dto;
         }
+        public static bool getWishlistProducts(int product_id)
+        {
+            var uid = (UserDTO)System.Web.HttpContext.Current.Session["user"];
+
+
+            String sqlQuery = String.Format("select IsInList from dbo.Wishlist where UserID={0} and ProductID={1}", uid.UserID, product_id);
+            using (DBHelper helper = new DBHelper())
+            {
+                var res = helper.ExecuteScalar(sqlQuery);
+                if (res == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+
+            }
+        }
+
     }
 }
