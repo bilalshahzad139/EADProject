@@ -315,7 +315,6 @@ MyApp = (function () {
                 console.log(resp.data);
 
                 if (resp.data) {
-                    debugger;
                     for (let k in resp.data) {
                         const obj = resp.data[k];
                         obj.CreatedOn = moment(obj.CreatedOn).format("DD/MM/YYYY HH:mm:ss");
@@ -972,7 +971,6 @@ MyApp = (function () {
             UpdateProfileHelper();
         },
         Main: function () {
-            debugger;
             LoadProducts();
            loadProductCategories();
             $("#btnSave").click(function() {
@@ -986,8 +984,6 @@ MyApp = (function () {
                 return false;
             });
             $("#btn1Save").click(function () {
-                debugger;
-                alert('hamza');
                 SaveSale();
                 return false;
             });
