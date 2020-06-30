@@ -10,6 +10,10 @@ namespace PMS.BAL
         {
             return PMS.DAL.ProductDAO.Save(dto);
         }
+        public static int SaveSale(SaleDTO dto)
+        {
+            return PMS.DAL.ProductDAO.SaveSale(dto);
+        }
         public static ProductDTO GetProductById(int pid)
         {
             return PMS.DAL.ProductDAO.GetProductById(pid);

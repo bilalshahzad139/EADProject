@@ -175,6 +175,26 @@ namespace WebPrac.Controllers
             };
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult SaveSale(SaleDTO dto)
+        {
+
+            if (dto.Name.IsEmpty() || Convert.ToString(dto.Price, CultureInfo.InvariantCulture).IsEmpty())
+            {
+                ViewBag.EmptyFiledsMsg = "Empty Fields!";
+                return View("New");
+            }
+            var pid = PMS.BAL.ProductBO.SaveSale(dto);
+            var data = new
+            {
+                success = true,
+                ProductID = pid,
+            };
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+
+
         [HttpPost]
         public JsonResult SaveComment(CommentDTO dto)
         {

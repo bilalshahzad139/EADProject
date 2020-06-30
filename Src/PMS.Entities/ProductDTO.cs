@@ -24,6 +24,9 @@ namespace PMS.Entities
         public int Sold { get; set; }
         public bool LowStockNotification { get; set; }
         public int CategoryID { get; set; }
+        public int isOnSale { get; set; }
+        public int percentageDiscount { get; set; }
+        public string saleDescription { get; set; }
 
 
         public List<CommentDTO> Comments

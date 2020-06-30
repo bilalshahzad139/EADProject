@@ -71,6 +71,11 @@ MyApp = (function () {
 
         $("#prodimg").hide();
     }
+    function Clear1() {
+        $("#prodName").val("");
+        $("#prodDis").val("");
+        $("#saleDescription").val("");
+    }
     function SaveProduct() {
         const data = new FormData();
         var id = $("#txtProductID").val();
@@ -134,7 +139,7 @@ MyApp = (function () {
                 const template = Handlebars.compile(source);
                 const html = template(obj);
                 if (id > 0) {
-                    $(`#productsDiv tr[pid=${id}]`).replaceWith(html);
+                    $(`#productsDiv tr[p${id}]`).replaceWith(html);
                 } else {
                     $("#productsDiv").prepend(html);
                 }
@@ -149,6 +154,60 @@ MyApp = (function () {
 
         $.ajax(settings);
     }
+
+
+
+
+    function SaveSale() {
+        const data = new FormData();
+        var name = $("#prodName").val().trim();
+        var price = $("#prodDis").val().trim();
+        var saleDescription = $("#saleDescription").val().trim();
+        if (name === "" || price === "") {
+            $("#ErrMsg1").text("Empty Fields!");
+            setTimeout(() => {
+                const elem = $("#ErrMsg1").text("");
+            },
+                3000);
+            return false;
+        }
+        data.append("Name", name);
+        data.append("Price", price);
+        data.append("saleDescription", saleDescription);
+
+        const settings = {
+            type: "POST",
+            url: window.BasePath + "Product2/SaveSale",
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (r) {
+                console.log(r);
+                const obj = {};
+                obj.data = [];
+                obj.data.push({ Name: name, Price: price, saleDescription: saleDescription });
+                const source = $("#listtemplate").html();
+                const template = Handlebars.compile(source);
+                const html = template(obj);
+                Clear1();
+                alert("Product is on sale!");
+            },
+            error: function () {
+                alert("error has occurred");
+            }
+        };
+
+        $.ajax(settings);
+    }
+
+
+
+
+
+
+
+
+
     function loadProductCategories() {
 
         var action = "Product2/GetAllCategories"
@@ -879,6 +938,7 @@ MyApp = (function () {
             UpdateProfileHelper();
         },
         Main: function () {
+            debugger;
             LoadProducts();
            loadProductCategories();
             $("#btnSave").click(function() {
@@ -891,7 +951,18 @@ MyApp = (function () {
                 Clear();
                 return false;
             });
+            $("#btn1Save").click(function () {
+                debugger;
+                alert('hamza');
+                SaveSale();
+                return false;
+            });
 
+            $("#btn1Clear").click(function () {
+
+                Clear1();
+                return false;
+            });
             $("#btnSend").click(function () {
 
                 //Call send email function
@@ -929,6 +1000,10 @@ MyApp = (function () {
             $("#newProdBtn").click(function() {
 
                 $("#addNewProd").slideToggle(700);
+            });
+            $("#saleBtn").click(function () {
+
+                $("#addSale").slideToggle(700);
             });
             $("#btnSearchProduct").click(function () {
                 var prodName = $("#txtProductName").val();
