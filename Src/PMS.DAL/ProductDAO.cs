@@ -32,6 +32,20 @@ namespace PMS.DAL
                 }
             }
         }
+        public static int SaveSale(SaleDTO dto)
+        {
+            using (var helper = new DBHelper())
+            {
+                var sqlQuery = "";
+
+
+                sqlQuery =$"Update dbo.Products Set isOnSale='{1}',percentageDiscount='{dto.Price}',saleDescription='{dto.saleDescription}' Where Name='{dto.Name}'";
+                helper.ExecuteQuery(sqlQuery);
+                return 1;
+            }
+        }
+
+
         public static ProductDTO GetProductById(int pid)
         {
             var query = $"Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive,a.Description, b.PictureName, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.ProductID='{pid}'";
@@ -145,7 +159,7 @@ namespace PMS.DAL
 
         public static List<ProductDTO> GetAllProducts(bool pLoadComments = false)
         {
-            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive,a.Description, b.PictureName, a.Quantity, a.Sold, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 ;";
+            const string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive,a.Description,a.isOnSale,a.saleDescription,a.percentageDiscount, b.PictureName, a.Quantity, a.Sold, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 ;";
             using (var helper = new DBHelper())
             {
                 var reader = helper.ExecuteReader(query);
@@ -174,7 +188,7 @@ namespace PMS.DAL
         public static List<ProductDTO> GetProductsByCategory(int categoryId, Boolean pLoadComments = false)
 
         {
-            string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn,a.Description, a.ProductCategoryID, a.IsActive, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 and ProductCategoryId= " + categoryId + ";";
+            string query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn,a.Description, a.ProductCategoryID, a.IsActive,a.isOnSale,a.saleDescription,a.percentageDiscount, b.PictureName from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID where a.IsActive = 1 and ProductCategoryId= " + categoryId + ";";
 
             // var query = String.Format("Select * from dbo.Products Where categoryID={0}", categoryId);
             using (DBHelper helper = new DBHelper())
@@ -208,7 +222,7 @@ namespace PMS.DAL
 
         public static List<ProductDTO> GetPriceRangedProducts(int from, int to, bool pLoadComments = false)
         {
-            var query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive, b.PictureName, a.Quantity,a.Description, a.Sold, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID Where a.IsActive = 1 AND (a.Price Between '" + from + "' AND '" + to + "');";
+            var query = "Select a.ProductID, a.Name, a.Price, a.CreatedBy, a.CreatedOn, a.ModifiedBy, a.ModifiedOn, a.ProductCategoryID, a.IsActive,a.isOnSale,a.saleDescription,a.percentageDiscount, b.PictureName, a.Quantity,a.Description, a.Sold, cast((((Quantity-Sold)/(Quantity+0.0)))*100.0 as float) LowStockNotification from dbo.Products a full outer join dbo.ProductPictureNames b on a.ProductID = b.ProductID Where a.IsActive = 1 AND (a.Price-((a.Price*a.percentageDiscount)/100) Between '" + from + "' AND '" + to + "');";
             using (var helper = new DBHelper())
             {
                 var reader = helper.ExecuteReader(query);
@@ -431,6 +445,8 @@ namespace PMS.DAL
             var dto = new ProductDTO();
             dto.ProductID = reader.GetInt32(reader.GetOrdinal("ProductID"));
             dto.Name = reader.GetString(reader.GetOrdinal("Name"));
+            dto.isOnSale = reader.GetInt32(reader.GetOrdinal("isOnSale"));
+            dto.percentageDiscount = reader.GetInt32(reader.GetOrdinal("percentageDiscount"));
             var isNoDescription = reader.IsDBNull(reader.GetOrdinal("Description"));
             if (isNoDescription)
             {
@@ -439,6 +455,16 @@ namespace PMS.DAL
             else
             {
                 dto.ProductDescription = reader.GetString(reader.GetOrdinal("Description"));
+
+            }
+            var isNoSaleDescription = reader.IsDBNull(reader.GetOrdinal("saleDescription"));
+            if (isNoDescription)
+            {
+                dto.saleDescription = "No Description Addded";
+            }
+            else
+            {
+                dto.saleDescription = reader.GetString(reader.GetOrdinal("saleDescription"));
 
             }
             dto.Price = reader.GetDouble(reader.GetOrdinal("Price"));
