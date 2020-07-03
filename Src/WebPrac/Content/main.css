@@ -82,6 +82,13 @@ body {
     border-bottom: 2px solid #d9d9d9;
 }
 
+.error-div {
+    display: block;
+    grid-template-columns: 7% 93%;
+    margin: 25px 0;
+    padding: 5px 0;
+}
+
     .input-div.focus:before,
     .input-div.focus:after {
         width: 50%;
