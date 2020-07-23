@@ -667,6 +667,7 @@ MyApp = (function () {
                 let login = $("#login").val().trim();
                 let password = $("#password").val().trim();
                 let cpassword = $("#cpassword").val().trim();
+                debugger;
                 if (login !== "" && password !== "" && name !== "" && cpassword !== "") {
                     //client side validation of Email address
                     if (!validateEmail(login)) {
